@@ -1,5 +1,6 @@
 package org.sysCondo;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.hibernate.Session;
 import org.sysCondo.infra.HibernateUtil;
 
