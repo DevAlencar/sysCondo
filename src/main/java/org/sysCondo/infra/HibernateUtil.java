@@ -4,11 +4,11 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.sysCondo.models.ownerResidential.OwnerResidential;
-import org.sysCondo.models.unitResidential.UnitResidential;
-import org.sysCondo.models.user.User;
-import org.sysCondo.models.userResidential.UserResidential;
-import org.sysCondo.models.vehicle.Vehicle;
+import org.sysCondo.model.ownerResidential.OwnerResidential;
+import org.sysCondo.model.unitResidential.UnitResidential;
+import org.sysCondo.model.user.User;
+import org.sysCondo.model.userResidential.UserResidential;
+import org.sysCondo.model.vehicle.Vehicle;
 
 public class HibernateUtil {
 

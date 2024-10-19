@@ -1,6 +1,6 @@
-package org.sysCondo.models.vehicle;
+package org.sysCondo.model.vehicle;
 
-import org.sysCondo.models.user.User;
+import org.sysCondo.model.user.User;
 
 import javax.persistence.*;
 

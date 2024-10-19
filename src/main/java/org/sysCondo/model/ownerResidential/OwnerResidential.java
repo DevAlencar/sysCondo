@@ -1,5 +1,5 @@
-package org.sysCondo.models.ownerResidential;
-import org.sysCondo.models.unitResidential.UnitResidential;
+package org.sysCondo.model.ownerResidential;
+import org.sysCondo.model.unitResidential.UnitResidential;
 
 import javax.persistence.*;
 import java.util.List;

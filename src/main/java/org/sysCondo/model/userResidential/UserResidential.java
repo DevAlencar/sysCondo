@@ -1,4 +1,4 @@
-package org.sysCondo.models.userResidential;
+package org.sysCondo.model.userResidential;
 
 import javax.persistence.*;
 import java.util.Date;

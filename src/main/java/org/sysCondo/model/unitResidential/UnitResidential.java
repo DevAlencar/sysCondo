@@ -1,6 +1,6 @@
-package org.sysCondo.models.unitResidential;
+package org.sysCondo.model.unitResidential;
 
-import org.sysCondo.models.ownerResidential.OwnerResidential;
+import org.sysCondo.model.ownerResidential.OwnerResidential;
 
 import javax.persistence.*;
 

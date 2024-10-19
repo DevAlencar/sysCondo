@@ -1,4 +1,4 @@
-package org.sysCondo.models.user;
+package org.sysCondo.model.user;
 
 import javax.persistence.*;
 

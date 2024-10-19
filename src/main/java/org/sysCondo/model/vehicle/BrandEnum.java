@@ -1,4 +1,4 @@
-package org.sysCondo.models.vehicle;
+package org.sysCondo.model.vehicle;
 
 public enum BrandEnum {
 
