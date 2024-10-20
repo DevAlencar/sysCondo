@@ -5,53 +5,53 @@ import org.sysCondo.model.user.User;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "vehicles")
+@Table(name = "vehicle")
 public class Vehicle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long vehicle_id;
+    private Long vehicleId;
 
-    @Column(name = "number", nullable = false)
-    private String number;
+    @Column(name = "vehicleNumber", nullable = false)
+    private String vehicleNumber;
 
     @Enumerated(EnumType.STRING) // Armazena o ENUM como uma string no banco de dados
-    @Column(name = "brand", nullable = false)
-    private BrandEnum brand;
+    @Column(name = "vehicleBrand", nullable = false)
+    private BrandEnum vehicleBrand;
 
     @ManyToOne // Define a relação de muitos-para-um com a entidade User
-    @JoinColumn(name = "fk_user", nullable = false) // Coluna que armazena a chave estrangeira
-    private User fkUser;
+    @JoinColumn(name = "userId", nullable = false) // Coluna que armazena a chave estrangeira
+    private User userVehicleFk;
 
     public Long getVehicleId() {
-        return vehicle_id;
+        return vehicleId;
     }
 
-    public void setVehicleId(Long vehicle_id) {
-        this.vehicle_id = vehicle_id;
+    public void setVehicleId(Long vehicleId) {
+        this.vehicleId = vehicleId;
     }
 
-    public String getNumber() {
-        return number;
+    public String getVehicleNumber() {
+        return vehicleNumber;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setVehicleNumber(String vehicleNumber) {
+        this.vehicleNumber = vehicleNumber;
     }
 
-    public BrandEnum getBrand() {
-        return brand;
+    public BrandEnum getVehicleBrand() {
+        return vehicleBrand;
     }
 
-    public void setBrand(BrandEnum brand) {
-        this.brand = brand;
+    public void setVehicleBrand(BrandEnum vehicleBrand) {
+        this.vehicleBrand = vehicleBrand;
     }
 
-    public User getFkUser() {
-        return fkUser;
+    public User getUserVehicleFk() {
+        return userVehicleFk;
     }
 
-    public void setFkUser(User fkUser) {
-        this.fkUser = fkUser;
+    public void setUserVehicleFk(User userVehicleFk) {
+        this.userVehicleFk = userVehicleFk;
     }
 }

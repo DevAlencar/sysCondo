@@ -32,11 +32,11 @@ public class App {
         //unitResidentialController.createUnitResidential(2500, owner1);
 
         User usuario1 = new User();
-        usuario1.setName("John Doe");
-        usuario1.setContact("123456789");
-        usuario1.setDocument("AB123456");
-        usuario1.setRole(UserRole.USER);
-        usuario1.setId(2L);
+        usuario1.setUserName("John Doe");
+        usuario1.setUserContact("123456789");
+        usuario1.setUserDocument("AB123456");
+        usuario1.setUserRole(UserRole.USER);
+        usuario1.setUserId(2L);
 
         VehicleController vehicleController = new VehicleController();
         vehicleController.createVehicle("ABC-1234", BrandEnum.VOLKSWAGEN, usuario1);

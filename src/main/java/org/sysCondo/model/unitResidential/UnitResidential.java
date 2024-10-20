@@ -5,34 +5,34 @@ import org.sysCondo.model.ownerResidential.OwnerResidential;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "unit_residential")
+@Table(name = "unitResidential")
 public class UnitResidential {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int unit_id;
+    private int unitResidentialId;
 
     @Column(name = "size")
-    private float size;
+    private float unitResidentialSize;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
+    @JoinColumn(name = "ownerId", nullable = false)
     private OwnerResidential ownerResidential;
 
-    public int getNumber() {
-        return unit_id;
+    public int getUnitResidentialId() {
+        return unitResidentialId;
     }
 
-    public void setNumber(int unit_id) {
-        this.unit_id = unit_id;
+    public void setUnitResidentialId(int unitResidentialId) {
+        this.unitResidentialId = unitResidentialId;
     }
 
-    public float getSize() {
-        return size;
+    public float getUnitResidentialSize() {
+        return unitResidentialSize;
     }
 
-    public void setSize(float size) {
-        this.size = size;
+    public void setUnitResidentialSize(float unitResidentialSize) {
+        this.unitResidentialSize = unitResidentialSize;
     }
 
     public OwnerResidential getOwnerResidential() {

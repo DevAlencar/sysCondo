@@ -17,9 +17,9 @@ public class VehicleController {
 
         try {
             Vehicle vehicle = new Vehicle();
-            vehicle.setNumber(number);
-            vehicle.setBrand(brand);
-            vehicle.setFkUser(user);
+            vehicle.setVehicleNumber(number);
+            vehicle.setVehicleBrand(brand);
+            vehicle.setUserVehicleFk(user);
 
             session.save(vehicle);
             transaction.commit();
@@ -64,9 +64,9 @@ public class VehicleController {
         try {
             Vehicle vehicle = session.get(Vehicle.class, vehicleId);
             if (vehicle != null) {
-                vehicle.setNumber(newNumber);
-                vehicle.setBrand(newBrand);
-                vehicle.setFkUser(newUser);
+                vehicle.setVehicleNumber(newNumber);
+                vehicle.setVehicleBrand(newBrand);
+                vehicle.setUserVehicleFk(newUser);
                 session.update(vehicle);
                 transaction.commit();
             }

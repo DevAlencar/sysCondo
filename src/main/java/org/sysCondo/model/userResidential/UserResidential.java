@@ -4,27 +4,27 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "user_residential")
+@Table(name = "userResidential")
 public class UserResidential {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_residential_id;
+    private Long userResidentialId;
 
-    @Column(name = "rent_date", nullable = false)
+    @Column(name = "rentDate", nullable = false)
     @Temporal(TemporalType.DATE) // Define que o tipo de dados é uma data
     private Date rentDate;
 
-    @Column(name = "finish_date")
+    @Column(name = "finishDate")
     @Temporal(TemporalType.DATE) // Define que o tipo de dados é uma data
     private Date finishDate;
 
     public Long getUserResidentialId() {
-        return user_residential_id;
+        return userResidentialId;
     }
 
-    public void setUserResidentialId(Long user_residential_id) {
-        this.user_residential_id = user_residential_id;
+    public void setUserResidentialId(Long userResidentialId) {
+        this.userResidentialId = userResidentialId;
     }
 
     public Date getRentDate() {

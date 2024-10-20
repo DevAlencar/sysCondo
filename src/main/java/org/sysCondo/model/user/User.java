@@ -1,65 +1,116 @@
 package org.sysCondo.model.user;
 
+import org.sysCondo.model.booking.Booking;
+import org.sysCondo.model.maintenance.Maintenance;
+import org.sysCondo.model.tax.Tax;
+import org.sysCondo.model.vehicle.Vehicle;
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_id;
+    private Long userId;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @OneToMany(mappedBy = "userVehicleFk", fetch = FetchType.LAZY)
+    private Set<Vehicle> vehicleSet = new HashSet<>();
 
-    @Column(name = "contact", nullable = false)
-    private String contact;
+    @OneToMany(mappedBy = "userTaxFk", fetch = FetchType.LAZY)
+    private Set<Tax> taxSet = new HashSet<>();
 
-    @Column(name = "document", nullable = false, unique = true)
-    private String document;
+    @OneToMany(mappedBy = "userMaintenanceFk")
+    private Set<Maintenance> maintenanceSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "userBookingFk")
+    private Set<Booking> bookingSet = new HashSet<>();
+
+    @Column(name = "userName", nullable = false)
+    private String userName;
+
+    @Column(name = "userContact", nullable = false)
+    private String userContact;
+
+    @Column(name = "userDocument", nullable = false, unique = true)
+    private String userDocument;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
-    private UserRole role;
+    @Column(name = "userRole", nullable = false)
+    private UserRole userRole;
 
     public Long getUserId() {
-        return user_id;
+        return userId;
     }
 
-    public void setId(Long user_id) {
-        this.user_id = user_id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public Set<Vehicle> getVehicleSet() {
+        return vehicleSet;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setVehicleSet(Set<Vehicle> vehicleSet) {
+        this.vehicleSet = vehicleSet;
     }
 
-    public String getContact() {
-        return contact;
+    public Set<Tax> getTaxSet() {
+        return taxSet;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
+    public void setTaxSet(Set<Tax> taxSet) {
+        this.taxSet = taxSet;
     }
 
-    public String getDocument() {
-        return document;
+    public Set<Maintenance> getMaintenanceSet() {
+        return maintenanceSet;
     }
 
-    public void setDocument(String document) {
-        this.document = document;
+    public void setMaintenanceSet(Set<Maintenance> maintenanceSet) {
+        this.maintenanceSet = maintenanceSet;
     }
 
-    public UserRole getRole() {
-        return role;
+    public Set<Booking> getBookingSet() {
+        return bookingSet;
     }
 
-    public void setRole(UserRole role) {
-        this.role = role;
+    public void setBookingSet(Set<Booking> bookingSet) {
+        this.bookingSet = bookingSet;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserContact() {
+        return userContact;
+    }
+
+    public void setUserContact(String userContact) {
+        this.userContact = userContact;
+    }
+
+    public String getUserDocument() {
+        return userDocument;
+    }
+
+    public void setUserDocument(String userDocument) {
+        this.userDocument = userDocument;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
     }
 }

@@ -16,10 +16,10 @@ public class UserController {
 
         try {
             User user = new User();
-            user.setName(name);
-            user.setContact(contact);
-            user.setDocument(document);
-            user.setRole(role);
+            user.setUserName(name);
+            user.setUserContact(contact);
+            user.setUserDocument(document);
+            user.setUserRole(role);
 
             session.save(user);
             transaction.commit();
@@ -64,10 +64,10 @@ public class UserController {
         try {
             User user = session.get(User.class, userId);
             if (user != null) {
-                user.setName(newName);
-                user.setContact(newContact);
-                user.setDocument(newDocument);
-                user.setRole(newRole);
+                user.setUserName(newName);
+                user.setUserContact(newContact);
+                user.setUserDocument(newDocument);
+                user.setUserRole(newRole);
                 session.update(user);
                 transaction.commit();
             }

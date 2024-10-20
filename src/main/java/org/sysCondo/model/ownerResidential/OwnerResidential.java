@@ -5,62 +5,62 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "owner_residential")
+@Table(name = "ownerResidential")
 public class OwnerResidential {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long owner_id;
+    private Long ownerId;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "ownerName")
+    private String ownerName;
 
-    @Column(name = "document")
-    private String document;
+    @Column(name = "ownerDocument")
+    private String ownerDocument;
 
-    @Column(name = "contact")
-    private String contact;
+    @Column(name = "ownerContact")
+    private String ownerContact;
 
     @OneToMany(mappedBy = "ownerResidential", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UnitResidential> unitsResidentials;
 
-    public Long getOwner_id() {
-        return owner_id;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner_id(Long owner_id) {
-        this.owner_id = owner_id;
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public String getOwnerDocument() {
+        return ownerDocument;
+    }
+
+    public void setOwnerDocument(String ownerDocument) {
+        this.ownerDocument = ownerDocument;
+    }
+
+    public String getOwnerContact() {
+        return ownerContact;
+    }
+
+    public void setOwnerContact(String ownerContact) {
+        this.ownerContact = ownerContact;
     }
 
     public List<UnitResidential> getUnitsResidentials() {
         return unitsResidentials;
     }
 
-    public void setUnitsResidentials(List<UnitResidential> unitsResowner_identials) {
-        this.unitsResidentials = unitsResowner_identials;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDocument() {
-        return document;
-    }
-
-    public void setDocument(String document) {
-        this.document = document;
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
+    public void setUnitsResidentials(List<UnitResidential> unitsResidentials) {
+        this.unitsResidentials = unitsResidentials;
     }
 }

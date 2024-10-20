@@ -16,7 +16,7 @@ public class UnitResidentialController {
 
         try {
             UnitResidential unitResidential = new UnitResidential();
-            unitResidential.setSize(size);
+            unitResidential.setUnitResidentialSize(size);
             unitResidential.setOwnerResidential(ownerResidential);
 
             session.save(unitResidential);
@@ -62,7 +62,7 @@ public class UnitResidentialController {
         try {
             UnitResidential unitResidential = session.get(UnitResidential.class, unitId);
             if (unitResidential != null) {
-                unitResidential.setSize(newSize);
+                unitResidential.setUnitResidentialSize(newSize);
                 unitResidential.setOwnerResidential(newOwnerResidential);
                 session.update(unitResidential);
                 transaction.commit();
