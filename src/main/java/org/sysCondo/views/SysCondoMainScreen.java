@@ -1,5 +1,7 @@
 package org.sysCondo.views;
 
+import org.sysCondo.components.Header;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -14,6 +16,9 @@ public class SysCondoMainScreen extends JFrame {
 
         // Painel principal com BorderLayout
         JPanel mainPanel = new JPanel(new BorderLayout());
+
+        // adiciona o header painel principal
+        mainPanel.add(new Header(), BorderLayout.NORTH);
 
         // Barra lateral de navegação
         JPanel sideMenu = createSideMenu();
