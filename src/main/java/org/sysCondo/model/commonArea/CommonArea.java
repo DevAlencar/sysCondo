@@ -1,5 +1,7 @@
 package org.sysCondo.model.commonArea;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GeneratorType;
 import org.sysCondo.model.booking.Booking;
 import org.sysCondo.model.maintenance.Maintenance;
@@ -11,6 +13,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "commonArea")
+@Getter
+@Setter
 public class CommonArea {
 
     @Id

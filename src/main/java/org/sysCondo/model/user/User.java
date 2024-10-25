@@ -1,5 +1,7 @@
 package org.sysCondo.model.user;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.sysCondo.model.booking.Booking;
 import org.sysCondo.model.maintenance.Maintenance;
 import org.sysCondo.model.tax.Tax;
@@ -11,6 +13,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "user")
+@Getter
+@Setter
 public class User {
 
     @Id
@@ -41,76 +45,4 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "userRole", nullable = false)
     private UserRole userRole;
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Set<Vehicle> getVehicleSet() {
-        return vehicleSet;
-    }
-
-    public void setVehicleSet(Set<Vehicle> vehicleSet) {
-        this.vehicleSet = vehicleSet;
-    }
-
-    public Set<Tax> getTaxSet() {
-        return taxSet;
-    }
-
-    public void setTaxSet(Set<Tax> taxSet) {
-        this.taxSet = taxSet;
-    }
-
-    public Set<Maintenance> getMaintenanceSet() {
-        return maintenanceSet;
-    }
-
-    public void setMaintenanceSet(Set<Maintenance> maintenanceSet) {
-        this.maintenanceSet = maintenanceSet;
-    }
-
-    public Set<Booking> getBookingSet() {
-        return bookingSet;
-    }
-
-    public void setBookingSet(Set<Booking> bookingSet) {
-        this.bookingSet = bookingSet;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserContact() {
-        return userContact;
-    }
-
-    public void setUserContact(String userContact) {
-        this.userContact = userContact;
-    }
-
-    public String getUserDocument() {
-        return userDocument;
-    }
-
-    public void setUserDocument(String userDocument) {
-        this.userDocument = userDocument;
-    }
-
-    public UserRole getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
-    }
 }

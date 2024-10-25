@@ -1,11 +1,15 @@
 package org.sysCondo.model.vehicle;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.sysCondo.model.user.User;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "vehicle")
+@Getter
+@Setter
 public class Vehicle {
 
     @Id
@@ -23,35 +27,5 @@ public class Vehicle {
     @JoinColumn(name = "userId", nullable = false) // Coluna que armazena a chave estrangeira
     private User userVehicleFk;
 
-    public Long getVehicleId() {
-        return vehicleId;
-    }
 
-    public void setVehicleId(Long vehicleId) {
-        this.vehicleId = vehicleId;
-    }
-
-    public String getVehicleNumber() {
-        return vehicleNumber;
-    }
-
-    public void setVehicleNumber(String vehicleNumber) {
-        this.vehicleNumber = vehicleNumber;
-    }
-
-    public BrandEnum getVehicleBrand() {
-        return vehicleBrand;
-    }
-
-    public void setVehicleBrand(BrandEnum vehicleBrand) {
-        this.vehicleBrand = vehicleBrand;
-    }
-
-    public User getUserVehicleFk() {
-        return userVehicleFk;
-    }
-
-    public void setUserVehicleFk(User userVehicleFk) {
-        this.userVehicleFk = userVehicleFk;
-    }
 }

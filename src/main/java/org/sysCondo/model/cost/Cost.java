@@ -1,5 +1,7 @@
 package org.sysCondo.model.cost;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.sysCondo.model.maintenance.Maintenance;
 
 import javax.persistence.*;
@@ -8,6 +10,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "cost")
+@Getter
+@Setter
 public class Cost {
 
     @Id
@@ -22,28 +26,4 @@ public class Cost {
 
     @Column(name = "description")
     private String description;
-
-    public int getCost_id() {
-        return costId;
-    }
-
-    public void setCost_id(int cost_id) {
-        this.costId = cost_id;
-    }
-
-    public float getValue() {
-        return value;
-    }
-
-    public void setValue(float value) {
-        this.value = value;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }
