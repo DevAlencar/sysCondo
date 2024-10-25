@@ -1,11 +1,15 @@
 package org.sysCondo.model.unitResidential;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.sysCondo.model.ownerResidential.OwnerResidential;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "unitResidential")
+@Getter
+@Setter
 public class UnitResidential {
 
     @Id
