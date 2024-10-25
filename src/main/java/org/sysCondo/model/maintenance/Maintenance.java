@@ -1,5 +1,7 @@
 package org.sysCondo.model.maintenance;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.sysCondo.model.commonArea.CommonArea;
 import org.sysCondo.model.cost.Cost;
 import org.sysCondo.model.user.User;
@@ -8,6 +10,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "maintenance")
+@Getter
+@Setter
 public class Maintenance {
 
     @Id

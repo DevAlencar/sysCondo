@@ -1,5 +1,7 @@
 package org.sysCondo.model.booking;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.sysCondo.model.commonArea.CommonArea;
 import org.sysCondo.model.user.User;
 
@@ -8,6 +10,8 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "booking")
+@Getter
+@Setter
 public class Booking {
 
     @Id

@@ -1,10 +1,15 @@
 package org.sysCondo.model.userResidential;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "userResidential")
+@Getter
+@Setter
 public class UserResidential {
 
     @Id
@@ -18,28 +23,4 @@ public class UserResidential {
     @Column(name = "finishDate")
     @Temporal(TemporalType.DATE) // Define que o tipo de dados é uma data
     private Date finishDate;
-
-    public Long getUserResidentialId() {
-        return userResidentialId;
-    }
-
-    public void setUserResidentialId(Long userResidentialId) {
-        this.userResidentialId = userResidentialId;
-    }
-
-    public Date getRentDate() {
-        return rentDate;
-    }
-
-    public void setRentDate(Date rentDate) {
-        this.rentDate = rentDate;
-    }
-
-    public Date getFinishDate() {
-        return finishDate;
-    }
-
-    public void setFinishDate(Date finishDate) {
-        this.finishDate = finishDate;
-    }
 }

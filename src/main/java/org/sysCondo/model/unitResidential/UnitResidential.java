@@ -18,28 +18,4 @@ public class UnitResidential {
     @ManyToOne
     @JoinColumn(name = "ownerId", nullable = false)
     private OwnerResidential ownerResidential;
-
-    public int getUnitResidentialId() {
-        return unitResidentialId;
-    }
-
-    public void setUnitResidentialId(int unitResidentialId) {
-        this.unitResidentialId = unitResidentialId;
-    }
-
-    public float getUnitResidentialSize() {
-        return unitResidentialSize;
-    }
-
-    public void setUnitResidentialSize(float unitResidentialSize) {
-        this.unitResidentialSize = unitResidentialSize;
-    }
-
-    public OwnerResidential getOwnerResidential() {
-        return ownerResidential;
-    }
-
-    public void setOwnerResidential(OwnerResidential ownerResidential) {
-        this.ownerResidential = ownerResidential;
-    }
 }
