@@ -23,12 +23,12 @@ public class Cost {
     @Column(name = "description")
     private String description;
 
-    public int getCost_id() {
+    public int getCostId() {
         return costId;
     }
 
-    public void setCost_id(int cost_id) {
-        this.costId = cost_id;
+    public void setCostId(int costId) {
+        this.costId = costId;
     }
 
     public float getValue() {
