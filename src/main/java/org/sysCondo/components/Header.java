@@ -24,7 +24,7 @@ public class Header extends JPanel {
         logoContainer.setPreferredSize(new Dimension(60, 60)); // seta o tamanho do container
 
         JLabel companyName = new JLabel("SYSCONDO"); // cria texto da empresa
-        companyName.setFont(new Font("Arial", Font.BOLD, 25)); // seta a fonte para arial bold 25px
+        companyName.setFont(new Font("Roboto", Font.BOLD, 25)); // seta a fonte para arial bold 25px
         companyName.setForeground(Color.black); // seta a cor do texto para preto
 
         this.add(logoContainer); // adiciona container de imagem ao header
