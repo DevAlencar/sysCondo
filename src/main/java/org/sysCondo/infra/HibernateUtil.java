@@ -28,7 +28,7 @@ public class HibernateUtil {
             configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
             configuration.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/" + dotenv.get("DB_NAME") + "?allowPublicKeyRetrieval=true");
             configuration.setProperty("hibernate.connection.username", dotenv.get("DB_USER"));
-            configuration.setProperty("hibernate.connection.password", dotenv.get("DB_PASSWORD"));
+            configuration.setProperty("hibernate.connection.password", dotenv.get("DB_PASS"));
             configuration.setProperty("hibernate.hbm2ddl.auto", "update");
             configuration.setProperty("show_sql", "true");
 
@@ -36,6 +36,7 @@ public class HibernateUtil {
             configuration.addAnnotatedClass(OwnerResidential.class);
             configuration.addAnnotatedClass(UnitResidential.class);
             configuration.addAnnotatedClass(User.class);
+
             configuration.addAnnotatedClass(UserResidential.class);
             configuration.addAnnotatedClass(Vehicle.class);
             configuration.addAnnotatedClass(Tax.class);

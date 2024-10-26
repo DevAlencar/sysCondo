@@ -6,11 +6,25 @@ services:
     container_name: dev-mysql
     environment:
       MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    env_file:
+      - .env
+
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: cloudbeaver
+    environment:
+      CB_ADMIN_NAME: cbadmin
+      CB_ADMIN_PASSWORD: Sbrubles
+    ports:
+      - "8978:8978"
+    depends_on:
+      - mysql
+    restart: always
 
 volumes:
   mysql_data:
