@@ -37,10 +37,11 @@ public class ContentPanel {
     }
 
     // Método para trocar o conteúdo (chamado pelo AdditionalOptionsPanel)
-    public void setContent(JPanel newContent) {
+    public JPanel setContent(JPanel newContent) {
         contentPanel.removeAll();
         contentPanel.add(newContent, BorderLayout.CENTER);
         contentPanel.revalidate();
         contentPanel.repaint();
+        return contentPanel;
     }
 }
