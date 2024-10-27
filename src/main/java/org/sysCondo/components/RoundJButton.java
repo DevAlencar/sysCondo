@@ -2,6 +2,7 @@ package org.sysCondo.components;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 // Classe para criar um botão arredondado
 public class RoundJButton extends JButton {
@@ -15,6 +16,9 @@ public class RoundJButton extends JButton {
         setContentAreaFilled(false); // Para evitar que o fundo padrão do botão seja desenhado
         setForeground(Color.WHITE);
         setFont(new Font("Roboto Medium", Font.PLAIN, 12));
+
+        // Altera o cursor para pointer ao passar o mouse
+        setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
     protected void paintComponent(Graphics g) {

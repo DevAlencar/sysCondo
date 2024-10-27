@@ -1,5 +1,7 @@
 package org.sysCondo.components;
 
+import org.sysCondo.types.MenuItem;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,50 +15,35 @@ public class AdditionalOptionsPanel {
 
     public AdditionalOptionsPanel(JPanel contentPanel) {
         this.contentPanel = contentPanel; // Recebe o painel de conteúdo da tela principal
-        panel = createAdditionalOptionsPanel();
+        createAdditionalOptionsPanel(new MenuItem[0]);
     }
 
     public JPanel getPanel() { // Este método retorna o painel que pode ser adicionado
         return panel;
     }
 
-    private JPanel createAdditionalOptionsPanel() {
+    public void createAdditionalOptionsPanel(MenuItem[] items) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 10));
 
-        // Botão "Adicionar Nova Conta"
-        JButton addAccountButton = createStyledButton("Adicionar Nova Conta");
-        addAccountButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Troca o conteúdo para o painel de adicionar contas
-                JPanel addAccountPanel = new ContasAReceberAdd(); // Certifique-se que isso retorna um JPanel
-                contentPanel.removeAll();
-                contentPanel.add(addAccountPanel, BorderLayout.CENTER);
-                contentPanel.revalidate();
-                contentPanel.repaint();
-            }
-        });
-        panel.add(addAccountButton);
-
-        // Botão "Overview"
-        JButton overviewButton = createStyledButton("Overview");
-        overviewButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Troca o conteúdo para o painel de overview
-                JPanel overviewPanel = new ContasAReceberOverview(); // Certifique-se que isso retorna um JPanel
-                contentPanel.removeAll();
-                contentPanel.add(overviewPanel, BorderLayout.CENTER);
-                contentPanel.revalidate();
-                contentPanel.repaint();
-            }
-        });
-        panel.add(overviewButton);
+        for (MenuItem item : items) {
+            JButton btn = createStyledButton(item.getTitle());
+            btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JPanel panel = item.getPanel(); // Certifique-se que isso retorna um JPanel
+                    contentPanel.removeAll();
+                    contentPanel.add(panel, BorderLayout.CENTER);
+                    contentPanel.revalidate();
+                    contentPanel.repaint();
+                }
+            });
+            panel.add(btn);
+        }
 
         panel.setVisible(false); // Inicialmente invisível
-        return panel; // Retorna o painel que pode ser adicionado ao menu lateral
+        this.panel = panel;
     }
 
     // Método para criar os botões estilizados

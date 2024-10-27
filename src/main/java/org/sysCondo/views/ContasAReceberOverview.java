@@ -1,4 +1,4 @@
-package org.sysCondo.components;
+package org.sysCondo.views;
 
 import javax.swing.*;
 import java.awt.*;

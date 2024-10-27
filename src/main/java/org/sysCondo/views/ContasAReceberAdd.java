@@ -1,4 +1,4 @@
-package org.sysCondo.components;
+package org.sysCondo.views;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,6 +8,7 @@ public class ContasAReceberAdd extends JPanel {
 
     public ContasAReceberAdd() {
         setLayout(new BorderLayout());
+        setBackground(Color.WHITE);
 
         // Adicionar um título
         JLabel titleLabel = new JLabel("Adicionar Nova Conta", JLabel.CENTER);
@@ -16,6 +17,7 @@ public class ContasAReceberAdd extends JPanel {
 
         // Adicionar painel para cadastro de nova conta
         JPanel addAccountPanel = new JPanel();
+        addAccountPanel.setBackground(Color.WHITE);
         addAccountPanel.setLayout(new GridBagLayout()); // Usar GridBagLayout para melhor controle de layout
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10); // Espaçamento entre os componentes

@@ -8,32 +8,15 @@ import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
 
-public class NewResident extends JFrame {
-    private ContentPanel contentPanel; // Painel de conteúdo
-    private SideMenu sideMenu; // Menu lateral
-
+public class NewResident extends JPanel {
     public NewResident() {
-        // Configurações da janela
-        setTitle("Cadastrar novo morador");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1200, 800);
-        setLocationRelativeTo(null); // Centraliza a janela
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-
         // Painel principal com BorderLayout
-        JPanel mainPanel = new JPanel(new BorderLayout());
-
-        // Adiciona o header ao painel principal
-        mainPanel.add(new Header(), BorderLayout.NORTH);
-
-        // Barra lateral de navegação
-        contentPanel = new ContentPanel(); // Inicializa o painel de conteúdo
-        sideMenu = new SideMenu(contentPanel.getContentPanel()); // Passa o painel de conteúdo
-        mainPanel.add(sideMenu.getSideMenuPanel(), BorderLayout.WEST);
-
+        setLayout(new BorderLayout());
+        setBackground(Color.WHITE);
         JPanel contentContainer = new JPanel(new BorderLayout());
         contentContainer.setBackground(Color.WHITE);
         contentContainer.setBorder(new EmptyBorder(30, 0, 30, 0));
+        add(contentContainer);
 
         JLabel contentTitle = new JLabel("Cadastro de Moradores", JLabel.CENTER);
         contentTitle.setFont(new Font("Roboto", Font.BOLD, 28));
@@ -76,12 +59,6 @@ public class NewResident extends JFrame {
         gbc.gridy = 6;
         formContainer.add(formButtonsContainer, gbc);
 
-        // Adiciona o painel de conteúdo
-        mainPanel.add(contentPanel.setContent(contentContainer));
-
-        // Adiciona o painel principal à janela
-        add(mainPanel);
-
         // Exibe a janela
         setVisible(true);
     }
@@ -123,11 +100,6 @@ public class NewResident extends JFrame {
         container.add(comboBox, BorderLayout.CENTER);
 
         return container;
-    }
-
-    // Método para acessar o painel de conteúdo (usado pela SideMenu para modificar o conteúdo)
-    public JPanel getContentPanel() { // Retorna o painel em vez de ContentPanel
-        return contentPanel.getContentPanel();
     }
 
     public static void main(String[] args) {

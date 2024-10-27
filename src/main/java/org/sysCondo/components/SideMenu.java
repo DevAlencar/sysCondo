@@ -1,6 +1,9 @@
 package org.sysCondo.components;
 
-import org.sysCondo.views.SysCondoMainScreen;
+import org.sysCondo.types.MenuItem;
+import org.sysCondo.views.ContasAReceberAdd;
+import org.sysCondo.views.ContasAReceberOverview;
+import org.sysCondo.views.NewResident;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,13 +12,14 @@ import java.awt.event.ActionListener;
 
 public class SideMenu {
 
-    private JPanel sideMenuPanel; // Painel da barra lateral
-    private AdditionalOptionsPanel additionalOptionsPanel; // Painel de opções adicionais
-    private JPanel contentPanel; // Referência para o painel de conteúdo
+    private JPanel sideMenuPanel;
+    private AdditionalOptionsPanel accountsReceivableOptionsPanel; // Painel de opções para contas a receber
+    private AdditionalOptionsPanel accountsPayableOptionsPanel; // Painel de opções para contas a pagar
+    private JPanel contentPanel;
 
     public SideMenu(JPanel contentPanel) {
-        this.contentPanel = contentPanel; // Inicializa com o painel de conteúdo
-        sideMenuPanel = createSideMenu(); // Cria o painel da barra lateral
+        this.contentPanel = contentPanel;
+        sideMenuPanel = createSideMenu();
     }
 
     public JPanel getSideMenuPanel() {
@@ -23,32 +27,53 @@ public class SideMenu {
     }
 
     private JPanel createSideMenu() {
+        AdditionalOptionsPanel residentsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+        MenuItem[] residentsItems = {
+                new MenuItem("Cadastro", new NewResident()),
+        };
+        residentsOptionsPanel.createAdditionalOptionsPanel(residentsItems);
+        AdditionalOptionsPanel accountsReceivableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+        MenuItem[] receivableItems = {
+                new MenuItem("Visão Geral", new ContasAReceberAdd()),
+                new MenuItem("Overview", new ContasAReceberOverview())
+        };
+        accountsReceivableOptionsPanel.createAdditionalOptionsPanel(receivableItems);
+
         JPanel sideMenu = new JPanel();
         sideMenu.setLayout(new BoxLayout(sideMenu, BoxLayout.Y_AXIS));
-        sideMenu.setPreferredSize(new Dimension(250, contentPanel.getHeight())); // Corrigido para usar o conteúdo do painel
-        sideMenu.setBackground(new Color(235, 235, 235)); // Cor de fundo da barra lateral
+        sideMenu.setPreferredSize(new Dimension(250, contentPanel.getHeight()));
+        sideMenu.setBackground(new Color(235, 235, 235));
 
-        // Adiciona botões com ícones
-        sideMenu.add(createSideMenuButton("Gestão de moradores", "src/main/java/org/sysCondo/assets/people.png"));
+        JButton residents = createSideMenuButton("Gestão de moradores", "src/main/java/org/sysCondo/assets/people.png");
+        residents.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        residentsOptionsPanel.toggleVisibility();
+                    }
+                });
+        sideMenu.add(residents);
+        sideMenu.add(residentsOptionsPanel.getPanel());
+
         sideMenu.add(createSideMenuButton("Gestão de residências", "src/main/java/org/sysCondo/assets/house.png"));
-
-        // Botão "Contas a receber" que alterna opções adicionais
         JButton contasAReceberButton = createSideMenuButton("Contas a receber", "src/main/java/org/sysCondo/assets/receive.png");
         contasAReceberButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Alterna a visibilidade das opções adicionais
-                additionalOptionsPanel.toggleVisibility();
+                accountsReceivableOptionsPanel.toggleVisibility();
             }
         });
         sideMenu.add(contasAReceberButton);
+        sideMenu.add(accountsReceivableOptionsPanel.getPanel());
 
-        // Painel de opções adicionais
-        additionalOptionsPanel = new AdditionalOptionsPanel(contentPanel);
-        sideMenu.add(additionalOptionsPanel.getPanel());
-
-        // Outros botões
-        sideMenu.add(createSideMenuButton("Contas a pagar", "src/main/java/org/sysCondo/assets/pay.png"));
+        JButton contasAPagarButton = createSideMenuButton("Contas a pagar", "src/main/java/org/sysCondo/assets/pay.png");
+        contasAPagarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                accountsPayableOptionsPanel.toggleVisibility();
+            }
+        });
+        sideMenu.add(contasAPagarButton);
         sideMenu.add(createSideMenuButton("Reservas", "src/main/java/org/sysCondo/assets/calendar.png"));
         sideMenu.add(createSideMenuButton("Manutenções", "src/main/java/org/sysCondo/assets/maintenance.png"));
         sideMenu.add(createSideMenuButton("Comunicação", "src/main/java/org/sysCondo/assets/chat.png"));
@@ -57,7 +82,6 @@ public class SideMenu {
     }
 
     private JButton createSideMenuButton(String text, String iconPath) {
-        // Cria o botão com ícone e estilo (o mesmo código do original)
         ImageIcon icon = new ImageIcon(iconPath);
         Image img = icon.getImage();
         Image resizedImage = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
