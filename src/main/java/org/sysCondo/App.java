@@ -10,6 +10,11 @@ import org.sysCondo.model.ownerResidential.OwnerResidential;
 import org.sysCondo.model.user.User;
 import org.sysCondo.model.user.UserRole;
 import org.sysCondo.model.vehicle.BrandEnum;
+import org.sysCondo.model.commonArea.CommonArea;
+import org.sysCondo.controller.BookingController;
+import org.sysCondo.model.booking.Booking;
+// import LocalDate
+import java.time.LocalDate;
 
 import javax.validation.constraints.Null;
 
@@ -38,8 +43,17 @@ public class App {
         usuario1.setUserRole(UserRole.USER);
         usuario1.setUserId(2L);
 
-        VehicleController vehicleController = new VehicleController();
-        vehicleController.createVehicle("ABC-1234", BrandEnum.VOLKSWAGEN, usuario1);
+        //VehicleController vehicleController = new VehicleController();
+        //vehicleController.createVehicle("ABC-1234", BrandEnum.VOLKSWAGEN, usuario1);
+
+        // cria uma area comum de exemplo
+        CommonArea commonArea = new CommonArea();
+        commonArea.setCommonAreaName("Salão de festas");
+        commonArea.setCommonAreaId(2013201320132013131L);
+
+
+        BookingController bookingController = new BookingController();
+        bookingController.createBooking(usuario1, commonArea, LocalDate.now());
 
     }
 }

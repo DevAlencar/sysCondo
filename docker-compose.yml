@@ -19,12 +19,14 @@ services:
     container_name: cloudbeaver
     environment:
       CB_ADMIN_NAME: cbadmin
-      CB_ADMIN_PASSWORD: Sbrubles
+      CB_ADMIN_PASSWORD: ${CB_PASS}
     ports:
       - "8978:8978"
     depends_on:
       - mysql
     restart: always
+    env_file:
+      - .env
 
 volumes:
   mysql_data:
