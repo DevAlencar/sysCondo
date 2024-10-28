@@ -7,6 +7,8 @@ import org.sysCondo.model.cost.Cost;
 import org.sysCondo.model.user.User;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "maintenance")
@@ -26,9 +28,8 @@ public class Maintenance {
     @JoinColumn(name = "commonAreaId")
     private CommonArea commonAreaMaintenanceFk;
 
-    @ManyToOne
-    @JoinColumn(name = "costId")
-    private Cost costMaintenanceFk;
+    @OneToMany(mappedBy = "maintenance")
+    private Set<Cost> costSet = new HashSet<>();
 
     @Column(name = "status")
     private String status;

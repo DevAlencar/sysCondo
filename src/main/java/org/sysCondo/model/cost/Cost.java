@@ -16,10 +16,11 @@ public class Cost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int costId;
+    private Long costId;
 
-    @OneToMany(mappedBy = "costMaintenanceFk")
-    private Set<Maintenance> maintenanceSet = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "maintenanceId")
+    private Maintenance maintenance;
 
     @Column(name = "value")
     private float value;
