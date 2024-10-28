@@ -8,9 +8,9 @@ import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
 
-public class ContasAReceberAdd extends JPanel {
+public class ContasAPagarAdd extends JPanel {
 
-    public ContasAReceberAdd() {
+    public ContasAPagarAdd() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
@@ -21,14 +21,14 @@ public class ContasAReceberAdd extends JPanel {
         add(contentContainer);
 
         // Título centralizado
-        JLabel titleLabel = new JLabel("Adicionar Nova Conta a Receber", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("Adicionar Nova Conta a Pagar", JLabel.CENTER);
         titleLabel.setFont(new Font("Roboto Bold", Font.PLAIN, 28));
         contentContainer.add(titleLabel, BorderLayout.NORTH);
 
         // Painel para o formulário
         JPanel formContainer = new JPanel(new GridBagLayout());
         formContainer.setBackground(Color.WHITE);
-        formContainer.setPreferredSize(new Dimension(400, 400)); // Define a largura e altura do formulário
+        formContainer.setPreferredSize(new Dimension(400, 400));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 0, 5, 0);
@@ -37,13 +37,13 @@ public class ContasAReceberAdd extends JPanel {
 
         // Adicionar campos ao formulário
         gbc.gridy = 0;
-        formContainer.add(getInputContainer("Nome da Conta"), gbc);
+        formContainer.add(getInputContainer("Nome do Fornecedor"), gbc);
         gbc.gridy = 1;
         formContainer.add(getInputContainer("Data de Vencimento (dd/mm/aaaa)"), gbc);
         gbc.gridy = 2;
-        formContainer.add(getComboBoxContainer("Tipo da Conta", new String[]{"Aluguel", "Serviços", "Outros"}), gbc);
+        formContainer.add(getComboBoxContainer("Tipo de Despesa", new String[]{"Aluguel", "Serviços", "Outros"}), gbc);
         gbc.gridy = 3;
-        formContainer.add(getComboBoxContainer("Status", new String[]{"Pago", "A receber", "Atrasado"}), gbc);
+        formContainer.add(getComboBoxContainer("Status", new String[]{"Pago", "A pagar", "Atrasado"}), gbc);
         gbc.gridy = 4;
         formContainer.add(getInputContainer("Valor da Conta"), gbc);
 
@@ -55,7 +55,7 @@ public class ContasAReceberAdd extends JPanel {
 
         // Adicionar botões
         JPanel formButtonsContainer = new JPanel(new FlowLayout());
-        RoundJButton addButton = new RoundJButton("Adicionar Conta");
+        RoundJButton addButton = new RoundJButton("Adicionar Despesa");
         RoundJButton cancelButton = new RoundJButton("Cancelar");
         formButtonsContainer.add(cancelButton);
         formButtonsContainer.add(addButton);
@@ -63,14 +63,12 @@ public class ContasAReceberAdd extends JPanel {
         gbc.gridy = 5;
         formContainer.add(formButtonsContainer, gbc);
 
-        // Ação do botão de adicionar conta
+        // Ação do botão de adicionar despesa
         addButton.addActionListener(e -> {
-            // Aqui você pode adicionar a lógica para salvar a conta
-            System.out.println("Conta adicionada");
+            System.out.println("Despesa adicionada");
             // Limpa os campos após adicionar
         });
 
-        // Exibe a janela
         setVisible(true);
     }
 
@@ -79,15 +77,11 @@ public class ContasAReceberAdd extends JPanel {
         JPanel container = new JPanel(new BorderLayout());
         JLabel inputLabel = new JLabel(label);
 
-        // Defina a fonte do rótulo
         inputLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
 
         container.setBackground(Color.WHITE);
         RoundJTextField input = new RoundJTextField(1, 10);
-
-        // Defina a fonte do campo de entrada
         input.setFont(new Font("Roboto", Font.PLAIN, 14));
-
         container.add(inputLabel, BorderLayout.NORTH);
         container.add(input, BorderLayout.CENTER);
 
@@ -99,7 +93,6 @@ public class ContasAReceberAdd extends JPanel {
         JPanel container = new JPanel(new BorderLayout());
         JLabel comboBoxLabel = new JLabel(label);
 
-        // Defina a fonte do rótulo
         comboBoxLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
 
         container.setBackground(Color.WHITE);
@@ -113,16 +106,12 @@ public class ContasAReceberAdd extends JPanel {
                 return button;
             }
         });
-
         comboBox.setBackground(Color.WHITE);
         comboBox.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(Color.BLACK, 1, true),
                 BorderFactory.createEmptyBorder(3, 3, 3, 3)
         ));
-
-        // Defina a fonte do combo box
         comboBox.setFont(new Font("Roboto", Font.PLAIN, 14));
-
         container.add(comboBoxLabel, BorderLayout.NORTH);
         container.add(comboBox, BorderLayout.CENTER);
 

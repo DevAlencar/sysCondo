@@ -9,37 +9,33 @@ import org.sysCondo.components.RoundJTextField;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
-
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
 
 
-public class ContasAReceberOverview extends JPanel {
-    private JTable table; // Tabela para visualizar contas
-    private JTextField searchField; // Campo de busca para filtrar
-    private DefaultTableModel tableModel; // Modelo da tabela para controle
-    private TableRowSorter<DefaultTableModel> sorter; // Ordenador para a tabela
+public class ContasAPagarOverview extends JPanel {
+    private JTable table;
+    private JTextField searchField;
+    private DefaultTableModel tableModel;
+    private TableRowSorter<DefaultTableModel> sorter;
 
-    public ContasAReceberOverview() {
+    public ContasAPagarOverview() {
         setLayout(new BorderLayout());
-        // setBackground(Color.WHITE);
 
-        // Criar um painel para o título e o painel de controle
-        JPanel headerPanel = new JPanel();
-        headerPanel.setLayout(new BorderLayout()); // Usar BorderLayout para organizar o título e os controles
+        // Painel para o título e controles
+        JPanel headerPanel = new JPanel(new BorderLayout());
 
-        // Adicionar um título
-        JLabel titleLabel = new JLabel("CONTAS A RECEBER", JLabel.CENTER);
-        titleLabel.setFont(new java.awt.Font("Roboto Medium", java.awt.Font.PLAIN, 30)); // Usando java.awt.Font
+        // Título
+        JLabel titleLabel = new JLabel("CONTAS A PAGAR", JLabel.CENTER);
+        titleLabel.setFont(new java.awt.Font("Roboto Medium", java.awt.Font.PLAIN, 30));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
-        headerPanel.add(titleLabel, BorderLayout.NORTH); // Adiciona o título ao painel de cabeçalho
+        headerPanel.add(titleLabel, BorderLayout.NORTH);
 
-        // Painel de controle para busca e botão de adicionar conta
+        // Painel de controles
         JPanel controlsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         controlsPanel.setBackground(Color.WHITE);
 
@@ -57,7 +53,7 @@ public class ContasAReceberOverview extends JPanel {
         exportButton.addActionListener(e -> exportToPDF());
 
         JButton addButton = new RoundJButton("Adicionar Conta");
-        addButton.addActionListener(e -> openAddAccountScreen()); // Adicionar ação para abrir a tela de adicionar conta
+        addButton.addActionListener(e -> openAddAccountScreen());
 
         Font labelFont = new Font("Roboto Medium", Font.PLAIN, 14); // Para os rótulos
 
@@ -67,14 +63,15 @@ public class ContasAReceberOverview extends JPanel {
         controlsPanel.add(searchLabel);
         searchField.setFont(labelFont); // Alterar a fonte do campo de texto
         controlsPanel.add(searchField);
+
         controlsPanel.add(exportButton);
-        controlsPanel.add(addButton); // Adiciona o botão de adicionar conta
+        controlsPanel.add(addButton);
 
-        headerPanel.add(controlsPanel, BorderLayout.SOUTH); // Adiciona o painel de controle ao painel de cabeçalho
+        headerPanel.add(controlsPanel, BorderLayout.SOUTH);
 
-        add(headerPanel, BorderLayout.NORTH); // Adiciona o painel de cabeçalho ao layout principal
+        add(headerPanel, BorderLayout.NORTH);
 
-        // Adicionar a tabela para visualizar contas
+        // Configuração da tabela
         table = new JTable();
         customizeTable();
 
@@ -82,7 +79,7 @@ public class ContasAReceberOverview extends JPanel {
         scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         add(scrollPane, BorderLayout.CENTER);
 
-        updateTable(); // Chama para preencher a tabela inicialmente
+        updateTable();
     }
 
     private void customizeTable() {
@@ -93,7 +90,7 @@ public class ContasAReceberOverview extends JPanel {
         table.setShowGrid(true);
 
         table.getTableHeader().setFont(new java.awt.Font("Roboto Bold", java.awt.Font.PLAIN, 16));
-        table.getTableHeader().setBackground(new Color(255, 75, 0));
+        table.getTableHeader().setBackground(new Color(26, 135, 255));
         table.getTableHeader().setForeground(Color.WHITE);
         table.getTableHeader().setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY));
 
@@ -125,21 +122,18 @@ public class ContasAReceberOverview extends JPanel {
         table.setRowSorter(sorter);
     }
 
-    // Método para filtrar a tabela
     private void filterTable(String query) {
         if (sorter != null) {
             sorter.setRowFilter(RowFilter.regexFilter("(?i)" + query));
         }
     }
 
-    // Método para atualizar a tabela com dados reais (simulação)
     private void updateTable() {
-        // Dados fictícios para demonstrar o layout
-        String[] columnNames = {"Nome da Conta", "Data de Vencimento", "Tipo da Conta", "Valor da Conta", "Status"};
+        String[] columnNames = {"Nome do Fornecedor", "Data de Vencimento", "Tipo de Despesa", "Valor da Conta", "Status"};
         Object[][] data = {
-                {"Aluguel de Outubro", "01/10/2024", "Aluguel", "R$ 1.500,00", "Pago"},
-                {"Serviço de Jardinagem", "10/10/2024", "Serviços", "R$ 300,00", "A receber"},
-                {"Conserto de Elevador", "15/10/2024", "Outros", "R$ 1.200,00", "Atrasado"}
+                {"Aluguel de Escritório", "05/10/2024", "Aluguel", "R$ 2.000,00", "Pago"},
+                {"Conta de Energia", "15/10/2024", "Serviços", "R$ 500,00", "Pendente"},
+                {"Limpeza do Prédio", "25/10/2024", "Serviços", "R$ 300,00", "Atrasado"}
         };
 
         tableModel = new DefaultTableModel(data, columnNames) {
@@ -157,10 +151,9 @@ public class ContasAReceberOverview extends JPanel {
 
         sorter.toggleSortOrder(0);
 
-        setStatusColors(); // Chama método para definir cores de status
+        setStatusColors();
     }
 
-    // Método para definir cores de status
     private void setStatusColors() {
         table.setDefaultRenderer(String.class, new DefaultTableCellRenderer() {
             @Override
@@ -169,7 +162,7 @@ public class ContasAReceberOverview extends JPanel {
                 String status = value.toString();
                 if (status.equals("Pago")) {
                     label.setBackground(new Color(145,255,145));
-                } else if (status.equals("A receber")) {
+                } else if (status.equals("Pendente")) {
                     label.setBackground(new Color(245,255,145));
                 } else if (status.equals("Atrasado")) {
                     label.setBackground(new Color(255,145,145));
@@ -182,24 +175,21 @@ public class ContasAReceberOverview extends JPanel {
         });
     }
 
-    // Método para exportar a tabela para um PDF
     private void exportToPDF() {
         Document document = new Document();
         try {
-            PdfWriter.getInstance(document, new FileOutputStream("ContasAReceber.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream("ContasAPagar.pdf"));
             document.open();
-            document.add(new Paragraph("Overview de Contas a Receber", new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.HELVETICA, 16))); // Usando importação completa
-            document.add(new Paragraph(" ")); // Espaçamento
+            document.add(new Paragraph("Overview de Contas a Pagar", new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.HELVETICA, 16)));
+            document.add(new Paragraph(" "));
 
             PdfPTable pdfTable = new PdfPTable(tableModel.getColumnCount());
             pdfTable.setWidthPercentage(100);
 
-            // Adicionar cabeçalhos ao PDF
             for (int i = 0; i < tableModel.getColumnCount(); i++) {
                 pdfTable.addCell(new Phrase(tableModel.getColumnName(i)));
             }
 
-            // Adicionar linhas ao PDF
             for (int rows = 0; rows < tableModel.getRowCount(); rows++) {
                 for (int cols = 0; cols < tableModel.getColumnCount(); cols++) {
                     pdfTable.addCell(new Phrase(tableModel.getValueAt(rows, cols).toString()));
@@ -216,12 +206,9 @@ public class ContasAReceberOverview extends JPanel {
         }
     }
 
-    // Método para abrir a tela de adicionar conta
     private void openAddAccountScreen() {
-        // Lógica para abrir a tela de adicionar conta
-        // Aqui você pode instanciar e mostrar a classe que representa a tela de adicionar conta
-        ContasAReceberAdd addScreen = new ContasAReceberAdd();
-        JFrame frame = new JFrame("Adicionar Conta");
+        ContasAPagarAdd addScreen = new ContasAPagarAdd();
+        JFrame frame = new JFrame("Adicionar Conta a Pagar");
         frame.setContentPane(addScreen);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();

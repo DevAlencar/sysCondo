@@ -1,9 +1,7 @@
 package org.sysCondo.components;
 
 import org.sysCondo.types.MenuItem;
-import org.sysCondo.views.ContasAReceberAdd;
-import org.sysCondo.views.ContasAReceberOverview;
-import org.sysCondo.views.NewResident;
+import org.sysCondo.views.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,12 +30,20 @@ public class SideMenu {
                 new MenuItem("Cadastro", new NewResident()),
         };
         residentsOptionsPanel.createAdditionalOptionsPanel(residentsItems);
+
         AdditionalOptionsPanel accountsReceivableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] receivableItems = {
-                new MenuItem("Visão Geral", new ContasAReceberAdd()),
+                new MenuItem("Adicionar conta", new ContasAReceberAdd()),
                 new MenuItem("Overview", new ContasAReceberOverview())
         };
         accountsReceivableOptionsPanel.createAdditionalOptionsPanel(receivableItems);
+
+        AdditionalOptionsPanel accountsPayableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+        MenuItem[] payableItems = {
+                new MenuItem("Adicionar conta", new ContasAPagarAdd()),
+                new MenuItem("Overview", new ContasAPagarOverview())
+        };
+        accountsPayableOptionsPanel.createAdditionalOptionsPanel(payableItems);
 
         JPanel sideMenu = new JPanel();
         sideMenu.setLayout(new BoxLayout(sideMenu, BoxLayout.Y_AXIS));
@@ -56,6 +62,7 @@ public class SideMenu {
         sideMenu.add(residentsOptionsPanel.getPanel());
 
         sideMenu.add(createSideMenuButton("Gestão de residências", "src/main/java/org/sysCondo/assets/house.png"));
+
         JButton contasAReceberButton = createSideMenuButton("Contas a receber", "src/main/java/org/sysCondo/assets/receive.png");
         contasAReceberButton.addActionListener(new ActionListener() {
             @Override
@@ -74,6 +81,8 @@ public class SideMenu {
             }
         });
         sideMenu.add(contasAPagarButton);
+        sideMenu.add(accountsPayableOptionsPanel.getPanel());
+
         sideMenu.add(createSideMenuButton("Reservas", "src/main/java/org/sysCondo/assets/calendar.png"));
         sideMenu.add(createSideMenuButton("Manutenções", "src/main/java/org/sysCondo/assets/maintenance.png"));
         sideMenu.add(createSideMenuButton("Comunicação", "src/main/java/org/sysCondo/assets/chat.png"));
