@@ -13,8 +13,8 @@ import org.sysCondo.model.vehicle.BrandEnum;
 import org.sysCondo.model.commonArea.CommonArea;
 import org.sysCondo.controller.BookingController;
 import org.sysCondo.model.booking.Booking;
-// import LocalDate
 import java.time.LocalDate;
+import org.sysCondo.controller.CommonAreaController;
 
 import javax.validation.constraints.Null;
 
@@ -51,9 +51,12 @@ public class App {
         commonArea.setCommonAreaName("Salão de festas");
         commonArea.setCommonAreaId(2013201320132013131L);
 
+        CommonAreaController commonAreaController = new CommonAreaController();
+        commonAreaController.createCommonArea("Churrasqueira");
 
-        BookingController bookingController = new BookingController();
-        bookingController.createBooking(usuario1, commonArea, LocalDate.now());
+
+        //BookingController bookingController = new BookingController();
+        //bookingController.createBooking(usuario1, commonArea, LocalDate.now());
 
     }
 }
