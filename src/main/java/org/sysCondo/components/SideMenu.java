@@ -30,26 +30,29 @@ public class SideMenu {
                 new MenuItem("Cadastro", new NewResident()),
         };
         residentsOptionsPanel.createAdditionalOptionsPanel(residentsItems);
-
         AdditionalOptionsPanel accountsReceivableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] receivableItems = {
                 new MenuItem("Adicionar conta", new ContasAReceberAdd()),
                 new MenuItem("Overview", new ContasAReceberOverview())
         };
         accountsReceivableOptionsPanel.createAdditionalOptionsPanel(receivableItems);
-
         AdditionalOptionsPanel accountsPayableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] payableItems = {
                 new MenuItem("Adicionar conta", new ContasAPagarAdd()),
                 new MenuItem("Overview", new ContasAPagarOverview())
         };
         accountsPayableOptionsPanel.createAdditionalOptionsPanel(payableItems);
+        AdditionalOptionsPanel commsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+        MenuItem[] commsItems = {
+                new MenuItem("Novo Comunicado", new NewStatement()),
+                new MenuItem("Comunicados", new ContasAReceberOverview())
+        };
+        commsOptionsPanel.createAdditionalOptionsPanel(commsItems);
 
         JPanel sideMenu = new JPanel();
         sideMenu.setLayout(new BoxLayout(sideMenu, BoxLayout.Y_AXIS));
         sideMenu.setPreferredSize(new Dimension(250, contentPanel.getHeight()));
         sideMenu.setBackground(new Color(235, 235, 235));
-
         JButton residents = createSideMenuButton("Gestão de moradores", "src/main/java/org/sysCondo/assets/people.png");
         residents.addActionListener(
                 new ActionListener() {
@@ -62,7 +65,6 @@ public class SideMenu {
         sideMenu.add(residentsOptionsPanel.getPanel());
 
         sideMenu.add(createSideMenuButton("Gestão de residências", "src/main/java/org/sysCondo/assets/house.png"));
-
         JButton contasAReceberButton = createSideMenuButton("Contas a receber", "src/main/java/org/sysCondo/assets/receive.png");
         contasAReceberButton.addActionListener(new ActionListener() {
             @Override
@@ -85,7 +87,16 @@ public class SideMenu {
 
         sideMenu.add(createSideMenuButton("Reservas", "src/main/java/org/sysCondo/assets/calendar.png"));
         sideMenu.add(createSideMenuButton("Manutenções", "src/main/java/org/sysCondo/assets/maintenance.png"));
-        sideMenu.add(createSideMenuButton("Comunicação", "src/main/java/org/sysCondo/assets/chat.png"));
+
+        JButton commsButton = createSideMenuButton("Comunicação", "src/main/java/org/sysCondo/assets/chat.png");
+        commsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                commsOptionsPanel.toggleVisibility();
+            }
+        });
+        sideMenu.add(commsButton);
+        sideMenu.add(commsOptionsPanel.getPanel());
 
         return sideMenu;
     }
