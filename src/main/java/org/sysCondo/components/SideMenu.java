@@ -14,10 +14,12 @@ public class SideMenu {
     private AdditionalOptionsPanel accountsReceivableOptionsPanel; // Painel de opções para contas a receber
     private AdditionalOptionsPanel accountsPayableOptionsPanel; // Painel de opções para contas a pagar
     private JPanel contentPanel;
+    public JFrame parentFrame;
 
-    public SideMenu(JPanel contentPanel) {
+    public SideMenu(JPanel contentPanel, JFrame parentFrame) {
         this.contentPanel = contentPanel;
         sideMenuPanel = createSideMenu();
+        this.parentFrame = parentFrame;
     }
 
     public JPanel getSideMenuPanel() {
@@ -45,7 +47,7 @@ public class SideMenu {
         AdditionalOptionsPanel commsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] commsItems = {
                 new MenuItem("Novo Comunicado", new NewStatement()),
-                new MenuItem("Comunicados", new ContasAReceberOverview())
+                new MenuItem("Comunicados", new Statements(parentFrame))
         };
         commsOptionsPanel.createAdditionalOptionsPanel(commsItems);
 

@@ -31,7 +31,7 @@ public class SysCondoMainScreen extends JFrame {
 
         // Barra lateral de navegação
         contentPanel = new ContentPanel(); // Inicializa o painel de conteúdo
-        sideMenu = new SideMenu(contentPanel.getContentPanel()); // Passa o painel de conteúdo
+        sideMenu = new SideMenu(contentPanel.getContentPanel(), this); // Passa o painel de conteúdo
         mainPanel.add(sideMenu.getSideMenuPanel(), BorderLayout.WEST);
 
         // Adiciona o painel de conteúdo
