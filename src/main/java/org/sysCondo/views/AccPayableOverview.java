@@ -17,13 +17,13 @@ import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
 
 
-public class ContasAPagarOverview extends JPanel {
+public class AccPayableOverview extends JPanel {
     private JTable table;
     private JTextField searchField;
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
 
-    public ContasAPagarOverview() {
+    public AccPayableOverview() {
         setLayout(new BorderLayout());
 
         // Painel para o título e controles
@@ -207,7 +207,7 @@ public class ContasAPagarOverview extends JPanel {
     }
 
     private void openAddAccountScreen() {
-        ContasAPagarAdd addScreen = new ContasAPagarAdd();
+        AccPayableAdd addScreen = new AccPayableAdd();
         JFrame frame = new JFrame("Adicionar Conta a Pagar");
         frame.setContentPane(addScreen);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

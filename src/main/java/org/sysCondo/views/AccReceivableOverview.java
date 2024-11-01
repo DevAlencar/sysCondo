@@ -19,13 +19,13 @@ import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
 
 
-public class ContasAReceberOverview extends JPanel {
+public class AccReceivableOverview extends JPanel {
     private JTable table; // Tabela para visualizar contas
     private JTextField searchField; // Campo de busca para filtrar
     private DefaultTableModel tableModel; // Modelo da tabela para controle
     private TableRowSorter<DefaultTableModel> sorter; // Ordenador para a tabela
 
-    public ContasAReceberOverview() {
+    public AccReceivableOverview() {
         setLayout(new BorderLayout());
         // setBackground(Color.WHITE);
 
@@ -220,7 +220,7 @@ public class ContasAReceberOverview extends JPanel {
     private void openAddAccountScreen() {
         // Lógica para abrir a tela de adicionar conta
         // Aqui você pode instanciar e mostrar a classe que representa a tela de adicionar conta
-        ContasAReceberAdd addScreen = new ContasAReceberAdd();
+        AccReceivableAdd addScreen = new AccReceivableAdd();
         JFrame frame = new JFrame("Adicionar Conta");
         frame.setContentPane(addScreen);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

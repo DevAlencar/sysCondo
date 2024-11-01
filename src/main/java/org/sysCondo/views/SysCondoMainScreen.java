@@ -12,8 +12,8 @@ public class SysCondoMainScreen extends JFrame {
     private ContentPanel contentPanel; // Painel de conteúdo
     private SideMenu sideMenu; // Menu lateral
     private CardLayout cardLayout;
-    private ContasAReceberOverview overviewPanel;
-    private ContasAReceberAdd addPanel;
+    private AccReceivableOverview overviewPanel;
+    private AccReceivableAdd addPanel;
 
     public SysCondoMainScreen() {
         // Configurações da janela

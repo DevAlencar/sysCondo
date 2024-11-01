@@ -32,24 +32,33 @@ public class SideMenu {
                 new MenuItem("Cadastro", new NewResident()),
         };
         residentsOptionsPanel.createAdditionalOptionsPanel(residentsItems);
+
         AdditionalOptionsPanel accountsReceivableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] receivableItems = {
-                new MenuItem("Adicionar conta", new ContasAReceberAdd()),
-                new MenuItem("Overview", new ContasAReceberOverview())
+                new MenuItem("Adicionar conta", new AccReceivableAdd()),
+                new MenuItem("Overview", new AccReceivableOverview())
         };
         accountsReceivableOptionsPanel.createAdditionalOptionsPanel(receivableItems);
+
         AdditionalOptionsPanel accountsPayableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] payableItems = {
-                new MenuItem("Adicionar conta", new ContasAPagarAdd()),
-                new MenuItem("Overview", new ContasAPagarOverview())
+                new MenuItem("Adicionar conta", new AccPayableAdd()),
+                new MenuItem("Overview", new AccPayableOverview())
         };
         accountsPayableOptionsPanel.createAdditionalOptionsPanel(payableItems);
+
         AdditionalOptionsPanel commsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] commsItems = {
                 new MenuItem("Novo Comunicado", new NewStatement()),
                 new MenuItem("Comunicados", new Statements(parentFrame))
         };
         commsOptionsPanel.createAdditionalOptionsPanel(commsItems);
+
+        AdditionalOptionsPanel reservationsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+        MenuItem[] reserveItems = {
+                new MenuItem("Solicitar reserva", new CommonAreasForm())
+        };
+        reservationsOptionsPanel.createAdditionalOptionsPanel(reserveItems);
 
         JPanel sideMenu = new JPanel();
         sideMenu.setLayout(new BoxLayout(sideMenu, BoxLayout.Y_AXIS));
@@ -67,27 +76,34 @@ public class SideMenu {
         sideMenu.add(residentsOptionsPanel.getPanel());
 
         sideMenu.add(createSideMenuButton("Gestão de residências", "src/main/java/org/sysCondo/assets/house.png"));
-        JButton contasAReceberButton = createSideMenuButton("Contas a receber", "src/main/java/org/sysCondo/assets/receive.png");
-        contasAReceberButton.addActionListener(new ActionListener() {
+        JButton receivableButton = createSideMenuButton("Contas a receber", "src/main/java/org/sysCondo/assets/receive.png");
+        receivableButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 accountsReceivableOptionsPanel.toggleVisibility();
             }
         });
-        sideMenu.add(contasAReceberButton);
+        sideMenu.add(receivableButton);
         sideMenu.add(accountsReceivableOptionsPanel.getPanel());
 
-        JButton contasAPagarButton = createSideMenuButton("Contas a pagar", "src/main/java/org/sysCondo/assets/pay.png");
-        contasAPagarButton.addActionListener(new ActionListener() {
+        JButton payableButton = createSideMenuButton("Contas a pagar", "src/main/java/org/sysCondo/assets/pay.png");
+        payableButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 accountsPayableOptionsPanel.toggleVisibility();
             }
         });
-        sideMenu.add(contasAPagarButton);
+        sideMenu.add(payableButton);
         sideMenu.add(accountsPayableOptionsPanel.getPanel());
 
-        sideMenu.add(createSideMenuButton("Reservas", "src/main/java/org/sysCondo/assets/calendar.png"));
+        JButton reservationButton = createSideMenuButton("Reservas", "src/main/java/org/sysCondo/assets/calendar.png");
+        reservationButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {reservationsOptionsPanel.toggleVisibility();}
+        });
+        sideMenu.add(reservationButton);
+        sideMenu.add(reservationsOptionsPanel.getPanel());
+
         sideMenu.add(createSideMenuButton("Manutenções", "src/main/java/org/sysCondo/assets/maintenance.png"));
 
         JButton commsButton = createSideMenuButton("Comunicação", "src/main/java/org/sysCondo/assets/chat.png");

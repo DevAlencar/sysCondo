@@ -19,7 +19,7 @@ public class NewResident extends JPanel {
         add(contentContainer);
 
         JLabel contentTitle = new JLabel("Cadastro de Moradores", JLabel.CENTER);
-        contentTitle.setFont(new Font("Roboto", Font.BOLD, 28));
+        contentTitle.setFont(new Font("Roboto Bold", Font.PLAIN, 28));
         contentContainer.add(contentTitle, BorderLayout.NORTH);
 
         JPanel formContainer = new JPanel(new GridBagLayout());
@@ -67,8 +67,13 @@ public class NewResident extends JPanel {
         JPanel container = new JPanel(new BorderLayout());
         JLabel inputLabel = new JLabel(label);
 
+        inputLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
+
         container.setBackground(Color.WHITE);
         RoundJTextField input = new RoundJTextField(1, 10);
+
+        input.setFont(new Font("Roboto", Font.PLAIN, 14));
+
         container.add(inputLabel, BorderLayout.NORTH);
         container.add(input, BorderLayout.CENTER);
 
@@ -78,6 +83,8 @@ public class NewResident extends JPanel {
     private JPanel getComboBoxContainer(String label, String[] options) {
         JPanel container = new JPanel(new BorderLayout());
         JLabel comboBoxLabel = new JLabel(label);
+
+        comboBoxLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
 
         container.setBackground(Color.WHITE);
         container.setPreferredSize(new Dimension(100, 100));
@@ -96,6 +103,9 @@ public class NewResident extends JPanel {
                 new LineBorder(Color.BLACK, 1, true),
                 BorderFactory.createEmptyBorder(3, 3, 3, 3)
         ));
+
+        comboBox.setFont(new Font("Roboto", Font.PLAIN, 14));
+
         container.add(comboBoxLabel, BorderLayout.NORTH);
         container.add(comboBox, BorderLayout.CENTER);
 
