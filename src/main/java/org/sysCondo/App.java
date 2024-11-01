@@ -17,6 +17,7 @@ import javax.validation.constraints.Null;
 
 public class App {
     public static void main(String[] args) {
+
         Session session = HibernateUtil.getSession();
 
         UserController userController = new UserController();
@@ -63,7 +64,6 @@ public class App {
         CostController costController = new CostController();
         //costController.createCost(maintenanceController.getMaintenanceById(1L), 1999.99F, "Nova grelha 2");
         //System.out.println(costController.getAllCostsByMaintenance(maintenanceController.getMaintenanceById(1L)));
-
 
     }
 }
