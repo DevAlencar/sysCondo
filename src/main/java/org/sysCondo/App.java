@@ -21,7 +21,7 @@ public class App {
         Session session = HibernateUtil.getSession();
 
         UserController userController = new UserController();
-        //userController.createUser("Ricardo", "(12)934567890", "123456789", UserRole.USER);
+        userController.createUser("Ricardo", "(12)934567890", "123456789", UserRole.USER);
 
         //UnitResidentialController unitResidentialController = new UnitResidentialController();
         //OwnerResidential owner1 = new OwnerResidential();

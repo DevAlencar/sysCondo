@@ -1,14 +1,26 @@
 package org.sysCondo.views;
 
-import org.sysCondo.components.*;
+import org.sysCondo.components.RoundJButton;
+import org.sysCondo.components.RoundJTextField;
+import org.sysCondo.controller.UserController;
+import org.sysCondo.model.user.UserRole;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class NewResident extends JPanel {
+    private RoundJTextField nameField; // Campo para Nome
+    private RoundJTextField cpfField; // Campo para CPF
+    private RoundJTextField emailField; // Campo para Email
+    private RoundJTextField phoneField; // Campo para Telefone
+    private JComboBox<String> unitComboBox; // ComboBox para Unidade Associada
+    private JComboBox<String> situationComboBox; // ComboBox para Situação do residente
+
     public NewResident() {
         // Painel principal com BorderLayout
         setLayout(new BorderLayout());
@@ -31,18 +43,19 @@ public class NewResident extends JPanel {
         gbc.gridx = 0;
         gbc.weightx = 1.0;
 
+        // Adicionando campos ao formulário
         gbc.gridy = 0;
-        formContainer.add(getInputContainer("Nome do Morador"), gbc);
-        gbc.gridy = 1;
-        formContainer.add(getInputContainer("CPF"), gbc);
-        gbc.gridy = 2;
-        formContainer.add(getComboBoxContainer("Unidade Associada", new String[]{"Unidade 1", "Unidade 2", "Unidade 3"}), gbc);
-        gbc.gridy = 3;
-        formContainer.add(getInputContainer("Endereço de email"), gbc);
-        gbc.gridy = 4;
-        formContainer.add(getInputContainer("Número de telefone"), gbc);
-        gbc.gridy = 5;
-        formContainer.add(getComboBoxContainer("Situação do residente", new String[]{"Proprietário", "Inquilino"}), gbc);
+        nameField = addInputField(formContainer, gbc, "Nome do Morador");
+        gbc.gridy++;
+        cpfField = addInputField(formContainer, gbc, "CPF");
+        gbc.gridy++;
+        unitComboBox = addComboBoxField(formContainer, gbc, "Unidade Associada", new String[]{"Unidade 1", "Unidade 2", "Unidade 3"});
+        gbc.gridy++;
+        emailField = addInputField(formContainer, gbc, "Endereço de email");
+        gbc.gridy++;
+        phoneField = addInputField(formContainer, gbc, "Número de telefone");
+        gbc.gridy++;
+        situationComboBox = addComboBoxField(formContainer, gbc, "Situação do residente", new String[]{"Proprietário", "Inquilino"});
 
         // Centraliza o formContainer
         JPanel formWrapper = new JPanel();
@@ -56,31 +69,58 @@ public class NewResident extends JPanel {
         formButtonsContainer.add(cancelBtn);
         formButtonsContainer.add(saveBtn);
         formButtonsContainer.setBackground(Color.WHITE);
-        gbc.gridy = 6;
+        gbc.gridy++;
         formContainer.add(formButtonsContainer, gbc);
+
+        UserController userController = new UserController();
+
+        saveBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Lê os dados dos campos
+                String name = nameField.getText();
+                String cpf = cpfField.getText();
+                String email = emailField.getText();
+                String phone = phoneField.getText();
+                String unit = (String) unitComboBox.getSelectedItem();
+                String situation = (String) situationComboBox.getSelectedItem();
+
+                // Debug: imprime os valores lidos
+                System.out.println("Name: '" + name + "'");
+                System.out.println("CPF: '" + cpf + "'");
+                System.out.println("Email: '" + email + "'");
+                System.out.println("Phone: '" + phone + "'");
+                System.out.println("Unit: '" + unit + "'");
+                System.out.println("Situation: '" + situation + "'");
+
+                // Verifica se os campos não estão vazios
+                if (name.trim().isEmpty() || cpf.trim().isEmpty() || email.trim().isEmpty() || phone.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(NewResident.this, "Por favor, preencha todos os campos obrigatórios.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return; // Não prossegue se algum campo estiver vazio
+                }
+
+                // Cria o usuário
+                userController.createUser(name, phone, cpf, UserRole.USER);
+            }
+        });
 
         // Exibe a janela
         setVisible(true);
     }
 
-    private JPanel getInputContainer(String label) {
-        JPanel container = new JPanel(new BorderLayout());
+    private RoundJTextField addInputField(JPanel container, GridBagConstraints gbc, String label) {
+        JPanel inputContainer = new JPanel(new BorderLayout());
         JLabel inputLabel = new JLabel(label);
-
-        container.setBackground(Color.WHITE);
-        RoundJTextField input = new RoundJTextField(1, 10);
-        container.add(inputLabel, BorderLayout.NORTH);
-        container.add(input, BorderLayout.CENTER);
-
-        return container;
+        RoundJTextField inputField = new RoundJTextField(1, 10);
+        inputContainer.add(inputLabel, BorderLayout.NORTH);
+        inputContainer.add(inputField, BorderLayout.CENTER);
+        container.add(inputContainer, gbc);
+        return inputField; // Retorna o campo para referência posterior
     }
 
-    private JPanel getComboBoxContainer(String label, String[] options) {
-        JPanel container = new JPanel(new BorderLayout());
+    private JComboBox<String> addComboBoxField(JPanel container, GridBagConstraints gbc, String label, String[] options) {
+        JPanel comboBoxContainer = new JPanel(new BorderLayout());
         JLabel comboBoxLabel = new JLabel(label);
-
-        container.setBackground(Color.WHITE);
-        container.setPreferredSize(new Dimension(100, 100));
         JComboBox<String> comboBox = new JComboBox<>(options);
         comboBox.setUI(new BasicComboBoxUI() {
             @Override
@@ -96,10 +136,10 @@ public class NewResident extends JPanel {
                 new LineBorder(Color.BLACK, 1, true),
                 BorderFactory.createEmptyBorder(3, 3, 3, 3)
         ));
-        container.add(comboBoxLabel, BorderLayout.NORTH);
-        container.add(comboBox, BorderLayout.CENTER);
-
-        return container;
+        comboBoxContainer.add(comboBoxLabel, BorderLayout.NORTH);
+        comboBoxContainer.add(comboBox, BorderLayout.CENTER);
+        container.add(comboBoxContainer, gbc);
+        return comboBox; // Retorna o combo box para referência posterior
     }
 
     public static void main(String[] args) {
