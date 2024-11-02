@@ -1,11 +1,14 @@
 package org.sysCondo.views;
 
-import com.toedter.calendar.JDateChooser;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.UtilDateModel;
 import org.sysCondo.components.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.Properties;
 
 public class CommonAreasForm extends JPanel {
 
@@ -36,11 +39,18 @@ public class CommonAreasForm extends JPanel {
 
         // Adicionar campos ao formulário
         gbc.gridy = 0;
-        formContainer.add(getInputContainer("Nome"), gbc);
+        formContainer.add(getInputContainer("Solicitante"), gbc);
         gbc.gridy = 1;
-        formContainer.add(getInputContainer("Número da Unidade"), gbc);
+        formContainer.add(getInputContainer("Endereço do Solicitante"), gbc);
         gbc.gridy = 2;
-        formContainer.add(getInputContainer("Pedidos Especiais (opcional)"), gbc);
+        formContainer.add(getInputContainer("Contato do Solicitante"), gbc);
+        gbc.gridy = 3;
+        formContainer.add(getInputContainer("Área desejada"), gbc);
+        gbc.gridy = 4;
+        formContainer.add(getInputContainer("Código da área"), gbc);
+        // Adicionar o campo de data
+        gbc.gridy = 5;
+        formContainer.add(getDatePickerContainer(), gbc);
 
         // Centralizar o formulário
         JPanel formWrapper = new JPanel();
@@ -53,7 +63,7 @@ public class CommonAreasForm extends JPanel {
         RoundJButton reserveButton = new RoundJButton("Reservar");
         formButtonsContainer.add(reserveButton);
         formButtonsContainer.setBackground(Color.WHITE);
-        gbc.gridy = 3;
+        gbc.gridy = 6;
         formContainer.add(formButtonsContainer, gbc);
 
         // Ação do botão de reservar
@@ -62,11 +72,6 @@ public class CommonAreasForm extends JPanel {
             System.out.println("Reserva feita com sucesso");
             // Limpar campos, se necessário
         });
-
-        // Adicionar o calendário abaixo do formulário
-        JCalendar calendar = new JCalendar();
-        calendar.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        contentContainer.add(calendar, BorderLayout.SOUTH);
 
         // Exibe a janela
         setVisible(true);
@@ -88,6 +93,33 @@ public class CommonAreasForm extends JPanel {
 
         container.add(inputLabel, BorderLayout.NORTH);
         container.add(input, BorderLayout.CENTER);
+
+        return container;
+    }
+
+    // Método para criar um seletor de data usando JDatePickerImpl
+    private JPanel getDatePickerContainer() {
+        JPanel container = new JPanel(new BorderLayout());
+        JLabel dateLabel = new JLabel("Data da Reserva");
+
+        // Defina a fonte do rótulo
+        dateLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
+
+        container.setBackground(Color.WHITE);
+
+        // Configuração do JDatePickerImpl
+        UtilDateModel model = new UtilDateModel();
+        Properties properties = new Properties();
+        properties.put("text.today", "Hoje");
+        properties.put("text.month", "Mês");
+        properties.put("text.year", "Ano");
+
+        JDatePanelImpl datePanel = new JDatePanelImpl(model, properties);
+        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+
+        // Adiciona o rótulo e o seletor de data ao painel
+        container.add(dateLabel, BorderLayout.NORTH);
+        container.add(datePicker, BorderLayout.CENTER);
 
         return container;
     }

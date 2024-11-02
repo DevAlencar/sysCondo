@@ -56,7 +56,9 @@ public class SideMenu {
 
         AdditionalOptionsPanel reservationsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] reserveItems = {
-                new MenuItem("Solicitar reserva", new CommonAreasForm())
+                new MenuItem("Solicitar reserva", new CommonAreasForm()),
+                new MenuItem("Áreas comuns", new CommonAreasFacilities()),
+                new MenuItem("Reservas", new ReservationOverview())  // Make sure this matches the class name
         };
         reservationsOptionsPanel.createAdditionalOptionsPanel(reserveItems);
 
