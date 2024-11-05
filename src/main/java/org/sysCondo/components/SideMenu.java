@@ -33,6 +33,12 @@ public class SideMenu {
         };
         residentsOptionsPanel.createAdditionalOptionsPanel(residentsItems);
 
+        AdditionalOptionsPanel residenceOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+        MenuItem[] residenceItems = {
+                new MenuItem("Cadastrar residência", new NewResidence())
+        };
+        residenceOptionsPanel.createAdditionalOptionsPanel(residenceItems);
+
         AdditionalOptionsPanel accountsReceivableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] receivableItems = {
                 new MenuItem("Adicionar conta", new AccReceivableAdd()),
@@ -66,6 +72,7 @@ public class SideMenu {
         sideMenu.setLayout(new BoxLayout(sideMenu, BoxLayout.Y_AXIS));
         sideMenu.setPreferredSize(new Dimension(250, contentPanel.getHeight()));
         sideMenu.setBackground(new Color(235, 235, 235));
+
         JButton residents = createSideMenuButton("Gestão de moradores", "src/main/java/org/sysCondo/assets/people.png");
         residents.addActionListener(
                 new ActionListener() {
@@ -77,7 +84,17 @@ public class SideMenu {
         sideMenu.add(residents);
         sideMenu.add(residentsOptionsPanel.getPanel());
 
-        sideMenu.add(createSideMenuButton("Gestão de residências", "src/main/java/org/sysCondo/assets/house.png"));
+        JButton residences = createSideMenuButton("Gestão de residências", "src/main/java/org/sysCondo/assets/house.png");
+        residences.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        residenceOptionsPanel.toggleVisibility();
+                    }
+                });
+        sideMenu.add(residences);
+        sideMenu.add(residenceOptionsPanel.getPanel());
+
         JButton receivableButton = createSideMenuButton("Contas a receber", "src/main/java/org/sysCondo/assets/receive.png");
         receivableButton.addActionListener(new ActionListener() {
             @Override

@@ -32,7 +32,7 @@ public class NewResident extends JPanel {
         gbc.weightx = 1.0;
 
         gbc.gridy = 0;
-        formContainer.add(getInputContainer("Nome do Morador"), gbc);
+        formContainer.add(getInputContainer("Número do imóvel"), gbc);
         gbc.gridy = 1;
         formContainer.add(getInputContainer("CPF"), gbc);
         gbc.gridy = 2;
