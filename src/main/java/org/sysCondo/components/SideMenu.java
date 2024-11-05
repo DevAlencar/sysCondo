@@ -29,7 +29,7 @@ public class SideMenu {
     private JPanel createSideMenu() {
         AdditionalOptionsPanel residentsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] residentsItems = {
-                new MenuItem("Cadastro", new NewResident()),
+                new MenuItem("Cadastrar morador", new NewResident()),
         };
         residentsOptionsPanel.createAdditionalOptionsPanel(residentsItems);
 

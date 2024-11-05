@@ -32,17 +32,9 @@ public class NewResident extends JPanel {
         gbc.weightx = 1.0;
 
         gbc.gridy = 0;
-        formContainer.add(getInputContainer("Número do imóvel"), gbc);
+        formContainer.add(getComboBoxContainer("Morador", new String[]{"João", "José", "Maria"}), gbc);
         gbc.gridy = 1;
-        formContainer.add(getInputContainer("CPF"), gbc);
-        gbc.gridy = 2;
-        formContainer.add(getComboBoxContainer("Unidade Associada", new String[]{"Unidade 1", "Unidade 2", "Unidade 3"}), gbc);
-        gbc.gridy = 3;
-        formContainer.add(getInputContainer("Endereço de email"), gbc);
-        gbc.gridy = 4;
-        formContainer.add(getInputContainer("Número de telefone"), gbc);
-        gbc.gridy = 5;
-        formContainer.add(getComboBoxContainer("Situação do residente", new String[]{"Proprietário", "Inquilino"}), gbc);
+        formContainer.add(getComboBoxContainer("Residência", new String[]{"Unidade 1", "Unidade 2", "Unidade 3"}), gbc);
 
         // Centraliza o formContainer
         JPanel formWrapper = new JPanel();
@@ -56,7 +48,7 @@ public class NewResident extends JPanel {
         formButtonsContainer.add(cancelBtn);
         formButtonsContainer.add(saveBtn);
         formButtonsContainer.setBackground(Color.WHITE);
-        gbc.gridy = 6;
+        gbc.gridy = 2;
         formContainer.add(formButtonsContainer, gbc);
 
         // Exibe a janela
@@ -87,7 +79,7 @@ public class NewResident extends JPanel {
         comboBoxLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
 
         container.setBackground(Color.WHITE);
-        container.setPreferredSize(new Dimension(100, 100));
+        container.setPreferredSize(new Dimension(100, 50));
         JComboBox<String> comboBox = new JComboBox<>(options);
         comboBox.setUI(new BasicComboBoxUI() {
             @Override
