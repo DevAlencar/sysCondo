@@ -44,6 +44,21 @@ public class UserController {
         return user;
     }
 
+    public User getUserByDocument(String document) {
+        Session session = HibernateUtil.getSession();
+        User user = null;
+        try {
+            user = session.createQuery("from User where userDocument = :document", User.class)
+                    .setParameter("document", document)
+                    .uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return user;
+    }
+
     public List<User> getAllUsers() {
         Session session = HibernateUtil.getSession();
         List<User> users = null;
