@@ -3,7 +3,6 @@ package org.sysCondo.controller;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.sysCondo.infra.HibernateUtil;
-import org.sysCondo.model.ownerResidential.OwnerResidential;
 import org.sysCondo.model.unitResidential.UnitResidential;
 
 import java.util.List;
