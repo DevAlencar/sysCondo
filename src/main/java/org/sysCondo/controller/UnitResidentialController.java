@@ -10,14 +10,16 @@ import java.util.List;
 
 public class UnitResidentialController {
 
-    public void createUnitResidential(float size, OwnerResidential ownerResidential) {
+    public void createUnitResidential(int number, float size, String ownerName, String ownerContact) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
         try {
             UnitResidential unitResidential = new UnitResidential();
+            unitResidential.setUnitResidentialNumber(number);
             unitResidential.setUnitResidentialSize(size);
-            unitResidential.setOwnerResidential(ownerResidential);
+            unitResidential.setOwnerName(ownerName);
+            unitResidential.setOwnerContact(ownerContact);
 
             session.save(unitResidential);
             transaction.commit();
@@ -55,15 +57,18 @@ public class UnitResidentialController {
         return units;
     }
 
-    public void updateUnit(int unitId, float newSize, OwnerResidential newOwnerResidential) {
+    public void updateUnit(int unitId, float newSize, int newNumber, String onewOwnerName, String newOwnerContact) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
         try {
             UnitResidential unitResidential = session.get(UnitResidential.class, unitId);
             if (unitResidential != null) {
+                unitResidential.setUnitResidentialNumber(newNumber);
                 unitResidential.setUnitResidentialSize(newSize);
-                unitResidential.setOwnerResidential(newOwnerResidential);
+                unitResidential.setOwnerName(newOwnerContact);
+                unitResidential.setOwnerContact(newOwnerContact);
+
                 session.update(unitResidential);
                 transaction.commit();
             }

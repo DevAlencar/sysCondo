@@ -2,7 +2,6 @@ package org.sysCondo.model.unitResidential;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.sysCondo.model.ownerResidential.OwnerResidential;
 
 import javax.persistence.*;
 
@@ -16,10 +15,15 @@ public class UnitResidential {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int unitResidentialId;
 
+    @Column(name = "number", unique = true)
+    private int unitResidentialNumber;
+
     @Column(name = "size")
     private float unitResidentialSize;
 
-    @ManyToOne
-    @JoinColumn(name = "ownerId", nullable = false)
-    private OwnerResidential ownerResidential;
+    @Column(name = "ownerName")
+    private String ownerName;
+
+    @Column(name = "ownerContact")
+    private String ownerContact;
 }
