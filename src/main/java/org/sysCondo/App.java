@@ -1,69 +1,55 @@
 package org.sysCondo;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import org.hibernate.Session;
 import org.sysCondo.controller.*;
+import org.sysCondo.infra.DevUtil;
 import org.sysCondo.infra.HibernateUtil;
-import org.sysCondo.model.maintenance.Maintenance;
-import org.sysCondo.model.ownerResidential.OwnerResidential;
-import org.sysCondo.model.user.User;
-import org.sysCondo.model.user.UserRole;
-import org.sysCondo.model.vehicle.BrandEnum;
-import org.sysCondo.model.commonArea.CommonArea;
 import org.sysCondo.model.booking.Booking;
-import java.time.LocalDate;
+import org.sysCondo.model.user.UserRole;
+import org.sysCondo.model.commonArea.CommonArea;
 
-import javax.validation.constraints.Null;
-
+import java.time.LocalDateTime;
+import java.util.List;
 public class App {
     public static void main(String[] args) {
         Session session = HibernateUtil.getSession();
 
         UserController userController = new UserController();
-        //userController.createUser("Ricardo", "(12)934567890", "123456789", UserRole.USER);
 
-        //UnitResidentialController unitResidentialController = new UnitResidentialController();
-        //OwnerResidential owner1 = new OwnerResidential();
+        DevUtil.clearAllData();
 
-        //owner1.setName("Ricardo");
-        //owner1.setDocument("sbrubles");
-        //owner1.setOwner_id(1L);
+        // Cria um usuário normal
+        userController.createUser("Ricardo", "(12)934567890", "123", UserRole.USER);
+        // Cria um usuário admin
+        userController.createUser("admin", "(12)934567890", "456", UserRole.ADMIN);
 
-        //owner1.setUnitsResidentials(null);
-
-        //unitResidentialController.createUnitResidential(2500, owner1);
-
-        //User usuario1 = new User();
-        //usuario1.setUserName("John Doe");
-        //usuario1.setUserContact("123456789");
-        //usuario1.setUserDocument("AB123456");
-        //usuario1.setUserRole(UserRole.USER);
-        //usuario1.setUserId(2L);
-
-        //VehicleController vehicleController = new VehicleController();
-        //vehicleController.createVehicle("ABC-1234", BrandEnum.VOLKSWAGEN, usuario1);
-
-        // cria uma area comum de exemplo
-        //CommonArea commonArea = new CommonArea();
-        //commonArea.setCommonAreaName("Salão de festas");
-        //commonArea.setCommonAreaId(2013201320132013131L);
-
+        // Cria algumas áreas comuns
         CommonAreaController commonAreaController = new CommonAreaController();
-        //commonAreaController.createCommonArea("Churrasqueira");
+        commonAreaController.createCommonArea("Salão de festas");
+        commonAreaController.createCommonArea("Churrasqueira");
+        commonAreaController.createCommonArea("Piscina");
 
+        // Lista todas as áreas comuns
+        List<CommonArea> commonAreas = commonAreaController.getAllCommonAreas();
+        CommonArea common = commonAreas.get(1);
 
-        //BookingController bookingController = new BookingController();
-        //bookingController.createBooking(usuario1, commonArea, LocalDate.now());
+        // Cria algumas reservas
+        BookingController bookingController = new BookingController();
+        bookingController.createBooking(userController.getUserByDocument("123"), common, LocalDateTime.now(), 2);
+        bookingController.createBooking(userController.getUserByDocument("123"), common, LocalDateTime.now().plusDays(1), 3);
+        bookingController.createBooking(userController.getUserByDocument("456"), common, LocalDateTime.now().plusDays(1).plusHours(3).plusMinutes(1), 4);
 
-        //cria uma manutencao de exemplo
-        MaintenanceController maintenanceController = new MaintenanceController();
-        //maintenanceController.createMaintenance(userController.getUserById(1L), commonAreaController.getCommonAreaById(1L), "Esperando autorização");
+        // Lista as reservas do espaço selecionado
+        List<Booking> bookings = bookingController.getBookingsByCommonAreaId(common.getCommonAreaId());
 
-        //criando custo
-        CostController costController = new CostController();
-        //costController.createCost(maintenanceController.getMaintenanceById(1L), 1999.99F, "Nova grelha 2");
-        //System.out.println(costController.getAllCostsByMaintenance(maintenanceController.getMaintenanceById(1L)));
+        // Apresenta as reservas com informações detalhadas
+        System.out.println("\n=== Reservas para a área comum: " + common.getCommonAreaName() + " ===");
+        for (Booking booking : bookings) {
+            String areaName = booking.getCommonAreaBookingFk().getCommonAreaName();
+            String userName = booking.getUserBookingFk().getUserName();
+            LocalDateTime bookingDate = booking.getBookingDateTime();
 
-
+            System.out.println("Usuário: " + userName + " | Área: " + areaName + " | Data: " + bookingDate + " | Duração: " + booking.getBookingDuration() + " horas");
+        }
     }
 }
