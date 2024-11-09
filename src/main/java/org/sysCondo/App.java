@@ -5,6 +5,7 @@ import org.sysCondo.controller.*;
 import org.sysCondo.infra.DevUtil;
 import org.sysCondo.infra.HibernateUtil;
 import org.sysCondo.model.booking.Booking;
+import org.sysCondo.model.user.User;
 import org.sysCondo.model.user.UserRole;
 import org.sysCondo.model.commonArea.CommonArea;
 
@@ -22,7 +23,7 @@ public class App {
         userController.createUser("Ricardo", "(12)934567890", "123", UserRole.USER);
         // Cria um usuário admin
         userController.createUser("admin", "(12)934567890", "456", UserRole.ADMIN);
-
+        
         // Cria algumas áreas comuns
         CommonAreaController commonAreaController = new CommonAreaController();
         commonAreaController.createCommonArea("Salão de festas");

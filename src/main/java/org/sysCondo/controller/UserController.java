@@ -44,6 +44,7 @@ public class UserController {
         return user;
     }
 
+
     public User getUserByDocument(String document) {
         Session session = HibernateUtil.getSession();
         User user = null;
