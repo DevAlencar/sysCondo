@@ -60,13 +60,13 @@ public class SideMenu {
         };
         commsOptionsPanel.createAdditionalOptionsPanel(commsItems);
 
-        AdditionalOptionsPanel reservationsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
-        MenuItem[] reserveItems = {
-                new MenuItem("Solicitar reserva", new CommonAreasForm()),
+        AdditionalOptionsPanel commonAreasOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+        MenuItem[] commonAreasItems = {
+                new MenuItem("Solicitar manutenção", new CommonAreaMaintenence()),
                 new MenuItem("Áreas comuns", new CommonAreasFacilities()),
                 new MenuItem("Reservas", new ReservationOverview())  // Make sure this matches the class name
         };
-        reservationsOptionsPanel.createAdditionalOptionsPanel(reserveItems);
+        commonAreasOptionsPanel.createAdditionalOptionsPanel(commonAreasItems);
 
         JPanel sideMenu = new JPanel();
         sideMenu.setLayout(new BoxLayout(sideMenu, BoxLayout.Y_AXIS));
@@ -115,13 +115,13 @@ public class SideMenu {
         sideMenu.add(payableButton);
         sideMenu.add(accountsPayableOptionsPanel.getPanel());
 
-        JButton reservationButton = createSideMenuButton("Reservas", "src/main/java/org/sysCondo/assets/calendar.png");
+        JButton reservationButton = createSideMenuButton("Áreas comuns", "src/main/java/org/sysCondo/assets/commonArea.png");
         reservationButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {reservationsOptionsPanel.toggleVisibility();}
+            public void actionPerformed(ActionEvent e) {commonAreasOptionsPanel.toggleVisibility();}
         });
         sideMenu.add(reservationButton);
-        sideMenu.add(reservationsOptionsPanel.getPanel());
+        sideMenu.add(commonAreasOptionsPanel.getPanel());
 
         sideMenu.add(createSideMenuButton("Manutenções", "src/main/java/org/sysCondo/assets/maintenance.png"));
 
