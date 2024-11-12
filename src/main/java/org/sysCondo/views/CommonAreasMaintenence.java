@@ -1,7 +1,6 @@
 package org.sysCondo.views;
 
 import org.sysCondo.components.RoundJButton;
-import org.sysCondo.components.RoundJTextField;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -9,11 +8,11 @@ import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
 
-public class CommonAreaMaintenence extends JPanel {
+public class CommonAreasMaintenence extends JPanel {
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JPanel formContainer = new JPanel(new GridBagLayout());
 
-    public CommonAreaMaintenence() {
+    public CommonAreasMaintenence() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
@@ -41,7 +40,7 @@ public class CommonAreaMaintenence extends JPanel {
         JComboBox<String> area = getComboBoxContainer("Área", new String[]{"Piscina", "Churrasqueira", "Quadra poli-esportiva", "Quadra tênis"}); // TODO: esse combobox tem q possuir o objeto da área comum retornado do banco {id, nome, etc}
         // Adicionar o campo de data
         gbc.gridy = 1;
-        JComboBox<String> maintenence = getComboBoxContainer("Tipo de manutenção", new String[]{"Preventiva", "Corretiva", "Melhoria"});
+        JComboBox<String> maintenence = getComboBoxContainer("Tipo de manutenção", new String[]{"Tipo 1", "Tipo 2", "Tipo 3"});
 
         // Centralizar o formulário
         JPanel formWrapper = new JPanel();

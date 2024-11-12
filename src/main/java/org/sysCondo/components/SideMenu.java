@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class SideMenu {
 
@@ -62,7 +64,8 @@ public class SideMenu {
 
         AdditionalOptionsPanel commonAreasOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] commonAreasItems = {
-                new MenuItem("Solicitar manutenção", new CommonAreaMaintenence()),
+                new MenuItem("Solicitar manutenção", new CommonAreasMaintenence()),
+                new MenuItem("Solicitações realizadas", new CommonAreasMaintenenceRequests(parentFrame)),
                 new MenuItem("Áreas comuns", new CommonAreasFacilities()),
                 new MenuItem("Reservas", new ReservationOverview())  // Make sure this matches the class name
         };
@@ -73,72 +76,36 @@ public class SideMenu {
         sideMenu.setPreferredSize(new Dimension(250, contentPanel.getHeight()));
         sideMenu.setBackground(new Color(235, 235, 235));
 
-        JButton residents = createSideMenuButton("Gestão de moradores", "src/main/java/org/sysCondo/assets/people.png");
-        residents.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        residentsOptionsPanel.toggleVisibility();
-                    }
-                });
+        JButton residents = createSideMenuButton("Gestão de moradores", "src/main/java/org/sysCondo/assets/people.png", residentsOptionsPanel);
         sideMenu.add(residents);
         sideMenu.add(residentsOptionsPanel.getPanel());
 
-        JButton residences = createSideMenuButton("Gestão de residências", "src/main/java/org/sysCondo/assets/house.png");
-        residences.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        residenceOptionsPanel.toggleVisibility();
-                    }
-                });
+        JButton residences = createSideMenuButton("Gestão de residências", "src/main/java/org/sysCondo/assets/house.png", residenceOptionsPanel);
         sideMenu.add(residences);
         sideMenu.add(residenceOptionsPanel.getPanel());
 
-        JButton receivableButton = createSideMenuButton("Contas a receber", "src/main/java/org/sysCondo/assets/receive.png");
-        receivableButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                accountsReceivableOptionsPanel.toggleVisibility();
-            }
-        });
+        JButton receivableButton = createSideMenuButton("Contas a receber", "src/main/java/org/sysCondo/assets/receive.png", accountsReceivableOptionsPanel);
         sideMenu.add(receivableButton);
         sideMenu.add(accountsReceivableOptionsPanel.getPanel());
 
-        JButton payableButton = createSideMenuButton("Contas a pagar", "src/main/java/org/sysCondo/assets/pay.png");
-        payableButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                accountsPayableOptionsPanel.toggleVisibility();
-            }
-        });
+        JButton payableButton = createSideMenuButton("Contas a pagar", "src/main/java/org/sysCondo/assets/pay.png", accountsPayableOptionsPanel);
         sideMenu.add(payableButton);
         sideMenu.add(accountsPayableOptionsPanel.getPanel());
 
-        JButton reservationButton = createSideMenuButton("Áreas comuns", "src/main/java/org/sysCondo/assets/commonArea.png");
-        reservationButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {commonAreasOptionsPanel.toggleVisibility();}
-        });
+        JButton reservationButton = createSideMenuButton("Áreas comuns", "src/main/java/org/sysCondo/assets/commonArea.png", commonAreasOptionsPanel);
         sideMenu.add(reservationButton);
         sideMenu.add(commonAreasOptionsPanel.getPanel());
 
-        sideMenu.add(createSideMenuButton("Manutenções", "src/main/java/org/sysCondo/assets/maintenance.png"));
+        //sideMenu.add(createSideMenuButton("Manutenções", "src/main/java/org/sysCondo/assets/maintenance.png"));
 
-        JButton commsButton = createSideMenuButton("Comunicação", "src/main/java/org/sysCondo/assets/chat.png");
-        commsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                commsOptionsPanel.toggleVisibility();
-            }
-        });
+        JButton commsButton = createSideMenuButton("Comunicação", "src/main/java/org/sysCondo/assets/chat.png", commsOptionsPanel);
         sideMenu.add(commsButton);
         sideMenu.add(commsOptionsPanel.getPanel());
 
         return sideMenu;
     }
 
-    private JButton createSideMenuButton(String text, String iconPath) {
+    private JButton createSideMenuButton(String text, String iconPath, AdditionalOptionsPanel optionsPanel) {
         ImageIcon icon = new ImageIcon(iconPath);
         Image img = icon.getImage();
         Image resizedImage = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
@@ -155,6 +122,22 @@ public class SideMenu {
         button.setHorizontalAlignment(SwingConstants.LEFT);
         button.setIconTextGap(10);
         button.setFocusPainted(false);
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                optionsPanel.toggleVisibility();
+            }
+            // Adiciona efeitos de mouse para melhorar a experiência do usuário
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setCursor(Cursor.getDefaultCursor());
+            }
+        });
 
         return button;
     }

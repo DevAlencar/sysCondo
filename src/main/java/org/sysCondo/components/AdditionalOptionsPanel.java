@@ -6,6 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import static javax.swing.JOptionPane.showMessageDialog;
 
 public class AdditionalOptionsPanel {
 
@@ -29,14 +33,23 @@ public class AdditionalOptionsPanel {
 
         for (MenuItem item : items) {
             JButton btn = createStyledButton(item.getTitle());
-            btn.addActionListener(new ActionListener() {
+            btn.addMouseListener(new MouseAdapter() {
                 @Override
-                public void actionPerformed(ActionEvent e) {
+                public void mouseClicked(MouseEvent e) {
                     JPanel panel = item.getPanel(); // Certifique-se que isso retorna um JPanel
                     contentPanel.removeAll();
                     contentPanel.add(panel, BorderLayout.CENTER);
                     contentPanel.revalidate();
                     contentPanel.repaint();
+                }
+                // Adiciona efeitos de mouse para melhorar a experiência do usuário
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                }
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    btn.setCursor(Cursor.getDefaultCursor());
                 }
             });
             panel.add(btn);
