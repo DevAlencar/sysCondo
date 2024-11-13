@@ -43,8 +43,8 @@ public class SideMenu {
 
         AdditionalOptionsPanel accountsReceivableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] receivableItems = {
-                new MenuItem("Adicionar conta", new AccReceivableAdd()),
-                new MenuItem("Overview", new AccReceivableOverview())
+                new MenuItem("Adicionar taxa", new AccReceivableAdd()),
+                new MenuItem("Visão geral", new AccReceivableOverview())
         };
         accountsReceivableOptionsPanel.createAdditionalOptionsPanel(receivableItems);
 

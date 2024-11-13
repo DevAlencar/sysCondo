@@ -21,7 +21,7 @@ public class AccReceivableAdd extends JPanel {
         add(contentContainer);
 
         // Título centralizado
-        JLabel titleLabel = new JLabel("Adicionar Nova Conta a Receber", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("Adicionar Nova Taxa", JLabel.CENTER);
         titleLabel.setFont(new Font("Roboto Bold", Font.PLAIN, 28));
         contentContainer.add(titleLabel, BorderLayout.NORTH);
 
@@ -37,15 +37,15 @@ public class AccReceivableAdd extends JPanel {
 
         // Adicionar campos ao formulário
         gbc.gridy = 0;
-        formContainer.add(getInputContainer("Nome da Conta"), gbc);
+        formContainer.add(getInputContainer("Nome da taxa"), gbc);
         gbc.gridy = 1;
         formContainer.add(getInputContainer("Data de Vencimento (dd/mm/aaaa)"), gbc);
         gbc.gridy = 2;
-        formContainer.add(getComboBoxContainer("Tipo da Conta", new String[]{"Aluguel", "Serviços", "Outros"}), gbc);
-        gbc.gridy = 3;
+       //formContainer.add(getComboBoxContainer("Tipo da Conta", new String[]{"Aluguel", "Serviços", "Outros"}), gbc);
+        //gbc.gridy = 3;
         formContainer.add(getComboBoxContainer("Status", new String[]{"Pago", "A receber", "Atrasado"}), gbc);
-        gbc.gridy = 4;
-        formContainer.add(getInputContainer("Valor da Conta"), gbc);
+        gbc.gridy = 3;
+        formContainer.add(getInputContainer("Valor da taxa"), gbc);
 
         // Centralizar o formulário
         JPanel formWrapper = new JPanel();
@@ -55,18 +55,18 @@ public class AccReceivableAdd extends JPanel {
 
         // Adicionar botões
         JPanel formButtonsContainer = new JPanel(new FlowLayout());
-        RoundJButton addButton = new RoundJButton("Adicionar Conta");
+        RoundJButton addButton = new RoundJButton("Adicionar taxa");
         RoundJButton cancelButton = new RoundJButton("Cancelar");
         formButtonsContainer.add(cancelButton);
         formButtonsContainer.add(addButton);
         formButtonsContainer.setBackground(Color.WHITE);
-        gbc.gridy = 5;
+        gbc.gridy = 4;
         formContainer.add(formButtonsContainer, gbc);
 
         // Ação do botão de adicionar conta
         addButton.addActionListener(e -> {
             // Aqui você pode adicionar a lógica para salvar a conta
-            System.out.println("Conta adicionada");
+            System.out.println("Taxa adicionada");
             // Limpa os campos após adicionar
         });
 
