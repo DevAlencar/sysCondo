@@ -35,6 +35,10 @@ public class User {
     @OneToMany(mappedBy = "userBookingFk")
     private Set<Booking> bookingSet = new HashSet<>();
 
+    // unitResidentialFk
+    @Column(name = "unitResidentialFk")
+    private String unitResidentialFk;
+
     @Column(name = "userName", nullable = false)
     private String userName;
 

@@ -3,6 +3,7 @@ package org.sysCondo.controller;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.sysCondo.infra.HibernateUtil;
+import org.sysCondo.model.unitResidential.UnitResidential;
 import org.sysCondo.model.user.User;
 import org.sysCondo.model.user.UserRole;
 import org.sysCondo.model.vehicle.Vehicle;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class UserController {
 
-    public void createUser(String name, String contact, String document, UserRole role, List<Vehicle> vehicles) {
+    public void createUser(String name, String contact, String document, UserRole role, String residenceNumber, List<Vehicle> vehicles) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
@@ -22,6 +23,7 @@ public class UserController {
             user.setUserContact(contact);
             user.setUserDocument(document);
             user.setUserRole(role);
+            user.setUnitResidentialFk(residenceNumber);
 
             session.save(user); // Salva o usuário primeiro para gerar um ID
             session.flush(); // Garante que o ID seja gerado imediatamente

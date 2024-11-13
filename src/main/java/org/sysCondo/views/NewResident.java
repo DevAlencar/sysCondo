@@ -1,7 +1,9 @@
 package org.sysCondo.views;
 
 import org.sysCondo.components.*;
+import org.sysCondo.controller.UnitResidentialController;
 import org.sysCondo.controller.UserController;
+import org.sysCondo.model.unitResidential.UnitResidential;
 import org.sysCondo.model.user.UserRole;
 import org.sysCondo.model.vehicle.Vehicle;
 
@@ -15,11 +17,15 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class NewResident extends JPanel {
     private int gridyCounter = 4;
     private List<RoundJTextField[]> vehiclesInputs = new ArrayList<RoundJTextField[]>(); // stores all the vehicles input references
     private JPanel formContainer = new JPanel(new GridBagLayout());
     private GridBagConstraints gbc = new GridBagConstraints();
+
+    // Lista de residências (combobox)
+    private JComboBox<UnitResidential> residenceComboBox;
 
     public NewResident() {
         // Painel principal com BorderLayout
@@ -56,7 +62,23 @@ public class NewResident extends JPanel {
         gbc.gridy = 2;
         RoundJTextField phoneInput = getInputContainer("Telefone do morador");
         gbc.gridy = 3;
-        JComboBox<String> residenceNumber = getComboBoxContainer("Número da residência", new String[]{"Unidade 1", "Unidade 2", "Unidade 3"});
+
+        // recebe todas as residencias
+        UnitResidentialController unitResidentialController = new UnitResidentialController();
+        List<UnitResidential> unitResidentials = unitResidentialController.getAllUnits();
+
+        // Converte as unidades residenciais para um array de Strings com os números das unidades
+        String[] residenceOptions = unitResidentials.stream()
+                .map(UnitResidential::getUnitResidentialNumber)
+                .toArray(String[]::new);
+
+        // apresenta no combobox as residencias cadastradas
+        JComboBox<String> residenceNumber = getComboBoxContainer("Número da residência", residenceOptions);
+        gbc.gridy = gridyCounter++;
+        formContainer.add(residenceNumber, gbc);
+
+        //JComboBox<String> residenceNumber = getComboBoxContainer("Número da residência", new String[]{"Unidade 1", "Unidade 2", "Unidade 3"});
+
         gbc.gridy = gridyCounter++;
         RoundJButton newVehicle = new RoundJButton("Adicionar veículo");
         newVehicle.addActionListener(new ActionListener() {
@@ -107,7 +129,7 @@ public class NewResident extends JPanel {
                 }
 
                 UserController userController = new UserController();
-                userController.createUser(name, phone, document, UserRole.USER, vehicles);
+                userController.createUser(name, phone, document, UserRole.USER, residence,vehicles);
 
             }
         });
@@ -180,6 +202,18 @@ public class NewResident extends JPanel {
         comboBoxContainer.add(comboBox, BorderLayout.CENTER);
         formContainer.add(comboBoxContainer, gbc);
         return comboBox;
+    }
+
+    // Método para atualizar a lista de residências
+    private void updateResidenceList() {
+        UnitResidentialController unitController = new UnitResidentialController();
+        List<UnitResidential> residences = unitController.getAllUnits();
+
+        // Limpa o combobox atual e adiciona os itens novamente
+        residenceComboBox.removeAllItems();
+        for (UnitResidential residence : residences) {
+            residenceComboBox.addItem(residence);
+        }
     }
 
     public static void main(String[] args) {
