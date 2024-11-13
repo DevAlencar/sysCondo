@@ -5,6 +5,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.sysCondo.components.RoundJButton;
 import org.sysCondo.components.RoundJTextField;
+import java.awt.Font;  // Importação correta para Swing
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -12,12 +13,9 @@ import javax.swing.table.DefaultTableModel;
 
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
-
-import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
-
 
 public class AccReceivableOverview extends JPanel {
     private JTable table; // Tabela para visualizar contas
@@ -27,7 +25,6 @@ public class AccReceivableOverview extends JPanel {
 
     public AccReceivableOverview() {
         setLayout(new BorderLayout());
-        // setBackground(Color.WHITE);
 
         // Criar um painel para o título e o painel de controle
         JPanel headerPanel = new JPanel();
@@ -39,7 +36,7 @@ public class AccReceivableOverview extends JPanel {
         titleLabel.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
         headerPanel.add(titleLabel, BorderLayout.NORTH); // Adiciona o título ao painel de cabeçalho
 
-        // Painel de controle para busca e botão de adicionar conta
+        // Painel de controle para busca e botões
         JPanel controlsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         controlsPanel.setBackground(Color.WHITE);
 
@@ -59,6 +56,13 @@ public class AccReceivableOverview extends JPanel {
         JButton addButton = new RoundJButton("Adicionar Conta");
         addButton.addActionListener(e -> openAddAccountScreen()); // Adicionar ação para abrir a tela de adicionar conta
 
+        // Botões Editar e Apagar
+        JButton editButton = new RoundJButton("Editar Conta");
+        editButton.addActionListener(e -> openEditAccountScreen()); // Ação para editar a conta selecionada
+
+        JButton deleteButton = new RoundJButton("Apagar Conta");
+        deleteButton.addActionListener(e -> deleteSelectedAccount()); // Ação para excluir a conta selecionada
+
         Font labelFont = new Font("Roboto Medium", Font.PLAIN, 14); // Para os rótulos
 
         // Adicionar componentes ao painel de controles
@@ -69,6 +73,8 @@ public class AccReceivableOverview extends JPanel {
         controlsPanel.add(searchField);
         controlsPanel.add(exportButton);
         controlsPanel.add(addButton); // Adiciona o botão de adicionar conta
+        controlsPanel.add(editButton); // Adiciona o botão de editar
+        controlsPanel.add(deleteButton); // Adiciona o botão de apagar
 
         headerPanel.add(controlsPanel, BorderLayout.SOUTH); // Adiciona o painel de controle ao painel de cabeçalho
 
@@ -189,34 +195,61 @@ public class AccReceivableOverview extends JPanel {
             PdfWriter.getInstance(document, new FileOutputStream("ContasAReceber.pdf"));
             document.open();
             document.add(new Paragraph("Overview de Contas a Receber", new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.HELVETICA, 16))); // Usando importação completa
-            document.add(new Paragraph(" ")); // Espaçamento
-
-            PdfPTable pdfTable = new PdfPTable(tableModel.getColumnCount());
-            pdfTable.setWidthPercentage(100);
-
-            // Adicionar cabeçalhos ao PDF
-            for (int i = 0; i < tableModel.getColumnCount(); i++) {
-                pdfTable.addCell(new Phrase(tableModel.getColumnName(i)));
+            document.add(new Paragraph(" ")); // Espaço
+            PdfPTable pdfTable = new PdfPTable(table.getColumnCount());
+            for (int i = 0; i < table.getColumnCount(); i++) {
+                pdfTable.addCell(table.getColumnName(i));
             }
-
-            // Adicionar linhas ao PDF
-            for (int rows = 0; rows < tableModel.getRowCount(); rows++) {
-                for (int cols = 0; cols < tableModel.getColumnCount(); cols++) {
-                    pdfTable.addCell(new Phrase(tableModel.getValueAt(rows, cols).toString()));
+            for (int i = 0; i < table.getRowCount(); i++) {
+                for (int j = 0; j < table.getColumnCount(); j++) {
+                    pdfTable.addCell(table.getValueAt(i, j).toString());
                 }
             }
-
             document.add(pdfTable);
-            JOptionPane.showMessageDialog(this, "PDF exportado com sucesso!");
+            document.close();
+            JOptionPane.showMessageDialog(this, "Relatório exportado com sucesso!");
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao exportar o PDF.");
-        } finally {
-            document.close();
+            JOptionPane.showMessageDialog(this, "Erro ao exportar PDF", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // Método para abrir a tela de adicionar conta
+    private void openEditAccountScreen() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow >= 0) {
+            // Pegar os dados da conta selecionada
+            String accountName = (String) table.getValueAt(selectedRow, 0);
+            String dueDate = (String) table.getValueAt(selectedRow, 1);
+            String accountType = (String) table.getValueAt(selectedRow, 2);
+            String amount = (String) table.getValueAt(selectedRow, 3);
+            String status = (String) table.getValueAt(selectedRow, 4);
+
+            // Criar a tela de edição e passá-la para a janela
+            AccReceivableEdit editScreen = new AccReceivableEdit(accountName, dueDate, accountType, amount, status);
+            JFrame frame = new JFrame("Editar Conta");
+            frame.setContentPane(editScreen);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, selecione uma conta para editar.");
+        }
+    }
+
+
+    private void deleteSelectedAccount() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow >= 0) {
+            int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja excluir esta conta?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                tableModel.removeRow(selectedRow); // Remove a conta da tabela
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, selecione uma conta para excluir.");
+        }
+    }
+
     private void openAddAccountScreen() {
         // Lógica para abrir a tela de adicionar conta
         // Aqui você pode instanciar e mostrar a classe que representa a tela de adicionar conta
