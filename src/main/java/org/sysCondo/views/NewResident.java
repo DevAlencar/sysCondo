@@ -1,9 +1,9 @@
 package org.sysCondo.views;
 
-import org.sysCondo.components.RoundJButton;
-import org.sysCondo.components.RoundJTextField;
+import org.sysCondo.components.*;
 import org.sysCondo.controller.UserController;
 import org.sysCondo.model.user.UserRole;
+import org.sysCondo.model.vehicle.Vehicle;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,55 +12,66 @@ import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewResident extends JPanel {
-    private RoundJTextField nameField; // Campo para Nome
-    private RoundJTextField cpfField; // Campo para CPF
-    private RoundJTextField emailField; // Campo para Email
-    private RoundJTextField phoneField; // Campo para Telefone
-    private JComboBox<String> unitComboBox; // ComboBox para Unidade Associada
-    private JComboBox<String> situationComboBox; // ComboBox para Situação do residente
+    private int gridyCounter = 4;
+    private List<RoundJTextField[]> vehiclesInputs = new ArrayList<RoundJTextField[]>(); // stores all the vehicles input references
+    private JPanel formContainer = new JPanel(new GridBagLayout());
+    private GridBagConstraints gbc = new GridBagConstraints();
 
     public NewResident() {
         // Painel principal com BorderLayout
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
+
+        // cria painel de conteudo para armazenar todo o conteudo da página
         JPanel contentContainer = new JPanel(new BorderLayout());
+        JLabel contentTitle = new JLabel("Cadastro de Moradores", JLabel.CENTER);
+        contentTitle.setFont(new Font("Roboto Bold", Font.PLAIN, 28));
+        contentContainer.add(contentTitle, BorderLayout.NORTH);
         contentContainer.setBackground(Color.WHITE);
         contentContainer.setBorder(new EmptyBorder(30, 0, 30, 0));
         add(contentContainer);
 
-        JLabel contentTitle = new JLabel("Cadastro de Moradores", JLabel.CENTER);
-        contentTitle.setFont(new Font("Roboto", Font.BOLD, 28));
-        contentContainer.add(contentTitle, BorderLayout.NORTH);
-
-        JPanel formContainer = new JPanel(new GridBagLayout());
+        // cria container de formulário scrolavel
         formContainer.setBackground(Color.WHITE);
-        formContainer.setPreferredSize(new Dimension(400, 400)); // Define a largura e altura do formulário
-        GridBagConstraints gbc = new GridBagConstraints();
+        formContainer.setBorder(new EmptyBorder(60, 0, 0, 0));
+        JScrollPane formScrollPane = new JScrollPane(formContainer);
+        formScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        formScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        formScrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        formScrollPane.setBorder(new EmptyBorder(0,0,0,0));
+        formScrollPane.setMaximumSize(new Dimension(400,400));
+
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 0, 5, 0);
         gbc.gridx = 0;
         gbc.weightx = 1.0;
-
-        // Adicionando campos ao formulário
         gbc.gridy = 0;
-        nameField = addInputField(formContainer, gbc, "Nome do Morador");
-        gbc.gridy++;
-        cpfField = addInputField(formContainer, gbc, "CPF");
-        gbc.gridy++;
-        unitComboBox = addComboBoxField(formContainer, gbc, "Unidade Associada", new String[]{"Unidade 1", "Unidade 2", "Unidade 3"});
-        gbc.gridy++;
-        emailField = addInputField(formContainer, gbc, "Endereço de email");
-        gbc.gridy++;
-        phoneField = addInputField(formContainer, gbc, "Número de telefone");
-        gbc.gridy++;
-        situationComboBox = addComboBoxField(formContainer, gbc, "Situação do residente", new String[]{"Proprietário", "Inquilino"});
+        RoundJTextField nameInput = getInputContainer("Nome do morador");
+        gbc.gridy = 1;
+        RoundJTextField documentInput = getInputContainer("CPF do morador");
+        gbc.gridy = 2;
+        RoundJTextField phoneInput = getInputContainer("Telefone do morador");
+        gbc.gridy = 3;
+        JComboBox<String> residenceNumber = getComboBoxContainer("Número da residência", new String[]{"Unidade 1", "Unidade 2", "Unidade 3"});
+        gbc.gridy = gridyCounter++;
+        RoundJButton newVehicle = new RoundJButton("Adicionar veículo");
+        newVehicle.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addVehicleInputs();
+            }
+        });
+        formContainer.add(newVehicle, gbc);
 
         // Centraliza o formContainer
         JPanel formWrapper = new JPanel();
+        formWrapper.setLayout(new BoxLayout(formWrapper, BoxLayout.Y_AXIS));
         formWrapper.setBackground(Color.WHITE);
-        formWrapper.add(formContainer);
+        formWrapper.add(formScrollPane);
         contentContainer.add(formWrapper, BorderLayout.CENTER);
 
         JPanel formButtonsContainer = new JPanel(new FlowLayout());
@@ -69,38 +80,35 @@ public class NewResident extends JPanel {
         formButtonsContainer.add(cancelBtn);
         formButtonsContainer.add(saveBtn);
         formButtonsContainer.setBackground(Color.WHITE);
-        gbc.gridy++;
-        formContainer.add(formButtonsContainer, gbc);
+        formWrapper.add(formButtonsContainer, BorderLayout.SOUTH);
 
-        UserController userController = new UserController();
-
+        // onclick do botão de salvar
         saveBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Lê os dados dos campos
-                String name = nameField.getText();
-                String cpf = cpfField.getText();
-                String email = emailField.getText();
-                String phone = phoneField.getText();
-                String unit = (String) unitComboBox.getSelectedItem();
-                String situation = (String) situationComboBox.getSelectedItem();
+                // pega os valores dos campos
+                String name = nameInput.getText();
+                String document = documentInput.getText();
+                String phone = phoneInput.getText();
+                String residence = residenceNumber.getSelectedItem().toString();
+                List<Vehicle> vehicles = new ArrayList<Vehicle>();
 
-                // Debug: imprime os valores lidos
-                System.out.println("Name: '" + name + "'");
-                System.out.println("CPF: '" + cpf + "'");
-                System.out.println("Email: '" + email + "'");
-                System.out.println("Phone: '" + phone + "'");
-                System.out.println("Unit: '" + unit + "'");
-                System.out.println("Situation: '" + situation + "'");
-
-                // Verifica se os campos não estão vazios
-                if (name.trim().isEmpty() || cpf.trim().isEmpty() || email.trim().isEmpty() || phone.trim().isEmpty()) {
-                    JOptionPane.showMessageDialog(NewResident.this, "Por favor, preencha todos os campos obrigatórios.", "Erro", JOptionPane.ERROR_MESSAGE);
-                    return; // Não prossegue se algum campo estiver vazio
+                // itera sobre os campos de veículos e adiciona à lista
+                for (RoundJTextField[] vehicleInputs : vehiclesInputs) {
+                    Vehicle vehicle = new Vehicle();
+                    vehicle.setVehicleNumber(vehicleInputs[0].getText());
+                    vehicle.setVehicleBrand(vehicleInputs[1].getText());
+                    vehicles.add(vehicle);
                 }
 
-                // Cria o usuário
-                userController.createUser(name, phone, cpf, UserRole.USER);
+                // apresenta os veículos cadastrados
+                for (Vehicle vehicle : vehicles) {
+                    System.out.println("Veículo: " + vehicle.getVehicleNumber() + " - " + vehicle.getVehicleBrand());
+                }
+
+                UserController userController = new UserController();
+                userController.createUser(name, phone, document, UserRole.USER, vehicles);
+
             }
         });
 
@@ -108,19 +116,48 @@ public class NewResident extends JPanel {
         setVisible(true);
     }
 
-    private RoundJTextField addInputField(JPanel container, GridBagConstraints gbc, String label) {
-        JPanel inputContainer = new JPanel(new BorderLayout());
+    private RoundJTextField getInputContainer(String label) {
         JLabel inputLabel = new JLabel(label);
-        RoundJTextField inputField = new RoundJTextField(1, 10);
+        JPanel inputContainer = new JPanel(new BorderLayout());
+        RoundJTextField input = new RoundJTextField(1, 10);
+
+        inputLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
+        input.setFont(new Font("Roboto", Font.PLAIN, 14));
+        inputContainer.setBackground(Color.WHITE);
         inputContainer.add(inputLabel, BorderLayout.NORTH);
-        inputContainer.add(inputField, BorderLayout.CENTER);
-        container.add(inputContainer, gbc);
-        return inputField; // Retorna o campo para referência posterior
+        inputContainer.add(input, BorderLayout.CENTER);
+        formContainer.add(inputContainer, gbc);
+
+        return input;
     }
 
-    private JComboBox<String> addComboBoxField(JPanel container, GridBagConstraints gbc, String label, String[] options) {
+    private void addVehicleInputs() {
+        gbc.gridy = gridyCounter++;
+        JLabel vehicleIndicator = new JLabel("Veiculo " + (vehiclesInputs.size() + 1));
+        vehicleIndicator.setFont(new Font("Roboto", Font.BOLD, 24));
+        formContainer.add(vehicleIndicator, gbc);
+        gbc.gridy = gridyCounter++;
+        RoundJTextField plateInput = getInputContainer("Placa do veículo");
+        gbc.gridy = gridyCounter++;
+        RoundJTextField brandInput = getInputContainer("Marca do veículo");
+
+        // Armazena os campos em um array e adiciona à lista
+        RoundJTextField[] inputsPair = {plateInput, brandInput};
+        vehiclesInputs.add(inputsPair);
+
+        // Atualiza o layout após adicionar novos componentes
+        formContainer.revalidate();
+        formContainer.repaint();
+    }
+
+    private JComboBox<String> getComboBoxContainer(String label, String[] options) {
         JPanel comboBoxContainer = new JPanel(new BorderLayout());
         JLabel comboBoxLabel = new JLabel(label);
+
+        comboBoxLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
+
+        comboBoxContainer.setBackground(Color.WHITE);
+        comboBoxContainer.setPreferredSize(new Dimension(100, 50));
         JComboBox<String> comboBox = new JComboBox<>(options);
         comboBox.setUI(new BasicComboBoxUI() {
             @Override
@@ -136,10 +173,13 @@ public class NewResident extends JPanel {
                 new LineBorder(Color.BLACK, 1, true),
                 BorderFactory.createEmptyBorder(3, 3, 3, 3)
         ));
+
+        comboBox.setFont(new Font("Roboto", Font.PLAIN, 14));
+
         comboBoxContainer.add(comboBoxLabel, BorderLayout.NORTH);
         comboBoxContainer.add(comboBox, BorderLayout.CENTER);
-        container.add(comboBoxContainer, gbc);
-        return comboBox; // Retorna o combo box para referência posterior
+        formContainer.add(comboBoxContainer, gbc);
+        return comboBox;
     }
 
     public static void main(String[] args) {

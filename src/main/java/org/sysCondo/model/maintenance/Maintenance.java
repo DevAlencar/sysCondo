@@ -7,8 +7,8 @@ import org.sysCondo.model.cost.Cost;
 import org.sysCondo.model.user.User;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "maintenance")
@@ -28,9 +28,12 @@ public class Maintenance {
     @JoinColumn(name = "commonAreaId")
     private CommonArea commonAreaMaintenanceFk;
 
-    @OneToMany(mappedBy = "maintenance")
-    private Set<Cost> costSet = new HashSet<>();
+    @OneToMany(mappedBy = "maintenance", fetch = FetchType.EAGER)
+    private List<Cost> costList = new ArrayList<>();
 
     @Column(name = "status")
     private String status;
+
+    @Column(name = "type")
+    private String type;
 }

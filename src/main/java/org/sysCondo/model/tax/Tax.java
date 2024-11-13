@@ -29,4 +29,8 @@ public class Tax {
 
     @Column(name = "finishDate")
     private LocalDate finishDate;
+
+    @Column(name = "name")
+    private String name;
+
 }

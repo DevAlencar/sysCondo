@@ -1,10 +1,7 @@
 package org.sysCondo.components;
 
-import javax.swing.JTextArea;
-import java.awt.Insets;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import javax.swing.border.EmptyBorder;
 

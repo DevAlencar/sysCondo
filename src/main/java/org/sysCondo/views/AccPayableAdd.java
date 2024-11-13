@@ -8,9 +8,9 @@ import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
 
-public class ContasAPagarAdd extends JPanel {
+public class AccPayableAdd extends JPanel {
 
-    public ContasAPagarAdd() {
+    public AccPayableAdd() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 

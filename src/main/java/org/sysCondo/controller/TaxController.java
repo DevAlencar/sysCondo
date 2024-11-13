@@ -3,25 +3,27 @@ package org.sysCondo.controller;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.sysCondo.infra.HibernateUtil;
+import org.sysCondo.model.tax.Tax;
 import org.sysCondo.model.user.User;
-import org.sysCondo.model.vehicle.Vehicle;
-import org.sysCondo.model.vehicle.BrandEnum;
 
+import java.time.LocalDate;
 import java.util.List;
 
-public class VehicleController {
+public class TaxController {
 
-    public void createVehicle(String number, String brand, User user) {
+    public void createTax(User user, String name, float value, String status, LocalDate finishDate) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
         try {
-            Vehicle vehicle = new Vehicle();
-            vehicle.setVehicleNumber(number);
-            vehicle.setVehicleBrand(brand);
-            vehicle.setUserVehicleFk(user);
+            Tax tax = new Tax();
+            tax.setUserTaxFk(user);
+            tax.setValue(value);
+            tax.setStatus(status);
+            tax.setFinishDate(finishDate);
+            tax.setName(name);
 
-            session.save(vehicle);
+            session.save(tax);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
@@ -31,43 +33,45 @@ public class VehicleController {
         }
     }
 
-    public Vehicle getVehicleById(Long vehicleId) {
+    public Tax getTaxById(int taxId) {
         Session session = HibernateUtil.getSession();
-        Vehicle vehicle = null;
+        Tax tax = null;
         try {
-            vehicle = session.get(Vehicle.class, vehicleId);
+            tax = session.get(Tax.class, taxId);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             session.close();
         }
-        return vehicle;
+        return tax;
     }
 
-    public List<Vehicle> getAllVehicles() {
+    public List<Tax> getAllTaxes() {
         Session session = HibernateUtil.getSession();
-        List<Vehicle> vehicles = null;
+        List<Tax> taxes = null;
         try {
-            vehicles = session.createQuery("from Vehicle", Vehicle.class).list();
+            taxes = session.createQuery("from Tax", Tax.class).list();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             session.close();
         }
-        return vehicles;
+        return taxes;
     }
 
-    public void updateVehicle(Long vehicleId, String newNumber, String newBrand, User newUser) {
+    public void updateTax(int taxId, String name, User user, float value, String status, LocalDate finishDate) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
         try {
-            Vehicle vehicle = session.get(Vehicle.class, vehicleId);
-            if (vehicle != null) {
-                vehicle.setVehicleNumber(newNumber);
-                vehicle.setVehicleBrand(newBrand);
-                vehicle.setUserVehicleFk(newUser);
-                session.update(vehicle);
+            Tax tax = session.get(Tax.class, taxId);
+            if (tax != null) {
+                tax.setUserTaxFk(user);
+                tax.setValue(value);
+                tax.setStatus(status);
+                tax.setFinishDate(finishDate);
+                tax.setName(name);
+                session.update(tax);
                 transaction.commit();
             }
         } catch (Exception e) {
@@ -78,14 +82,14 @@ public class VehicleController {
         }
     }
 
-    public void deleteVehicle(Long vehicleId) {
+    public void deleteTax(int taxId) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
         try {
-            Vehicle vehicle = session.get(Vehicle.class, vehicleId);
-            if (vehicle != null) {
-                session.delete(vehicle);
+            Tax tax = session.get(Tax.class, taxId);
+            if (tax != null) {
+                session.delete(tax);
                 transaction.commit();
             }
         } catch (Exception e) {

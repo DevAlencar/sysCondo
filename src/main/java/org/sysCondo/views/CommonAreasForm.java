@@ -1,16 +1,18 @@
 package org.sysCondo.views;
 
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.UtilDateModel;
 import org.sysCondo.components.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
+import java.util.Properties;
 
-public class ContasAReceberAdd extends JPanel {
+public class CommonAreasForm extends JPanel {
 
-    public ContasAReceberAdd() {
+    public CommonAreasForm() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
@@ -21,14 +23,14 @@ public class ContasAReceberAdd extends JPanel {
         add(contentContainer);
 
         // Título centralizado
-        JLabel titleLabel = new JLabel("Adicionar Nova Conta a Receber", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("Reserva de Áreas Comuns", JLabel.CENTER);
         titleLabel.setFont(new Font("Roboto Bold", Font.PLAIN, 28));
         contentContainer.add(titleLabel, BorderLayout.NORTH);
 
         // Painel para o formulário
         JPanel formContainer = new JPanel(new GridBagLayout());
         formContainer.setBackground(Color.WHITE);
-        formContainer.setPreferredSize(new Dimension(400, 400)); // Define a largura e altura do formulário
+        formContainer.setPreferredSize(new Dimension(400, 400));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 0, 5, 0);
@@ -37,15 +39,18 @@ public class ContasAReceberAdd extends JPanel {
 
         // Adicionar campos ao formulário
         gbc.gridy = 0;
-        formContainer.add(getInputContainer("Nome da Conta"), gbc);
+        formContainer.add(getInputContainer("Solicitante"), gbc);
         gbc.gridy = 1;
-        formContainer.add(getInputContainer("Data de Vencimento (dd/mm/aaaa)"), gbc);
+        formContainer.add(getInputContainer("Endereço do Solicitante"), gbc);
         gbc.gridy = 2;
-        formContainer.add(getComboBoxContainer("Tipo da Conta", new String[]{"Aluguel", "Serviços", "Outros"}), gbc);
+        formContainer.add(getInputContainer("Contato do Solicitante"), gbc);
         gbc.gridy = 3;
-        formContainer.add(getComboBoxContainer("Status", new String[]{"Pago", "A receber", "Atrasado"}), gbc);
+        formContainer.add(getInputContainer("Área desejada"), gbc);
         gbc.gridy = 4;
-        formContainer.add(getInputContainer("Valor da Conta"), gbc);
+        formContainer.add(getInputContainer("Código da área"), gbc);
+        // Adicionar o campo de data
+        gbc.gridy = 5;
+        formContainer.add(getDatePickerContainer(), gbc);
 
         // Centralizar o formulário
         JPanel formWrapper = new JPanel();
@@ -53,21 +58,19 @@ public class ContasAReceberAdd extends JPanel {
         formWrapper.add(formContainer);
         contentContainer.add(formWrapper, BorderLayout.CENTER);
 
-        // Adicionar botões
+        // Adicionar botão de reservar
         JPanel formButtonsContainer = new JPanel(new FlowLayout());
-        RoundJButton addButton = new RoundJButton("Adicionar Conta");
-        RoundJButton cancelButton = new RoundJButton("Cancelar");
-        formButtonsContainer.add(cancelButton);
-        formButtonsContainer.add(addButton);
+        RoundJButton reserveButton = new RoundJButton("Reservar");
+        formButtonsContainer.add(reserveButton);
         formButtonsContainer.setBackground(Color.WHITE);
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         formContainer.add(formButtonsContainer, gbc);
 
-        // Ação do botão de adicionar conta
-        addButton.addActionListener(e -> {
-            // Aqui você pode adicionar a lógica para salvar a conta
-            System.out.println("Conta adicionada");
-            // Limpa os campos após adicionar
+        // Ação do botão de reservar
+        reserveButton.addActionListener(e -> {
+            // Lógica para processar a reserva
+            System.out.println("Reserva feita com sucesso");
+            // Limpar campos, se necessário
         });
 
         // Exibe a janela
@@ -94,37 +97,29 @@ public class ContasAReceberAdd extends JPanel {
         return container;
     }
 
-    // Método para criar um combobox com bordas arredondadas
-    private JPanel getComboBoxContainer(String label, String[] options) {
+    // Método para criar um seletor de data usando JDatePickerImpl
+    private JPanel getDatePickerContainer() {
         JPanel container = new JPanel(new BorderLayout());
-        JLabel comboBoxLabel = new JLabel(label);
+        JLabel dateLabel = new JLabel("Data da Reserva");
 
         // Defina a fonte do rótulo
-        comboBoxLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
+        dateLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
 
         container.setBackground(Color.WHITE);
-        JComboBox<String> comboBox = new JComboBox<>(options);
-        comboBox.setUI(new BasicComboBoxUI() {
-            @Override
-            protected JButton createArrowButton() {
-                JButton button = super.createArrowButton();
-                button.setBackground(Color.WHITE);
-                button.setBorder(new LineBorder(Color.BLACK, 1));
-                return button;
-            }
-        });
 
-        comboBox.setBackground(Color.WHITE);
-        comboBox.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(Color.BLACK, 1, true),
-                BorderFactory.createEmptyBorder(3, 3, 3, 3)
-        ));
+        // Configuração do JDatePickerImpl
+        UtilDateModel model = new UtilDateModel();
+        Properties properties = new Properties();
+        properties.put("text.today", "Hoje");
+        properties.put("text.month", "Mês");
+        properties.put("text.year", "Ano");
 
-        // Defina a fonte do combo box
-        comboBox.setFont(new Font("Roboto", Font.PLAIN, 14));
+        JDatePanelImpl datePanel = new JDatePanelImpl(model, properties);
+        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
-        container.add(comboBoxLabel, BorderLayout.NORTH);
-        container.add(comboBox, BorderLayout.CENTER);
+        // Adiciona o rótulo e o seletor de data ao painel
+        container.add(dateLabel, BorderLayout.NORTH);
+        container.add(datePicker, BorderLayout.CENTER);
 
         return container;
     }
