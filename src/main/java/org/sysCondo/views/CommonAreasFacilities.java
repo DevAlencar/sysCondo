@@ -129,24 +129,27 @@ public class CommonAreasFacilities extends JPanel {
     }
 
     private void initializeReservations() {
-        ReservationOverview.addReservation(new Reservation("João Silva", "Rua A", "123456789", "Piscina", "0001", new Date()));
-        ReservationOverview.addReservation(new Reservation("Maria Oliveira", "Rua B", "987654321", "Quadra Poliesportiva", "0002", new Date()));
-        ReservationOverview.addReservation(new Reservation("Carlos Pereira", "Rua C", "456123789", "Academia", "0003", new Date()));
-        ReservationOverview.addReservation(new Reservation("Ana Costa", "Rua D", "789456123", "Churrasqueira", "0004", new Date()));
-        ReservationOverview.addReservation(new Reservation("Pedro Santos", "Rua E", "321654987", "Salão de eventos", "0005", new Date()));
-        ReservationOverview.addReservation(new Reservation("Laura Lima", "Rua F", "654321987", "Sala de reuniões", "0006", new Date()));
-        ReservationOverview.addReservation(new Reservation("Mariana Rocha", "Rua G", "963852741", "Sala de Jogos", "0007", new Date()));
-        ReservationOverview.addReservation(new Reservation("Felipe Almeida", "Rua H", "147258369", "Brinquedoteca", "0008", new Date()));
-        ReservationOverview.addReservation(new Reservation("Camila Ferreira", "Rua I", "258369147", "SPA e Sauna", "0009", new Date()));
-        ReservationOverview.addReservation(new Reservation("Lucas Gomes", "Rua J", "369258147", "Espaço gourmet", "0010", new Date()));
-        ReservationOverview.addReservation(new Reservation("Fernanda Ribeiro", "Rua K", "456789123", "Piscina", "0011", new Date()));
-        ReservationOverview.addReservation(new Reservation("Tiago Martins", "Rua L", "987123654", "Salão de festas", "0012", new Date()));
-        ReservationOverview.addReservation(new Reservation("Roberta Mendes", "Rua M", "654789321", "Piscina", "0013", new Date()));
-        ReservationOverview.addReservation(new Reservation("Vinícius Costa", "Rua N", "321789654", "Churrasqueira", "0014", new Date()));
-        ReservationOverview.addReservation(new Reservation("Juliana Almeida", "Rua O", "852741963", "Churrasqueira", "0015", new Date()));
-        ReservationOverview.addReservation(new Reservation("Rafael Lima", "Rua P", "789123456", "Quadra Poliesportiva", "0016", new Date()));
-        ReservationOverview.addReservation(new Reservation("Sofia Santos", "Rua Q", "147852369", "Sala de Jogos", "0017", new Date()));
-        ReservationOverview.addReservation(new Reservation("Gabriel Souza", "Rua R", "963741258", "Quadra Poliesportiva", "0018", new Date()));
+        /*ReservationOverview.addReservation(new Reservation(1,"João Silva", "Piscina", new Date(), "Pendente"));
+        ReservationOverview.addReservation(new Reservation(2, "Maria Oliveira","Quadra Poliesportiva", new Date(), "Pendente"));
+        ReservationOverview.addReservation(new Reservation(3, "Carlos Pereira",  "Academia", new Date(), "Pendente"));
+        ReservationOverview.addReservation(new Reservation(4, "Ana Costa",  "Churrasqueira", new Date(), "Pendente"));
+        ReservationOverview.addReservation(new Reservation(5, "Pedro Santos", "Salão de eventos", new Date(), "Pendente"));
+        ReservationOverview.addReservation(new Reservation(6, "Laura Lima", "Sala de reuniões", new Date(), "Pendente"));
+        ReservationOverview.addReservation(new Reservation(7, "Mariana Rocha", "Sala de Jogos", new Date(), "Pendente"));
+        ReservationOverview.addReservation(new Reservation(8, "Felipe Almeida","Brinquedoteca", new Date(), "Pendente"));
+        ReservationOverview.addReservation(new Reservation(9, "Camila Ferreira", "SPA e Sauna", new Date(), "Pendente"));
+        ReservationOverview.addReservation(new Reservation(10, "Lucas Gomes",  "Espaço gourmet", new Date(), "Pendente"));*/
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Áreas Comuns Disponíveis");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.add(new CommonAreasFacilities());
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
     }
 
 }

@@ -20,6 +20,5 @@ public class App {
         UserController userController = new UserController();
 
         DevUtil.clearAllData();
-
     }
 }

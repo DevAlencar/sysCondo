@@ -34,7 +34,7 @@ public class AccReceivableOverview extends JPanel {
 
         // Adicionar um título
         JLabel titleLabel = new JLabel("Taxas", JLabel.CENTER);
-        titleLabel.setFont(new java.awt.Font("Roboto Medium", java.awt.Font.PLAIN, 28)); // Usando java.awt.Font
+        titleLabel.setFont(new java.awt.Font("Roboto", Font.BOLD, 28));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
         headerPanel.add(titleLabel, BorderLayout.NORTH); // Adiciona o título ao painel de cabeçalho
 
@@ -250,5 +250,16 @@ public class AccReceivableOverview extends JPanel {
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, selecione uma conta para excluir.");
         }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Contas a Receber");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.add(new AccReceivableOverview());
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
     }
 }

@@ -173,4 +173,16 @@ public class Statements extends JPanel {
             this.description = description;
         }
     }
+
+    // main
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Comunicados");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.add(new Statements(frame));
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
+    }
 }

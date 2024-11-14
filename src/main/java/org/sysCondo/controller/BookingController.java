@@ -40,6 +40,7 @@ public class BookingController {
             booking.setCommonAreaBookingFk(commonArea);
             booking.setBookingDateTime(bookingDate);
             booking.setBookingDuration(bookingDuration);
+            booking.setBookingStatus("Pendente");
 
             session.save(booking);
             transaction.commit();
