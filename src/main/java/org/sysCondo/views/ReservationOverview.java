@@ -1,6 +1,8 @@
 package org.sysCondo.views;
 
 import org.sysCondo.components.Reservation;
+import org.sysCondo.components.RoundJButton;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -21,18 +23,21 @@ public class ReservationOverview extends JPanel {
     private static List<Reservation> allReservations = new ArrayList<>();
 
     public ReservationOverview() {
+        JButton confirmReservation = new RoundJButton("Confirmar reserva");
+        JButton cancelReservation = new RoundJButton("Cancelar reserva");
+        JLabel titleLabel = new JLabel("Reservas", JLabel.CENTER);
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        JPanel controlsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        searchField = new JTextField(20);
         setLayout(new BorderLayout());
 
         // Header panel
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        JLabel titleLabel = new JLabel("RESERVAS", JLabel.CENTER);
-        titleLabel.setFont(new Font("Roboto Medium", Font.PLAIN, 30));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        titleLabel.setFont(new Font("Roboto", Font.BOLD, 28));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
         headerPanel.add(titleLabel, BorderLayout.NORTH);
-
+        headerPanel.setBackground(Color.WHITE);
         // Control panel with search field
-        JPanel controlsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        searchField = new JTextField(20);
+        controlsPanel.setBackground(Color.LIGHT_GRAY);
         searchField.setToolTipText("Buscar reserva...");
         searchField.addKeyListener(new KeyAdapter() {
             @Override
@@ -41,23 +46,34 @@ public class ReservationOverview extends JPanel {
                 filterTable(query);
             }
         });
+        confirmReservation.addActionListener(e -> handleConfirmReservation()); // Ação para confirmar a reserva selecionada
+        cancelReservation.addActionListener(e -> handleCancelReservation()); // Ação para cancelar a reserva selecionada
 
         controlsPanel.add(new JLabel("Pesquisar:"));
         controlsPanel.add(searchField);
+        controlsPanel.add(confirmReservation);
+        controlsPanel.add(cancelReservation);
         headerPanel.add(controlsPanel, BorderLayout.SOUTH);
-
         add(headerPanel, BorderLayout.NORTH);
 
         // Table setup
-        tableModel = new DefaultTableModel(new String[]{"Solicitante", "Endereço", "Contato", "Área", "Cód.", "Data da Reserva"}, 0);
-        reservationsTable = new JTable(tableModel);
+        tableModel = new DefaultTableModel(new String[]{"Identificador", "Solicitante", "Área", "Data", "Status"}, 0);
+        reservationsTable = new JTable(tableModel){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Torna todas as células não editáveis
+            }
+        };
+        reservationsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         customizeTable();
 
         sorter = new TableRowSorter<>(tableModel);
         reservationsTable.setRowSorter(sorter);
 
         JScrollPane scrollPane = new JScrollPane(reservationsTable);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        scrollPane.setBackground(Color.WHITE);
+        scrollPane.getViewport().setBackground(Color.WHITE);
         add(scrollPane, BorderLayout.CENTER);
 
         updateTable(); // Populate the table with initial data
@@ -86,12 +102,11 @@ public class ReservationOverview extends JPanel {
         tableModel.setRowCount(0);
         for (Reservation reservation : allReservations) {
             tableModel.addRow(new Object[]{
+                    reservation.getId(),
                     reservation.getSolicitante(),
-                    reservation.getEndereco(),
-                    reservation.getContato(),
                     reservation.getArea(),
-                    reservation.getCodigoArea(),
-                    reservation.getData()
+                    reservation.getData(),
+                    reservation.getStatus()
             });
         }
         tableModel.fireTableDataChanged();
@@ -99,18 +114,79 @@ public class ReservationOverview extends JPanel {
         // Create a list for the sort keys
         List<RowSorter.SortKey> sortKeys = new ArrayList<>();
         // Add the sort key for the column you want to sort (e.g., index 3 for "Área")
-        sortKeys.add(new RowSorter.SortKey(3, SortOrder.ASCENDING)); // Change 3 to the index of your desired column
+        sortKeys.add(new RowSorter.SortKey(2, SortOrder.ASCENDING)); // Change 3 to the index of your desired column
 
         // Set the sort keys to the sorter
         sorter.setSortKeys(sortKeys);
+        setStatusColors();
+    }
+
+    private void setStatusColors() {
+        reservationsTable.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                // Set background color based on status
+                String status = value != null ? value.toString() : "";
+                switch (status) {
+                    case "Confirmada":
+                        label.setBackground(new Color(145, 255, 145));
+                        break;
+                    case "Pendente":
+                        label.setBackground(new Color(245, 255, 145));
+                        break;
+                    case "Cancelada":
+                        label.setBackground(new Color(255, 145, 145));
+                        break;
+                    default:
+                        label.setBackground(Color.WHITE);
+                        break;
+                }
+                label.setOpaque(true); // Necessary for background color
+                return label;
+            }
+        });
     }
 
     public static void addReservation(Reservation reservation) {
         allReservations.add(reservation);
     }
 
-    public static List<Reservation> getAllReservations() {
-        return allReservations;
+    //public static List<Reservation> getAllReservations() {
+    //    return allReservations;
+    //}
+
+    public void handleConfirmReservation() { // method used to handle the confirmation on the view
+        int selectedRow = reservationsTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            String selectedRowStatus = (String) reservationsTable.getValueAt(selectedRow, 4);
+            if (selectedRowStatus.equals("Confirmada")) {
+                JOptionPane.showMessageDialog(this, "A reserva atual já está confirmada");
+            } else {
+                reservationsTable.setValueAt("Confirmada", selectedRow, 4);
+                JOptionPane.showMessageDialog(this, "Reserva confirmada com sucesso!");
+                System.out.println(reservationsTable.getValueAt(selectedRow, 0)); // getting the reservation id
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, selecione uma reserva para continuar.");
+        }
+    }
+
+    public void handleCancelReservation() { // method used to handle the cancellation on the view
+        int selectedRow = reservationsTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            String selectedRowStatus = (String) reservationsTable.getValueAt(selectedRow, 4);
+            if (selectedRowStatus.equals("Cancelada")) {
+                JOptionPane.showMessageDialog(this, "A reserva atual já está cancelada");
+            } else {
+                reservationsTable.setValueAt("Cancelada", selectedRow, 4);
+                JOptionPane.showMessageDialog(this, "Reserva cancelada com sucesso!");
+                System.out.println(reservationsTable.getValueAt(selectedRow, 0)); // getting the reservation id
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, selecione uma reserva para continuar.");
+        }
     }
 
     public void updateTableByArea(String areaName) {
@@ -131,10 +207,7 @@ public class ReservationOverview extends JPanel {
         for (Reservation reservation : filteredReservations) {
             tableModel.addRow(new Object[]{
                     reservation.getSolicitante(),
-                    reservation.getEndereco(),
-                    reservation.getContato(),
                     reservation.getArea(),
-                    reservation.getCodigoArea(),
                     reservation.getData()
             });
         }
