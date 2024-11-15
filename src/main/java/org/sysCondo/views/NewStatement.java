@@ -3,6 +3,7 @@ package org.sysCondo.views;
 import org.sysCondo.components.RoundJButton;
 import org.sysCondo.components.RoundJTextArea;
 import org.sysCondo.components.RoundJTextField;
+import org.sysCondo.controller.StatementController;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -51,6 +52,21 @@ public class NewStatement extends JPanel {
         gbc.gridy = 2;
         formContainer.add(formButtonsContainer, gbc);
 
+        // onclick saveBtn
+        saveBtn.addActionListener(e -> {
+            StatementController statementController = new StatementController();
+            String title = ((RoundJTextField) ((JPanel) formContainer.getComponent(0)).getComponent(1)).getText();
+            String message = ((RoundJTextArea) ((JScrollPane) ((JPanel) formContainer.getComponent(1)).getComponent(1)).getViewport().getView()).getText();
+            statementController.createStatement(title, message);
+            System.out.println("Comunicado criado com sucesso!");
+        });
+
+        // onclick cancelBtn
+        cancelBtn.addActionListener(e -> {
+            // Implementar a lógica de cancelar a criação do comunicado
+            System.out.println("Criação de comunicado cancelada!");
+        });
+
         // Exibe a janela
         setVisible(true);
     }
@@ -83,6 +99,14 @@ public class NewStatement extends JPanel {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(NewStatement::new);
+        //SwingUtilities.invokeLater(NewStatement::new);
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Novo Comunicado");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.add(new NewStatement());
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
     }
 }

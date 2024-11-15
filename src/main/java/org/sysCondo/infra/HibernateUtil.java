@@ -4,6 +4,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.sysCondo.model.Statement;
 import org.sysCondo.model.booking.Booking;
 import org.sysCondo.model.commonArea.CommonArea;
 import org.sysCondo.model.cost.Cost;
@@ -34,7 +35,7 @@ public class HibernateUtil {
             // mapeações aqui
             configuration.addAnnotatedClass(UnitResidential.class);
             configuration.addAnnotatedClass(User.class);
-
+            configuration.addAnnotatedClass(Statement.class);
             configuration.addAnnotatedClass(UserResidential.class);
             configuration.addAnnotatedClass(Vehicle.class);
             configuration.addAnnotatedClass(Tax.class);

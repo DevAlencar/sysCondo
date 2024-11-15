@@ -1,5 +1,8 @@
 package org.sysCondo.views;
 
+import org.sysCondo.controller.StatementController;
+import org.sysCondo.model.Statement;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -7,7 +10,6 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
-import java.util.ArrayList;
 
 public class Statements extends JPanel {
     JFrame parentFrame;
@@ -32,10 +34,9 @@ public class Statements extends JPanel {
         cardsPanel.setBackground(Color.WHITE);
         cardsPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Centralizar cardsPanel
 
-        // Criar e adicionar alguns cards de exemplo
-        List<CardData> cardDataList = createDummyCardData();
-        for (CardData cardData : cardDataList) {
-            JPanel card = createCard(cardData);
+        List<Statement> statements = new StatementController().getAllStatements();
+        for (Statement statement : statements) {
+            JPanel card = createCard(new CardData(statement.getStatementTitle(), "Admin", statement.getStatementDate().toString(), statement.getStatementDescription()));
             cardsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
             card.setAlignmentX(Component.CENTER_ALIGNMENT);
             cardsPanel.add(card);
@@ -99,22 +100,6 @@ public class Statements extends JPanel {
         card.add(dateLabel);
 
         return card;
-    }
-
-    private List<CardData> createDummyCardData() {
-        List<CardData> data = new ArrayList<>();
-        data.add(new CardData("Reunião do Conselho de Moradores", "Joana Presidente", "10/05/2023", "Teremos uma reunião do conselho nesta quinta-feira para discutir melhorias no salão de festas."));
-        data.add(new CardData("Aulas de Yoga no Jardim", "Carlos Instrutor", "15/06/2023", "Começando na próxima segunda, aulas de yoga gratuitas para os moradores. Tragam suas esteiras!"));
-        data.add(new CardData("Novo Horário da Piscina", "Administração", "20/07/2023", "A piscina agora estará aberta das 6h às 22h todos os dias. Aproveitem o horário estendido!"));
-        data.add(new CardData("Encontrado Gato Perdido", "Maria da Portaria", "22/05/2023", "Um gato cinza foi encontrado nas áreas comuns. Por favor, entre em contato para recuperar seu pet."));
-        data.add(new CardData("Feira de Artesanato no Salão", "Associação de Moradores", "05/08/2023", "Feira de artesanato este sábado no salão principal. Venha prestigiar os talentos locais!"));
-        data.add(new CardData("Campeonato de Futebol no Campo", "Equipe Esportiva", "30/09/2023", "As inscrições para o campeonato de futebol do condomínio estão abertas. Participe e divirta-se!"));
-        data.add(new CardData("Novas Regras de Estacionamento", "Segurança", "01/10/2023", "Verifique as novas regras de estacionamento para evitar multas e garantir a organização de todos."));
-        data.add(new CardData("Plantio Comunitário de Árvores", "Verde Vivo", "12/06/2023", "Participe do plantio de árvores no nosso espaço verde. Juntos por um ambiente mais saudável!"));
-        data.add(new CardData("Concurso de Fotografia do Condomínio", "Comissão de Eventos", "08/07/2023", "Envie suas fotos favoritas do condomínio para participar do nosso concurso fotográfico."));
-        data.add(new CardData("Desconto em Academias Locais", "Administração", "18/08/2023", "Moradores têm desconto exclusivo em academias próximas. Garanta sua saúde com uma oferta imperdível!"));
-
-        return data;
     }
 
     // Método para mostrar o diálogo modal com as informações do card
