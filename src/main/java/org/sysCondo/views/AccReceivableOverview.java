@@ -34,7 +34,7 @@ public class AccReceivableOverview extends JPanel {
 
         // Adicionar um título
         JLabel titleLabel = new JLabel("Taxas", JLabel.CENTER);
-        titleLabel.setFont(new java.awt.Font("Roboto", Font.BOLD, 28));
+        titleLabel.setFont(new java.awt.Font("Roboto Medium", Font.PLAIN, 30));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
         headerPanel.add(titleLabel, BorderLayout.NORTH); // Adiciona o título ao painel de cabeçalho
 

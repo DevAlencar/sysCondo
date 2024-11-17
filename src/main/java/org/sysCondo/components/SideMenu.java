@@ -50,8 +50,8 @@ public class SideMenu {
 
         AdditionalOptionsPanel accountsPayableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] payableItems = {
-                new MenuItem("Adicionar conta", new AccPayableAdd()),
-                new MenuItem("Overview", new AccPayableOverview())
+                new MenuItem("Adicionar taxa", new AccPayableAdd()),
+                new MenuItem("Visão geral", new AccPayableOverview())
         };
         accountsPayableOptionsPanel.createAdditionalOptionsPanel(payableItems);
 
