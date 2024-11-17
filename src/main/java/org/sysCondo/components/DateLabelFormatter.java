@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class DateLabelFormatter extends AbstractFormatter {
 
-    private final String datePattern = "dd/MM/yyyy";
+    private final String datePattern = "EEE, dd MMM yyyy"; // Formato para exibir como "Sat, 30 Nov 2024"
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
 
     @Override
@@ -24,7 +24,7 @@ public class DateLabelFormatter extends AbstractFormatter {
     public String valueToString(Object value) {
         if (value != null) {
             Calendar cal = (Calendar) value;
-            return dateFormatter.format(cal.getTime());
+            return dateFormatter.format(cal.getTime()); // Exibe a data no formato "Sat, 30 Nov 2024"
         }
         return "";
     }
