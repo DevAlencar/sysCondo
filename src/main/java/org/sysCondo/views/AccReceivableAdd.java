@@ -1,14 +1,24 @@
 package org.sysCondo.views;
 
 import org.sysCondo.components.*;
+import org.sysCondo.controller.TaxController;
+import org.sysCondo.controller.UnitResidentialController;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class AccReceivableAdd extends JPanel {
+    // Variáveis de instância para armazenar referências dos campos de entrada
+    private RoundJTextField taxNameInput;
+    private RoundJTextField taxValueInput;
+    private RoundJTextField taxFinishDateInput;
+    private JComboBox<String> taxStatusInput;
 
     public AccReceivableAdd() {
         setLayout(new BorderLayout());
@@ -37,15 +47,14 @@ public class AccReceivableAdd extends JPanel {
 
         // Adicionar campos ao formulário
         gbc.gridy = 0;
-        formContainer.add(getInputContainer("Nome da taxa"), gbc);
+        taxNameInput = createAndAddInputField(formContainer, gbc, "Nome da taxa");
         gbc.gridy = 1;
-        formContainer.add(getInputContainer("Data de Vencimento (dd/mm/aaaa)"), gbc);
+        taxFinishDateInput = createAndAddInputField(formContainer, gbc,"Data de Vencimento (dd/mm/aaaa)");
         gbc.gridy = 2;
-       //formContainer.add(getComboBoxContainer("Tipo da Conta", new String[]{"Aluguel", "Serviços", "Outros"}), gbc);
-        //gbc.gridy = 3;
-        formContainer.add(getComboBoxContainer("Status", new String[]{"Pago", "A receber", "Atrasado"}), gbc);
+        taxStatusInput = getComboBoxContainer("Status", new String[]{"Pago", "A receber", "Atrasado"});
+        formContainer.add(taxStatusInput, gbc);
         gbc.gridy = 3;
-        formContainer.add(getInputContainer("Valor da taxa"), gbc);
+        taxValueInput = createAndAddInputField(formContainer, gbc,"Valor da taxa");
 
         // Centralizar o formulário
         JPanel formWrapper = new JPanel();
@@ -66,7 +75,15 @@ public class AccReceivableAdd extends JPanel {
         // Ação do botão de adicionar conta
         addButton.addActionListener(e -> {
             // Aqui você pode adicionar a lógica para salvar a conta
-            System.out.println("Taxa adicionada");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            String taxName = taxNameInput.getText();
+            float taxValue = Float.parseFloat(taxValueInput.getText());
+            LocalDate taxFinishDate = LocalDate.parse(taxFinishDateInput.getText(), formatter);
+            String taxStatus = Objects.requireNonNull(taxStatusInput.getSelectedItem()).toString();
+
+            TaxController taxController = new TaxController();
+            taxController.createTax(taxName, taxValue, taxStatus, taxFinishDate);
             // Limpa os campos após adicionar
         });
 
@@ -94,8 +111,21 @@ public class AccReceivableAdd extends JPanel {
         return container;
     }
 
+    private RoundJTextField createAndAddInputField(JPanel formContainer, GridBagConstraints gbc, String label) {
+        JPanel container = new JPanel(new BorderLayout());
+        JLabel inputLabel = new JLabel(label);
+        inputLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
+        container.setBackground(Color.WHITE);
+        RoundJTextField input = new RoundJTextField(1, 10);
+        input.setFont(new Font("Roboto", Font.PLAIN, 14));
+        container.add(inputLabel, BorderLayout.NORTH);
+        container.add(input, BorderLayout.CENTER);
+        formContainer.add(container, gbc);
+        return input; // Retorna o campo de entrada para que possamos armazenar a referência
+    }
+
     // Método para criar um combobox com bordas arredondadas
-    private JPanel getComboBoxContainer(String label, String[] options) {
+    private JComboBox<String> getComboBoxContainer(String label, String[] options) {
         JPanel container = new JPanel(new BorderLayout());
         JLabel comboBoxLabel = new JLabel(label);
 
@@ -126,6 +156,6 @@ public class AccReceivableAdd extends JPanel {
         container.add(comboBoxLabel, BorderLayout.NORTH);
         container.add(comboBox, BorderLayout.CENTER);
 
-        return container;
+        return comboBox;
     }
 }

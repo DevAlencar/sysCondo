@@ -11,13 +11,12 @@ import java.util.List;
 
 public class TaxController {
 
-    public void createTax(User user, String name, float value, String status, LocalDate finishDate) {
+    public void createTax(String name, float value, String status, LocalDate finishDate) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
         try {
             Tax tax = new Tax();
-            tax.setUserTaxFk(user);
             tax.setValue(value);
             tax.setStatus(status);
             tax.setFinishDate(finishDate);

@@ -18,7 +18,7 @@ public class Tax {
     private int taxId;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "userId", nullable = true)
     private User userTaxFk;
 
     @Column(name = "value")
