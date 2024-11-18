@@ -13,7 +13,16 @@ public class UnitResidentialController {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
+        String hql = "FROM UnitResidential WHERE number = :number";
         try {
+            UnitResidential unitResidentialTest = session.createQuery(hql, UnitResidential.class)
+                    .setParameter("number", number)
+                    .uniqueResult();
+
+            if (unitResidentialTest != null) {
+                throw new RuntimeException("Já existe residência com esse número");
+            }
+
             UnitResidential unitResidential = new UnitResidential();
             unitResidential.setUnitResidentialNumber(number);
             unitResidential.setUnitResidentialSize(size);
