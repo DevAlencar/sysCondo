@@ -174,6 +174,12 @@ public class AccReceivableOverview extends JPanel {
         sorter.toggleSortOrder(0);
 
         setStatusColors(); // Chama método para definir cores de status
+
+        table.getColumnModel().getColumn(0).setPreferredWidth(30); // Coluna ID com largura menor
+        table.getColumnModel().getColumn(1).setPreferredWidth(200); // Nome da Taxa
+        table.getColumnModel().getColumn(2).setPreferredWidth(150); // Data de Vencimento
+        table.getColumnModel().getColumn(3).setPreferredWidth(150); // Valor da Taxa
+        table.getColumnModel().getColumn(4).setPreferredWidth(100); // Status
     }
 
     // Método para definir cores de status
@@ -228,7 +234,7 @@ public class AccReceivableOverview extends JPanel {
         int selectedRow = table.getSelectedRow();
         if (selectedRow >= 0) {
             // Pegar os dados da conta selecionada
-            String accountId = (String) table.getValueAt(selectedRow, 0);
+            int accountId = (Integer) table.getValueAt(selectedRow, 0);
             String accountName = (String) table.getValueAt(selectedRow, 1);
             String dueDate = (String) table.getValueAt(selectedRow, 2);
             String amount = (String) table.getValueAt(selectedRow, 3);
