@@ -54,20 +54,9 @@ public class AccPayableOverview extends JPanel {
         JButton exportButton = new RoundJButton("Exportar para PDF");
         exportButton.addActionListener(e -> exportToPDF());
 
-        JButton addButton = new RoundJButton("Adicionar Conta");
-        addButton.addActionListener(e -> openAddAccountScreen());
-
-<<<<<<< HEAD
         JButton payButton = new RoundJButton("Pagar Conta");
         payButton.addActionListener(e -> paySelectedAccount());
         controlsPanel.add(payButton);
-=======
-        JButton editButton = new RoundJButton("Editar taxa");
-        editButton.addActionListener(e -> openEditAccountScreen()); // Ação para editar a conta selecionada
-
-        JButton deleteButton = new RoundJButton("Apagar taxa");
-        deleteButton.addActionListener(e -> deleteSelectedAccount()); // Ação para excluir a conta selecionada
->>>>>>> 3ba456da79e3386e9ce7357b364856eb47f481b5
 
         Font labelFont = new Font("Roboto Medium", Font.PLAIN, 14); // Para os rótulos
 
@@ -77,11 +66,8 @@ public class AccPayableOverview extends JPanel {
         controlsPanel.add(searchLabel);
         searchField.setFont(labelFont); // Alterar a fonte do campo de texto
         controlsPanel.add(searchField);
-        controlsPanel.add(editButton);
-        controlsPanel.add(deleteButton);
 
         controlsPanel.add(exportButton);
-        controlsPanel.add(addButton);
         controlsPanel.add(payButton);
 
         headerPanel.add(controlsPanel, BorderLayout.SOUTH);
@@ -229,91 +215,23 @@ public class AccPayableOverview extends JPanel {
         }
     }
 
-    private void openAddAccountScreen() {
-        AccPayableAdd addScreen = new AccPayableAdd();
-        JFrame frame = new JFrame("Adicionar Conta a Pagar");
-
-        // Configurar o listener para fechar o JFrame
-        addScreen.setOnCloseListener(frame::dispose);
-
-        frame.setContentPane(addScreen);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
-
-<<<<<<< HEAD
     private void paySelectedAccount() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
             int modelRow = table.convertRowIndexToModel(selectedRow);
-            String currentStatus = tableModel.getValueAt(modelRow, 4).toString(); // Coluna 4: "Status"
+            String currentStatus = tableModel.getValueAt(modelRow, 3).toString(); // Corrigir índice da coluna de Status
 
             if (currentStatus.equals("Pago")) {
                 JOptionPane.showMessageDialog(this, "Esta conta já está paga.");
                 return;
             }
 
-            tableModel.setValueAt("Pago", modelRow, 4);
-            setStatusColors();
+            tableModel.setValueAt("Pago", modelRow, 3); // Atualiza o status para "Pago"
+            setStatusColors();  // Atualiza as cores de status
+            table.repaint();  // Força o redesenho da tabela para aplicar as novas cores
             JOptionPane.showMessageDialog(this, "Conta marcada como paga com sucesso!");
         } else {
             JOptionPane.showMessageDialog(this, "Selecione uma conta para pagar.");
         }
     }
-
-
-=======
-
-    private void openEditAccountScreen() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow >= 0) {
-            // Pegar os dados da conta selecionada
-            String accountName = (String) table.getValueAt(selectedRow, 0);
-            String dueDate = (String) table.getValueAt(selectedRow, 1);
-            String amount = (String) table.getValueAt(selectedRow, 2);
-            String status = (String) table.getValueAt(selectedRow, 3);
-
-            // Validar os campos antes de adicionar
-            if (accountName.isEmpty() || dueDate.isEmpty() || amount.isEmpty()) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Por favor, preencha todos os campos obrigatórios.",
-                        "Campos Obrigatórios",
-                        JOptionPane.WARNING_MESSAGE
-                );
-                return;
-            }
-
-            // Criar a tela de edição e passá-la para a janela
-            AccReceivableEdit editScreen = new AccReceivableEdit(accountName, dueDate, amount, status);
-            JFrame frame = new JFrame("Editar Conta");
-            frame.setContentPane(editScreen);
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-
-            System.out.println("Nome: " + accountName);
-            System.out.println("Data: " + dueDate);
-            System.out.println("Valor: " + amount);
-            System.out.println("Status: " + status);
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecione uma conta para editar.");
-        }
-    }
-
-    private void deleteSelectedAccount() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow >= 0) {
-            int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja excluir esta conta?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                tableModel.removeRow(selectedRow); // Remove a conta da tabela
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecione uma conta para excluir.");
-        }
-    }
->>>>>>> 3ba456da79e3386e9ce7357b364856eb47f481b5
 }
