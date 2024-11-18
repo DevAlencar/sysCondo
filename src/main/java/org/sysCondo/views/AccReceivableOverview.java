@@ -1,19 +1,20 @@
 package org.sysCondo.views;
 
-import com.itextpdf.text.*;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.sysCondo.components.RoundJButton;
 import org.sysCondo.components.RoundJTextField;
-import java.awt.Font;  // Importação correta para Swing
+import org.sysCondo.controller.TaxController;
+import org.sysCondo.model.tax.Tax;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.util.List;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
@@ -33,14 +34,14 @@ public class AccReceivableOverview extends JPanel {
         headerPanel.setLayout(new BorderLayout()); // Usar BorderLayout para organizar o título e os controles
 
         // Adicionar um título
-        JLabel titleLabel = new JLabel("Taxas", JLabel.CENTER);
-        titleLabel.setFont(new java.awt.Font("Roboto", Font.BOLD, 28));
+        JLabel titleLabel = new JLabel("TAXAS", JLabel.CENTER);
+        titleLabel.setFont(new java.awt.Font("Roboto Medium", Font.PLAIN, 30));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
         headerPanel.add(titleLabel, BorderLayout.NORTH); // Adiciona o título ao painel de cabeçalho
 
         // Painel de controle para busca e botões
         JPanel controlsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        controlsPanel.setBackground(Color.LIGHT_GRAY);
+        controlsPanel.setBackground(new Color(202, 202, 202));
 
         searchField = new RoundJTextField(20, 10);
         searchField.setToolTipText("Buscar taxa...");
@@ -142,20 +143,25 @@ public class AccReceivableOverview extends JPanel {
         }
     }
 
-    // Método para atualizar a tabela com dados reais (simulação)
+    // Método para atualizar a tabela com dados reais
     private void updateTable() {
-        // Dados fictícios para demonstrar o layout
-        String[] columnNames = {"Nome da Taxa", "Data de Vencimento", "Valor da Taxa", "Status"};
-        Object[][] data = {
-                {"Aluguel de Outubro", "01/10/2024", "R$ 1.500,00", "Pago"},
-                {"Serviço de Jardinagem", "10/10/2024", "R$ 300,00", "A receber"},
-                {"Conserto de Elevador", "15/10/2024", "R$ 1.200,00", "Atrasado"}
-        };
+        TaxController taxController = new TaxController();
+        List<Tax> taxes = taxController.getAllTaxes();
+        String[] columnNames = {"Id", "Nome da Taxa", "Data de Vencimento", "Valor da Taxa", "Status"};
+        Object[][] data = taxes.stream()
+                .map(tax -> new Object[]{
+                        tax.getTaxId(),
+                        tax.getName(),
+                        tax.getFinishDate(),
+                        tax.getValue(),
+                        tax.getStatus()
+                })
+                .toArray(Object[][]::new);
 
         tableModel = new DefaultTableModel(data, columnNames) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 3) { // Se for a coluna de status
+                if (columnIndex == 4) { // Se for a coluna de status
                     return String.class; // Retorna como String para cores
                 }
                 return super.getColumnClass(columnIndex);
@@ -222,10 +228,11 @@ public class AccReceivableOverview extends JPanel {
         int selectedRow = table.getSelectedRow();
         if (selectedRow >= 0) {
             // Pegar os dados da conta selecionada
-            String accountName = (String) table.getValueAt(selectedRow, 0);
-            String dueDate = (String) table.getValueAt(selectedRow, 1);
-            String amount = (String) table.getValueAt(selectedRow, 2);
-            String status = (String) table.getValueAt(selectedRow, 3);
+            String accountId = (String) table.getValueAt(selectedRow, 0);
+            String accountName = (String) table.getValueAt(selectedRow, 1);
+            String dueDate = (String) table.getValueAt(selectedRow, 2);
+            String amount = (String) table.getValueAt(selectedRow, 3);
+            String status = (String) table.getValueAt(selectedRow, 4);
 
             // Criar a tela de edição e passá-la para a janela
             AccReceivableEdit editScreen = new AccReceivableEdit(accountName, dueDate, amount, status);
@@ -241,25 +248,16 @@ public class AccReceivableOverview extends JPanel {
     }
 
     private void deleteSelectedAccount() {
+        TaxController taxController = new TaxController();
         int selectedRow = table.getSelectedRow();
         if (selectedRow >= 0) {
             int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja excluir esta conta?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
+                taxController.deleteTax((Integer) table.getValueAt(selectedRow, 0));
                 tableModel.removeRow(selectedRow); // Remove a conta da tabela
             }
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, selecione uma conta para excluir.");
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Contas a Receber");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.add(new AccReceivableOverview());
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-        });
     }
 }
