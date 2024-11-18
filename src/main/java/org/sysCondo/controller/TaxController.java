@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TaxController {
 
-    public void createTax(User user, float value, String status, LocalDate finishDate) {
+    public void createTax(User user, String name, float value, String status, LocalDate finishDate) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
@@ -21,6 +21,7 @@ public class TaxController {
             tax.setValue(value);
             tax.setStatus(status);
             tax.setFinishDate(finishDate);
+            tax.setName(name);
 
             session.save(tax);
             transaction.commit();
@@ -58,7 +59,7 @@ public class TaxController {
         return taxes;
     }
 
-    public void updateTax(int taxId, User user, float value, String status, LocalDate finishDate) {
+    public void updateTax(int taxId, String name, User user, float value, String status, LocalDate finishDate) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
@@ -69,6 +70,7 @@ public class TaxController {
                 tax.setValue(value);
                 tax.setStatus(status);
                 tax.setFinishDate(finishDate);
+                tax.setName(name);
                 session.update(tax);
                 transaction.commit();
             }

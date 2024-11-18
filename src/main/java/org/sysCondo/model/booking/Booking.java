@@ -7,6 +7,7 @@ import org.sysCondo.model.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "booking")
@@ -26,6 +27,13 @@ public class Booking {
     @JoinColumn(name = "commonAreaId")
     private CommonArea commonAreaBookingFk;
 
-    @Column(name = "bookingDate")
-    private LocalDate bookingDate;
+    @Column(name = "bookingDateTime")
+    private LocalDateTime bookingDateTime;
+
+    @Column(name = "bookingDuration")
+    private Integer bookingDuration;
+
+    @Column(name = "bookingStatus")
+    private String bookingStatus;
+
 }

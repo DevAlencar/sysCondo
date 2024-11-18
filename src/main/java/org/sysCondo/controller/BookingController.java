@@ -8,19 +8,39 @@ import org.sysCondo.model.commonArea.CommonArea;
 import org.sysCondo.model.user.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class BookingController {
 
-    public void createBooking(User user, CommonArea commonArea, LocalDate bookingDate) {
+    public void createBooking(User user, CommonArea commonArea, LocalDateTime bookingDate, Integer bookingDuration) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
+
+        List<Booking> bookings = getBookingsByCommonAreaId(commonArea.getCommonAreaId());
+
+        for (Booking booking : bookings) {
+            LocalDateTime bookingStart = booking.getBookingDateTime();
+            LocalDateTime bookingEnd = bookingStart.plusHours(booking.getBookingDuration());
+            LocalDateTime newBookingEnd = bookingDate.plusHours(bookingDuration);
+
+            // Verifica se há um conflito de horário
+            boolean isConflicting =
+                    (bookingDate.isBefore(bookingEnd) && newBookingEnd.isAfter(bookingStart));
+
+            if (isConflicting) {
+                System.out.println("Conflito de horário! A reserva não pode ser realizada.");
+                return;
+            }
+        }
 
         try {
             Booking booking = new Booking();
             booking.setUserBookingFk(user);
             booking.setCommonAreaBookingFk(commonArea);
-            booking.setBookingDate(bookingDate);
+            booking.setBookingDateTime(bookingDate);
+            booking.setBookingDuration(bookingDuration);
+            booking.setBookingStatus("Pendente");
 
             session.save(booking);
             transaction.commit();
@@ -33,6 +53,22 @@ public class BookingController {
         } finally {
             session.close();
         }
+    }
+
+    // retorna todas as reservas de uma área comum (para verificar disponibilidade)
+    public List<Booking> getBookingsByCommonAreaId(Long commonAreaId) {
+        Session session = HibernateUtil.getSession();
+        List<Booking> bookings = null;
+        try {
+            bookings = session.createQuery("from Booking where commonAreaBookingFk.commonAreaId = :commonAreaId", Booking.class)
+                    .setParameter("commonAreaId", commonAreaId)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return bookings;
     }
 
     public Booking getBookingById(Long bookingId) {
@@ -48,6 +84,7 @@ public class BookingController {
         return booking;
     }
 
+    // lista as reservas atuais
     public List<Booking> getAllBookings() {
         Session session = HibernateUtil.getSession();
         List<Booking> bookings = null;
@@ -61,7 +98,7 @@ public class BookingController {
         return bookings;
     }
 
-    public void updateBooking(Long bookingId, User newUser, CommonArea newCommonArea, LocalDate newBookingDate) {
+    public void updateBooking(Long bookingId, User newUser, CommonArea newCommonArea, LocalDateTime newBookingDate, Integer newBookingDuration) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
@@ -70,7 +107,8 @@ public class BookingController {
             if (booking != null) {
                 booking.setUserBookingFk(newUser);
                 booking.setCommonAreaBookingFk(newCommonArea);
-                booking.setBookingDate(newBookingDate);
+                booking.setBookingDateTime(newBookingDate);
+                booking.setBookingDuration(newBookingDuration);
                 session.update(booking);
                 transaction.commit();
             }

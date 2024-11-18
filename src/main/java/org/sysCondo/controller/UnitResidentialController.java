@@ -3,21 +3,31 @@ package org.sysCondo.controller;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.sysCondo.infra.HibernateUtil;
-import org.sysCondo.model.ownerResidential.OwnerResidential;
 import org.sysCondo.model.unitResidential.UnitResidential;
 
 import java.util.List;
 
 public class UnitResidentialController {
 
-    public void createUnitResidential(float size, OwnerResidential ownerResidential) {
+    public void createUnitResidential(String number, String size, String ownerName, String ownerContact) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
+        String hql = "FROM UnitResidential WHERE number = :number";
         try {
+            UnitResidential unitResidentialTest = session.createQuery(hql, UnitResidential.class)
+                    .setParameter("number", number)
+                    .uniqueResult();
+
+            if (unitResidentialTest != null) {
+                throw new RuntimeException("Já existe residência com esse número");
+            }
+
             UnitResidential unitResidential = new UnitResidential();
+            unitResidential.setUnitResidentialNumber(number);
             unitResidential.setUnitResidentialSize(size);
-            unitResidential.setOwnerResidential(ownerResidential);
+            unitResidential.setOwnerName(ownerName);
+            unitResidential.setOwnerContact(ownerContact);
 
             session.save(unitResidential);
             transaction.commit();
@@ -55,15 +65,18 @@ public class UnitResidentialController {
         return units;
     }
 
-    public void updateUnit(int unitId, float newSize, OwnerResidential newOwnerResidential) {
+    public void updateUnit(int unitId, String newSize, String newNumber, String onewOwnerName, String newOwnerContact) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
         try {
             UnitResidential unitResidential = session.get(UnitResidential.class, unitId);
             if (unitResidential != null) {
+                unitResidential.setUnitResidentialNumber(newNumber);
                 unitResidential.setUnitResidentialSize(newSize);
-                unitResidential.setOwnerResidential(newOwnerResidential);
+                unitResidential.setOwnerName(newOwnerContact);
+                unitResidential.setOwnerContact(newOwnerContact);
+
                 session.update(unitResidential);
                 transaction.commit();
             }

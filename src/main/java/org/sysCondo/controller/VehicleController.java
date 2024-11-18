@@ -11,7 +11,7 @@ import java.util.List;
 
 public class VehicleController {
 
-    public void createVehicle(String number, BrandEnum brand, User user) {
+    public void createVehicle(String number, String brand, User user) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
@@ -57,7 +57,7 @@ public class VehicleController {
         return vehicles;
     }
 
-    public void updateVehicle(Long vehicleId, String newNumber, BrandEnum newBrand, User newUser) {
+    public void updateVehicle(Long vehicleId, String newNumber, String newBrand, User newUser) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 

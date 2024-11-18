@@ -7,13 +7,11 @@ import org.sysCondo.infra.HibernateUtil;
 import org.sysCondo.model.commonArea.CommonArea;
 import org.sysCondo.model.maintenance.Maintenance;
 import org.sysCondo.model.user.User;
-
-
 import java.util.List;
 
 public class MaintenanceController {
 
-    public void createMaintenance(User userMaintenance, CommonArea commonAreaMaintenance, String status) {
+    public Long createMaintenance(User userMaintenance, CommonArea commonAreaMaintenance, String status, String type) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
@@ -22,14 +20,20 @@ public class MaintenanceController {
             maintenance.setUserMaintenanceFk(userMaintenance);
             maintenance.setCommonAreaMaintenanceFk(commonAreaMaintenance);
             maintenance.setStatus(status);
+            maintenance.setType(type);
+
             session.save(maintenance);
             transaction.commit();
+
+            return maintenance.getMaintenanceId();
+
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
             e.printStackTrace();
         } finally {
             session.close();
         }
+        return null;
     }
 
     public Maintenance getMaintenanceById(Long maintenanceId) {
@@ -45,7 +49,8 @@ public class MaintenanceController {
         return maintenance;
     }
 
-    public List<Maintenance> getAllMaintenances(Long maintenanceFk) {
+    // retorna todas as manutenções
+    public List<Maintenance> getAllMaintenances() {
         Session session = HibernateUtil.getSession();
         List<Maintenance> maintenances = null;
         try {
@@ -96,4 +101,37 @@ public class MaintenanceController {
             session.close();
         }
     }
+
+    // retorna as manutenções feitas por um usuário em específico
+    public List<Maintenance> getMaintenancesByUserId(Long userId) {
+        Session session = HibernateUtil.getSession();
+        List<Maintenance> maintenances = null;
+        try {
+            maintenances = session.createQuery("from Maintenance where userMaintenanceFk.userId = :userId", Maintenance.class)
+                    .setParameter("userId", userId)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return maintenances;
+    }
+
+    // retorna as manutencoes feitas por um usuario pelo documento
+    public List<Maintenance> getMaintenancesByUserDocument(String userDocument) {
+        Session session = HibernateUtil.getSession();
+        List<Maintenance> maintenances = null;
+        try {
+            maintenances = session.createQuery("from Maintenance where userMaintenanceFk.userDocument = :userDocument", Maintenance.class)
+                    .setParameter("userDocument", userDocument)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return maintenances;
+    }
+
 }

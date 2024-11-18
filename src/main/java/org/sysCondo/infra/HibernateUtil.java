@@ -4,11 +4,11 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.sysCondo.model.Statement;
 import org.sysCondo.model.booking.Booking;
 import org.sysCondo.model.commonArea.CommonArea;
 import org.sysCondo.model.cost.Cost;
 import org.sysCondo.model.maintenance.Maintenance;
-import org.sysCondo.model.ownerResidential.OwnerResidential;
 import org.sysCondo.model.tax.Tax;
 import org.sysCondo.model.unitResidential.UnitResidential;
 import org.sysCondo.model.user.User;
@@ -33,10 +33,9 @@ public class HibernateUtil {
             configuration.setProperty("show_sql", "true");
 
             // mapeações aqui
-            configuration.addAnnotatedClass(OwnerResidential.class);
             configuration.addAnnotatedClass(UnitResidential.class);
             configuration.addAnnotatedClass(User.class);
-
+            configuration.addAnnotatedClass(Statement.class);
             configuration.addAnnotatedClass(UserResidential.class);
             configuration.addAnnotatedClass(Vehicle.class);
             configuration.addAnnotatedClass(Tax.class);

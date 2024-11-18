@@ -8,7 +8,9 @@ import org.sysCondo.model.tax.Tax;
 import org.sysCondo.model.vehicle.Vehicle;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,7 +24,7 @@ public class User {
     private Long userId;
 
     @OneToMany(mappedBy = "userVehicleFk", fetch = FetchType.LAZY)
-    private Set<Vehicle> vehicleSet = new HashSet<>();
+    private List<Vehicle> vehicleList = new ArrayList<>();
 
     @OneToMany(mappedBy = "userTaxFk", fetch = FetchType.LAZY)
     private Set<Tax> taxSet = new HashSet<>();
@@ -32,6 +34,10 @@ public class User {
 
     @OneToMany(mappedBy = "userBookingFk")
     private Set<Booking> bookingSet = new HashSet<>();
+
+    // unitResidentialFk
+    @Column(name = "unitResidentialFk")
+    private String unitResidentialFk;
 
     @Column(name = "userName", nullable = false)
     private String userName;

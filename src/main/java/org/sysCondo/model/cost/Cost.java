@@ -22,9 +22,15 @@ public class Cost {
     @JoinColumn(name = "maintenanceId")
     private Maintenance maintenance;
 
-    @Column(name = "value")
-    private float value;
+    @Column(name = "costValue")
+    private float costValue;
 
     @Column(name = "description")
     private String description;
+
+    @Override
+    public String toString() {
+        return "Custo: " + costValue + " | Descrição: " + description;
+    }
+
 }

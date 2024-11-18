@@ -19,7 +19,7 @@ public class CostController {
         try {
             Cost cost = new Cost();
             cost.setMaintenance(maintenance);
-            cost.setValue(value);
+            cost.setCostValue(value);
             cost.setDescription(description);
             session.save(cost);
             transaction.commit();
@@ -67,7 +67,7 @@ public class CostController {
             Cost cost = session.get(Cost.class, costId);
             if (cost != null) {
                 cost.setMaintenance(newMaintenance);
-                cost.setValue(newValue);
+                cost.setCostValue(newValue);
                 cost.setDescription(newDescription);
                 session.update(cost);
                 transaction.commit();
