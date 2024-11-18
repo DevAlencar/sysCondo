@@ -66,6 +66,7 @@ public class SideMenu {
         MenuItem[] commonAreasItems = {
                 new MenuItem("Solicitar manutenção", new CommonAreasMaintenence()),
                 new MenuItem("Solicitações realizadas", new CommonAreasMaintenenceRequests(parentFrame)),
+                new MenuItem("Gestão de manutenções", new CommonAreasMaintenenceOverview()),
                 new MenuItem("Áreas comuns", new CommonAreasFacilities()),
                 new MenuItem("Gerenciar reservas", new ReservationOverview())  // Make sure this matches the class name
         };

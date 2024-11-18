@@ -32,14 +32,14 @@ public class AccPayableOverview extends JPanel {
         headerPanel.setBackground(Color.WHITE);
 
         // Título
-        JLabel titleLabel = new JLabel("Contas", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("CONTAS", JLabel.CENTER);
         titleLabel.setFont(new java.awt.Font("Roboto Medium", java.awt.Font.PLAIN, 30));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
         headerPanel.add(titleLabel, BorderLayout.NORTH);
 
         // Painel de controles
         JPanel controlsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        controlsPanel.setBackground(Color.LIGHT_GRAY);
+        controlsPanel.setBackground(new Color(202, 202, 202));
 
         searchField = new RoundJTextField(20, 10);
         searchField.setToolTipText("Buscar Conta...");

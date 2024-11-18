@@ -1,17 +1,15 @@
 package org.sysCondo.views;
 
-import com.itextpdf.text.*;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.sysCondo.components.RoundJButton;
 import org.sysCondo.components.RoundJTextField;
-import java.awt.Font;  // Importação correta para Swing
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -33,14 +31,14 @@ public class AccReceivableOverview extends JPanel {
         headerPanel.setLayout(new BorderLayout()); // Usar BorderLayout para organizar o título e os controles
 
         // Adicionar um título
-        JLabel titleLabel = new JLabel("Taxas", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("TAXAS", JLabel.CENTER);
         titleLabel.setFont(new java.awt.Font("Roboto Medium", Font.PLAIN, 30));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
         headerPanel.add(titleLabel, BorderLayout.NORTH); // Adiciona o título ao painel de cabeçalho
 
         // Painel de controle para busca e botões
         JPanel controlsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        controlsPanel.setBackground(Color.LIGHT_GRAY);
+        controlsPanel.setBackground(new Color(202, 202, 202));
 
         searchField = new RoundJTextField(20, 10);
         searchField.setToolTipText("Buscar taxa...");
