@@ -67,7 +67,7 @@ public class SideMenu {
                 new MenuItem("Solicitar manutenção", new CommonAreasMaintenence()),
                 new MenuItem("Solicitações realizadas", new CommonAreasMaintenenceRequests(parentFrame)),
                 new MenuItem("Áreas comuns", new CommonAreasFacilities()),
-                new MenuItem("Reservas", new ReservationOverview())  // Make sure this matches the class name
+                new MenuItem("Gerenciar Reservas", new ReservationOverview())  // Make sure this matches the class name
         };
         commonAreasOptionsPanel.createAdditionalOptionsPanel(commonAreasItems);
 

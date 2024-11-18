@@ -55,6 +55,10 @@ public class AccPayableOverview extends JPanel {
         JButton addButton = new RoundJButton("Adicionar Conta");
         addButton.addActionListener(e -> openAddAccountScreen());
 
+        JButton payButton = new RoundJButton("Pagar Conta");
+        payButton.addActionListener(e -> paySelectedAccount());
+        controlsPanel.add(payButton);
+
         Font labelFont = new Font("Roboto Medium", Font.PLAIN, 14); // Para os rótulos
 
         // Adicionar componentes ao painel de controles
@@ -66,6 +70,7 @@ public class AccPayableOverview extends JPanel {
 
         controlsPanel.add(exportButton);
         controlsPanel.add(addButton);
+        controlsPanel.add(payButton);
 
         headerPanel.add(controlsPanel, BorderLayout.SOUTH);
 
@@ -215,4 +220,25 @@ public class AccPayableOverview extends JPanel {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
+
+    private void paySelectedAccount() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) {
+            int modelRow = table.convertRowIndexToModel(selectedRow);
+            String currentStatus = tableModel.getValueAt(modelRow, 4).toString(); // Coluna 4: "Status"
+
+            if (currentStatus.equals("Pago")) {
+                JOptionPane.showMessageDialog(this, "Esta conta já está paga.");
+                return;
+            }
+
+            tableModel.setValueAt("Pago", modelRow, 4);
+            setStatusColors();
+            JOptionPane.showMessageDialog(this, "Conta marcada como paga com sucesso!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione uma conta para pagar.");
+        }
+    }
+
+
 }

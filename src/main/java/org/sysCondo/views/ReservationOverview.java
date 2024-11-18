@@ -25,7 +25,7 @@ public class ReservationOverview extends JPanel {
 
         // Header panel
         JPanel headerPanel = new JPanel(new BorderLayout());
-        JLabel titleLabel = new JLabel("RESERVAS", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("Gerenciar Reservas", JLabel.CENTER);
         titleLabel.setFont(new Font("Roboto Medium", Font.PLAIN, 30));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         headerPanel.add(titleLabel, BorderLayout.NORTH);
