@@ -43,15 +43,15 @@ public class SideMenu {
 
         AdditionalOptionsPanel accountsReceivableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] receivableItems = {
-                new MenuItem("Adicionar conta", new AccReceivableAdd()),
-                new MenuItem("Overview", new AccReceivableOverview())
+                new MenuItem("Adicionar taxa", new AccReceivableAdd()),
+                new MenuItem("Visão geral", new AccReceivableOverview())
         };
         accountsReceivableOptionsPanel.createAdditionalOptionsPanel(receivableItems);
 
         AdditionalOptionsPanel accountsPayableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] payableItems = {
-                new MenuItem("Adicionar conta", new AccPayableAdd()),
-                new MenuItem("Overview", new AccPayableOverview())
+                new MenuItem("Adicionar taxa", new AccPayableAdd()),
+                new MenuItem("Visão geral", new AccPayableOverview())
         };
         accountsPayableOptionsPanel.createAdditionalOptionsPanel(payableItems);
 
@@ -66,8 +66,13 @@ public class SideMenu {
         MenuItem[] commonAreasItems = {
                 new MenuItem("Solicitar manutenção", new CommonAreasMaintenence()),
                 new MenuItem("Solicitações realizadas", new CommonAreasMaintenenceRequests(parentFrame)),
+                new MenuItem("Gestão de manutenções", new CommonAreasMaintenenceOverview()),
                 new MenuItem("Áreas comuns", new CommonAreasFacilities()),
+<<<<<<< HEAD
                 new MenuItem("Gerenciar Reservas", new ReservationOverview())  // Make sure this matches the class name
+=======
+                new MenuItem("Gerenciar reservas", new ReservationOverview())  // Make sure this matches the class name
+>>>>>>> 3ba456da79e3386e9ce7357b364856eb47f481b5
         };
         commonAreasOptionsPanel.createAdditionalOptionsPanel(commonAreasItems);
 

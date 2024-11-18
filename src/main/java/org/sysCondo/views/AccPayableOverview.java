@@ -22,22 +22,24 @@ public class AccPayableOverview extends JPanel {
     private JTextField searchField;
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
+    private Runnable onCloseListener;
 
     public AccPayableOverview() {
         setLayout(new BorderLayout());
 
         // Painel para o título e controles
         JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(Color.WHITE);
 
         // Título
-        JLabel titleLabel = new JLabel("CONTAS A PAGAR", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("CONTAS", JLabel.CENTER);
         titleLabel.setFont(new java.awt.Font("Roboto Medium", java.awt.Font.PLAIN, 30));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
         headerPanel.add(titleLabel, BorderLayout.NORTH);
 
         // Painel de controles
         JPanel controlsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        controlsPanel.setBackground(Color.WHITE);
+        controlsPanel.setBackground(new Color(202, 202, 202));
 
         searchField = new RoundJTextField(20, 10);
         searchField.setToolTipText("Buscar Conta...");
@@ -55,9 +57,17 @@ public class AccPayableOverview extends JPanel {
         JButton addButton = new RoundJButton("Adicionar Conta");
         addButton.addActionListener(e -> openAddAccountScreen());
 
+<<<<<<< HEAD
         JButton payButton = new RoundJButton("Pagar Conta");
         payButton.addActionListener(e -> paySelectedAccount());
         controlsPanel.add(payButton);
+=======
+        JButton editButton = new RoundJButton("Editar taxa");
+        editButton.addActionListener(e -> openEditAccountScreen()); // Ação para editar a conta selecionada
+
+        JButton deleteButton = new RoundJButton("Apagar taxa");
+        deleteButton.addActionListener(e -> deleteSelectedAccount()); // Ação para excluir a conta selecionada
+>>>>>>> 3ba456da79e3386e9ce7357b364856eb47f481b5
 
         Font labelFont = new Font("Roboto Medium", Font.PLAIN, 14); // Para os rótulos
 
@@ -67,6 +77,8 @@ public class AccPayableOverview extends JPanel {
         controlsPanel.add(searchLabel);
         searchField.setFont(labelFont); // Alterar a fonte do campo de texto
         controlsPanel.add(searchField);
+        controlsPanel.add(editButton);
+        controlsPanel.add(deleteButton);
 
         controlsPanel.add(exportButton);
         controlsPanel.add(addButton);
@@ -77,11 +89,17 @@ public class AccPayableOverview extends JPanel {
         add(headerPanel, BorderLayout.NORTH);
 
         // Configuração da tabela
-        table = new JTable();
+        table = new JTable(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Torna todas as células não editáveis
+            }
+        };
         customizeTable();
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        scrollPane.setBackground(Color.WHITE);
         add(scrollPane, BorderLayout.CENTER);
 
         updateTable();
@@ -134,17 +152,17 @@ public class AccPayableOverview extends JPanel {
     }
 
     private void updateTable() {
-        String[] columnNames = {"Nome do Fornecedor", "Data de Vencimento", "Tipo de Despesa", "Valor da Conta", "Status"};
+        String[] columnNames = {"Nome do Fornecedor", "Data de Vencimento", "Valor da Conta", "Status"};
         Object[][] data = {
-                {"Aluguel de Escritório", "05/10/2024", "Aluguel", "R$ 2.000,00", "Pago"},
-                {"Conta de Energia", "15/10/2024", "Serviços", "R$ 500,00", "Pendente"},
-                {"Limpeza do Prédio", "25/10/2024", "Serviços", "R$ 300,00", "Atrasado"}
+                {"Aluguel de Escritório", "05/10/2024", "R$ 2.000,00", "Pago"},
+                {"Conta de Energia", "15/10/2024", "R$ 500,00", "Pendente"},
+                {"Limpeza do Prédio", "25/10/2024", "R$ 300,00", "Atrasado"}
         };
 
         tableModel = new DefaultTableModel(data, columnNames) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 4) { // Se for a coluna de status
+                if (columnIndex == 3) { // Se for a coluna de status
                     return String.class; // Retorna como String para cores
                 }
                 return super.getColumnClass(columnIndex);
@@ -156,7 +174,7 @@ public class AccPayableOverview extends JPanel {
 
         sorter.toggleSortOrder(0);
 
-        setStatusColors();
+        setStatusColors(); // Chama método para definir cores de status
     }
 
     private void setStatusColors() {
@@ -214,6 +232,10 @@ public class AccPayableOverview extends JPanel {
     private void openAddAccountScreen() {
         AccPayableAdd addScreen = new AccPayableAdd();
         JFrame frame = new JFrame("Adicionar Conta a Pagar");
+
+        // Configurar o listener para fechar o JFrame
+        addScreen.setOnCloseListener(frame::dispose);
+
         frame.setContentPane(addScreen);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();
@@ -221,6 +243,7 @@ public class AccPayableOverview extends JPanel {
         frame.setVisible(true);
     }
 
+<<<<<<< HEAD
     private void paySelectedAccount() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
@@ -241,4 +264,56 @@ public class AccPayableOverview extends JPanel {
     }
 
 
+=======
+
+    private void openEditAccountScreen() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow >= 0) {
+            // Pegar os dados da conta selecionada
+            String accountName = (String) table.getValueAt(selectedRow, 0);
+            String dueDate = (String) table.getValueAt(selectedRow, 1);
+            String amount = (String) table.getValueAt(selectedRow, 2);
+            String status = (String) table.getValueAt(selectedRow, 3);
+
+            // Validar os campos antes de adicionar
+            if (accountName.isEmpty() || dueDate.isEmpty() || amount.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Por favor, preencha todos os campos obrigatórios.",
+                        "Campos Obrigatórios",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
+            // Criar a tela de edição e passá-la para a janela
+            AccReceivableEdit editScreen = new AccReceivableEdit(accountName, dueDate, amount, status);
+            JFrame frame = new JFrame("Editar Conta");
+            frame.setContentPane(editScreen);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+
+            System.out.println("Nome: " + accountName);
+            System.out.println("Data: " + dueDate);
+            System.out.println("Valor: " + amount);
+            System.out.println("Status: " + status);
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, selecione uma conta para editar.");
+        }
+    }
+
+    private void deleteSelectedAccount() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow >= 0) {
+            int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja excluir esta conta?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                tableModel.removeRow(selectedRow); // Remove a conta da tabela
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, selecione uma conta para excluir.");
+        }
+    }
+>>>>>>> 3ba456da79e3386e9ce7357b364856eb47f481b5
 }

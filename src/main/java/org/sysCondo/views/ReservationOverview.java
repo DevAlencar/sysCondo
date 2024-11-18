@@ -8,8 +8,7 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 
 // Change this class to public
@@ -135,11 +134,38 @@ public class ReservationOverview extends JPanel {
                     reservation.getContato(),
                     reservation.getArea(),
                     reservation.getCodigoArea(),
-                    reservation.getData()
+                    reservation.getData(),
+                    reservation.getTimeSlot()
             });
         }
 
         tableModel.fireTableDataChanged(); // Notify table data changed
     }
+
+    public static List<String> getAvailableTimeSlots(String area, Date date) {
+        // Utilize Arrays.asList para garantir compatibilidade com versões anteriores
+        List<String> allTimeSlots = Arrays.asList(
+                "08:00 - 10:00",
+                "10:00 - 12:00",
+                "12:00 - 14:00",
+                "14:00 - 16:00",
+                "16:00 - 18:00",
+                "18:00 - 20:00"
+        );
+
+        List<String> reservedSlots = new ArrayList<>();
+        for (Reservation reservation : allReservations) {
+            if (reservation.getArea().equalsIgnoreCase(area) && reservation.getData().equals(date)) {
+                reservedSlots.add(reservation.getTimeSlot());
+            }
+        }
+
+        // Retorna os horários que ainda não foram reservados
+        List<String> availableSlots = new ArrayList<>(allTimeSlots);
+        availableSlots.removeAll(reservedSlots);
+
+        return availableSlots;
+    }
+
 
 }
