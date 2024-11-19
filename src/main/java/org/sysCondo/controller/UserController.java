@@ -24,6 +24,7 @@ public class UserController {
             user.setUserDocument(document);
             user.setUserRole(role);
             user.setUnitResidentialFk(residenceNumber);
+            user.setUserPassword(document);
 
             session.save(user); // Salva o usuário primeiro para gerar um ID
             session.flush(); // Garante que o ID seja gerado imediatamente
