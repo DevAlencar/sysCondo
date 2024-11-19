@@ -242,7 +242,7 @@ public class CommonAreasFacilities extends JPanel {
 
                 boolean isAvailable = ReservationOverview.getAvailableTimeSlots(areaName, selectedDate).contains(selectedTimeSlot);
                 if (isAvailable) {
-                    Reservation newReservation = new Reservation(nome, endereco, contato, areaName, areaCode, selectedDate, selectedTimeSlot);
+                    Reservation newReservation = new Reservation(nome, endereco, contato, areaName, areaCode, selectedDate, selectedTimeSlot, "Pendente");
                     ReservationOverview.addReservation(newReservation);
                     JOptionPane.showMessageDialog(reservationFrame, "Reserva confirmada!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                     reservationFrame.dispose();
@@ -274,24 +274,24 @@ public class CommonAreasFacilities extends JPanel {
     }
 
     private void initializeReservations() {
-        ReservationOverview.addReservation(new Reservation("João Silva", "Rua A", "123456789", "Piscina", "0001", new Date(), "10:00 - 11:00"));
-        ReservationOverview.addReservation(new Reservation("Maria Oliveira", "Rua B", "987654321", "Quadra Poliesportiva", "0002", new Date(), "14:00 - 15:00"));
-        ReservationOverview.addReservation(new Reservation("Carlos Pereira", "Rua C", "456123789", "Academia", "0003", new Date(), "07:00 - 08:00"));
-        ReservationOverview.addReservation(new Reservation("Ana Costa", "Rua D", "789456123", "Churrasqueira", "0004", new Date(), "12:00 - 14:00"));
-        ReservationOverview.addReservation(new Reservation("Pedro Santos", "Rua E", "321654987", "Salão de eventos", "0005", new Date(), "18:00 - 22:00"));
-        ReservationOverview.addReservation(new Reservation("Laura Lima", "Rua F", "654321987", "Sala de reuniões", "0006", new Date(), "09:00 - 10:00"));
-        ReservationOverview.addReservation(new Reservation("Mariana Rocha", "Rua G", "963852741", "Sala de Jogos", "0007", new Date(), "16:00 - 17:00"));
-        ReservationOverview.addReservation(new Reservation("Felipe Almeida", "Rua H", "147258369", "Brinquedoteca", "0008", new Date(), "10:00 - 11:00"));
-        ReservationOverview.addReservation(new Reservation("Camila Ferreira", "Rua I", "258369147", "SPA e Sauna", "0009", new Date(), "15:00 - 17:00"));
-        ReservationOverview.addReservation(new Reservation("Lucas Gomes", "Rua J", "369258147", "Espaço gourmet", "0010", new Date(), "19:00 - 21:00"));
-        ReservationOverview.addReservation(new Reservation("Fernanda Ribeiro", "Rua K", "456789123", "Piscina", "0011", new Date(), "11:00 - 12:00"));
-        ReservationOverview.addReservation(new Reservation("Tiago Martins", "Rua L", "987123654", "Salão de festas", "0012", new Date(), "17:00 - 21:00"));
-        ReservationOverview.addReservation(new Reservation("Roberta Mendes", "Rua M", "654789321", "Piscina", "0013", new Date(), "13:00 - 14:00"));
-        ReservationOverview.addReservation(new Reservation("Vinícius Costa", "Rua N", "321789654", "Churrasqueira", "0014", new Date(), "12:00 - 14:00"));
-        ReservationOverview.addReservation(new Reservation("Juliana Almeida", "Rua O", "852741963", "Churrasqueira", "0015", new Date(), "14:00 - 16:00"));
-        ReservationOverview.addReservation(new Reservation("Rafael Lima", "Rua P", "789123456", "Quadra Poliesportiva", "0016", new Date(), "16:00 - 17:00"));
-        ReservationOverview.addReservation(new Reservation("Sofia Santos", "Rua Q", "147852369", "Sala de Jogos", "0017", new Date(), "17:00 - 18:00"));
-        ReservationOverview.addReservation(new Reservation("Gabriel Souza", "Rua R", "963741258", "Quadra Poliesportiva", "0018", new Date(), "15:00 - 16:00"));
+        ReservationOverview.addReservation(new Reservation("João Silva", "Rua A", "123456789", "Piscina", "0001", new Date(), "10:00 - 11:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Maria Oliveira", "Rua B", "987654321", "Quadra Poliesportiva", "0002", new Date(), "14:00 - 15:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Carlos Pereira", "Rua C", "456123789", "Academia", "0003", new Date(), "07:00 - 08:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Ana Costa", "Rua D", "789456123", "Churrasqueira", "0004", new Date(), "12:00 - 14:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Pedro Santos", "Rua E", "321654987", "Salão de eventos", "0005", new Date(), "18:00 - 22:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Laura Lima", "Rua F", "654321987", "Sala de reuniões", "0006", new Date(), "09:00 - 10:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Mariana Rocha", "Rua G", "963852741", "Sala de Jogos", "0007", new Date(), "16:00 - 17:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Felipe Almeida", "Rua H", "147258369", "Brinquedoteca", "0008", new Date(), "10:00 - 11:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Camila Ferreira", "Rua I", "258369147", "SPA e Sauna", "0009", new Date(), "15:00 - 17:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Lucas Gomes", "Rua J", "369258147", "Espaço gourmet", "0010", new Date(), "19:00 - 21:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Fernanda Ribeiro", "Rua K", "456789123", "Piscina", "0011", new Date(), "11:00 - 12:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Tiago Martins", "Rua L", "987123654", "Salão de festas", "0012", new Date(), "17:00 - 21:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Roberta Mendes", "Rua M", "654789321", "Piscina", "0013", new Date(), "13:00 - 14:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Vinícius Costa", "Rua N", "321789654", "Churrasqueira", "0014", new Date(), "12:00 - 14:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Juliana Almeida", "Rua O", "852741963", "Churrasqueira", "0015", new Date(), "14:00 - 16:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Rafael Lima", "Rua P", "789123456", "Quadra Poliesportiva", "0016", new Date(), "16:00 - 17:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Sofia Santos", "Rua Q", "147852369", "Sala de Jogos", "0017", new Date(), "17:00 - 18:00", "Pendente"));
+        ReservationOverview.addReservation(new Reservation("Gabriel Souza", "Rua R", "963741258", "Quadra Poliesportiva", "0018", new Date(), "15:00 - 16:00", "Pendente"));
     }
 
 }

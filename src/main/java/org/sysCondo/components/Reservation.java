@@ -10,8 +10,9 @@ public class Reservation {
     private String codigoArea;
     private Date data;
     private String timeSlot;
+    private String status;
 
-    public Reservation(String solicitante, String endereco, String contato, String area, String codigoArea, Date data, String timeSlot) {
+    public Reservation(String solicitante, String endereco, String contato, String area, String codigoArea, Date data, String timeSlot, String status) {
         this.solicitante = solicitante;
         this.endereco = endereco;
         this.contato = contato;
@@ -19,6 +20,7 @@ public class Reservation {
         this.codigoArea = codigoArea;
         this.data = data;
         this.timeSlot = timeSlot;
+        this.status = status;
     }
 
     // Getters para acessar os dados de reserva
@@ -29,4 +31,9 @@ public class Reservation {
     public String getCodigoArea() { return codigoArea; }
     public Date getData() { return data; }
     public String getTimeSlot() {return timeSlot; }
+    public String getStatus() {return status; }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

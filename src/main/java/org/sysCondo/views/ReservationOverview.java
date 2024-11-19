@@ -1,6 +1,8 @@
 package org.sysCondo.views;
 
 import org.sysCondo.components.Reservation;
+import org.sysCondo.components.RoundJButton;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -45,10 +47,18 @@ public class ReservationOverview extends JPanel {
         controlsPanel.add(searchField);
         headerPanel.add(controlsPanel, BorderLayout.SOUTH);
 
+        JButton confirmButton = new RoundJButton("Confirmar");
+        confirmButton.addActionListener(e -> confirmSelectedAccount());
+        controlsPanel.add(confirmButton);
+
+        JButton canceleButton = new RoundJButton("Cancelar");
+        canceleButton.addActionListener(e -> canceleSelectedAccount());
+        controlsPanel.add(canceleButton);
+
         add(headerPanel, BorderLayout.NORTH);
 
         // Table setup
-        tableModel = new DefaultTableModel(new String[]{"Solicitante", "Endereço", "Contato", "Área", "Cód.", "Data da Reserva"}, 0);
+        tableModel = new DefaultTableModel(new String[]{"Solicitante", "Endereço", "Contato", "Área", "Cód.", "Data da Reserva", "Status"}, 0);
         reservationsTable = new JTable(tableModel);
         customizeTable();
 
@@ -65,14 +75,26 @@ public class ReservationOverview extends JPanel {
     private void customizeTable() {
         reservationsTable.setRowHeight(30);
         reservationsTable.setFont(new Font("Roboto", Font.PLAIN, 14));
+        reservationsTable.setFillsViewportHeight(true);
+        reservationsTable.setGridColor(new Color(230, 230, 230));
+        reservationsTable.setShowGrid(true);
+
         reservationsTable.getTableHeader().setFont(new Font("Roboto Bold", Font.PLAIN, 16));
-        reservationsTable.getTableHeader().setBackground(new Color(0, 132, 96));
+        reservationsTable.getTableHeader().setBackground(new Color(26, 135, 255));
         reservationsTable.getTableHeader().setForeground(Color.WHITE);
 
+        // Centraliza o conteúdo das células
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         reservationsTable.setDefaultRenderer(Object.class, centerRenderer);
+
+        // Adiciona editor para a coluna de Status
+        reservationsTable.getColumnModel().getColumn(6).setCellEditor(
+                new DefaultCellEditor(new JComboBox<>(new String[]{"Confirmada", "Cancelada"}))
+        );
+        setStatusColors();
     }
+
 
     private void filterTable(String query) {
         if (sorter != null) {
@@ -90,18 +112,17 @@ public class ReservationOverview extends JPanel {
                     reservation.getContato(),
                     reservation.getArea(),
                     reservation.getCodigoArea(),
-                    reservation.getData()
+                    reservation.getData(),
+                    reservation.getStatus()
             });
         }
         tableModel.fireTableDataChanged();
-        // Ordena a tabela pela coluna desejada (exemplo: coluna 3 que é a área)
-        // Create a list for the sort keys
-        List<RowSorter.SortKey> sortKeys = new ArrayList<>();
-        // Add the sort key for the column you want to sort (e.g., index 3 for "Área")
-        sortKeys.add(new RowSorter.SortKey(3, SortOrder.ASCENDING)); // Change 3 to the index of your desired column
 
-        // Set the sort keys to the sorter
+        // Ordena a tabela pela coluna desejada
+        List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+        sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING)); // Coluna "Solicitante"
         sorter.setSortKeys(sortKeys);
+        setStatusColors();
     }
 
     public static void addReservation(Reservation reservation) {
@@ -113,34 +134,23 @@ public class ReservationOverview extends JPanel {
     }
 
     public void updateTableByArea(String areaName) {
-        tableModel.setRowCount(0); // Clear the current table
-        List<Reservation> filteredReservations = new ArrayList<>();
-
-        // Filter reservations by area
-        for (Reservation reservation : allReservations) {
-            if (reservation.getArea().equalsIgnoreCase(areaName)) {
-                filteredReservations.add(reservation);
-            }
-        }
-
-        // Sort the filtered reservations by area name
-        filteredReservations.sort(Comparator.comparing(Reservation::getArea));
-
-        // Populate the table with sorted reservations
-        for (Reservation reservation : filteredReservations) {
-            tableModel.addRow(new Object[]{
-                    reservation.getSolicitante(),
-                    reservation.getEndereco(),
-                    reservation.getContato(),
-                    reservation.getArea(),
-                    reservation.getCodigoArea(),
-                    reservation.getData(),
-                    reservation.getTimeSlot()
-            });
-        }
-
-        tableModel.fireTableDataChanged(); // Notify table data changed
+        tableModel.setRowCount(0);
+        allReservations.stream()
+                .filter(reservation -> reservation.getArea().equalsIgnoreCase(areaName))
+                .sorted(Comparator.comparing(Reservation::getArea))
+                .forEach(reservation -> tableModel.addRow(new Object[]{
+                        reservation.getSolicitante(),
+                        reservation.getEndereco(),
+                        reservation.getContato(),
+                        reservation.getArea(),
+                        reservation.getCodigoArea(),
+                        reservation.getData(),
+                        reservation.getStatus()
+                }));
+        tableModel.fireTableDataChanged();
+        setStatusColors();
     }
+
 
     public static List<String> getAvailableTimeSlots(String area, Date date) {
         // Utilize Arrays.asList para garantir compatibilidade com versões anteriores
@@ -166,6 +176,88 @@ public class ReservationOverview extends JPanel {
 
         return availableSlots;
     }
+
+    private void setStatusColors() {
+        reservationsTable.getColumnModel().getColumn(6).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                if (value != null) {
+                    String status = value.toString();
+
+                    // Define a cor de fundo com base no status
+                    switch (status) {
+                        case "Confirmado":
+                            label.setBackground(new Color(145, 255, 145));  // Verde
+                            break;
+                        case "Pendente":
+                            label.setBackground(new Color(245, 255, 145));  // Amarelo
+                            break;
+                        case "Cancelado":
+                            label.setBackground(new Color(255, 145, 145));  // Vermelho
+                            break;
+                        default:
+                            label.setBackground(Color.WHITE);  // Padrão
+                            break;
+                    }
+                }
+
+                // Ajustar seleção para não sobrescrever a cor
+                if (isSelected) {
+                    label.setBackground(label.getBackground().darker());
+                }
+
+                label.setOpaque(true);
+                return label;
+            }
+        });
+    }
+
+
+
+
+    private void confirmSelectedAccount() {
+        int selectedRow = reservationsTable.getSelectedRow();
+        if (selectedRow != -1) {
+            int modelRow = reservationsTable.convertRowIndexToModel(selectedRow);
+            String currentStatus = tableModel.getValueAt(modelRow, 6).toString();
+
+            if (currentStatus.equals("Confirmado")) {
+                JOptionPane.showMessageDialog(this, "Esta conta já está confirmada.");
+                return;
+            }
+
+            tableModel.setValueAt("Confirmado", modelRow, 6);
+            setStatusColors(); // Atualiza cores
+            JOptionPane.showMessageDialog(this, "Conta confirmada com sucesso!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione uma conta para confirmar.");
+        }
+    }
+
+    private void canceleSelectedAccount() {
+        int selectedRow = reservationsTable.getSelectedRow();
+        if (selectedRow != -1) {
+            int modelRow = reservationsTable.convertRowIndexToModel(selectedRow);
+            String currentStatus = tableModel.getValueAt(modelRow, 6).toString(); // Índice da coluna de Status
+
+            // Verifica se o status já está como "Cancelado"
+            if (currentStatus.equals("Cancelado")) {
+                JOptionPane.showMessageDialog(this, "Esta conta já está cancelada.");
+                return;
+            }
+
+            // Atualiza o status para "Cancelado"
+            tableModel.setValueAt("Cancelado", modelRow, 6);
+            setStatusColors();  // Atualiza as cores de status
+            reservationsTable.repaint();  // Força o redesenho da tabela para aplicar as novas cores
+            JOptionPane.showMessageDialog(this, "Conta cancelada com sucesso!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione uma conta para cancelar.");
+        }
+    }
+
 
 
 }
