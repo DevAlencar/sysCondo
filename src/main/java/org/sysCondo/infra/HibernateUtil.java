@@ -28,10 +28,6 @@ public class HibernateUtil {
             String dbUsername = dotenv.get("DB_USER");
             String dbPassword = dotenv.get("DB_PASS");
 
-            System.out.println("DB_NAME: " + dbUrl);
-            System.out.println("DB_USERNAME: " + dbUsername);
-            System.out.println("DB_PASSWORD: " + dbPassword);
-
             Configuration configuration = new Configuration();
             configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
             configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");

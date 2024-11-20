@@ -10,6 +10,7 @@ import org.sysCondo.model.userTaxPayed.UserTaxPayed;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 public class UserTaxPayedController {
@@ -78,8 +79,8 @@ public class UserTaxPayedController {
 
     public String obterStatusTaxa(Long usuarioId, int taxaId) {
         Session session = HibernateUtil.getSession();
-        String status = "A Pagar";
-
+        TaxController taxController = new TaxController();
+        String status = "A pagar";
 
         try {
             // A consulta HQL agora assume que você tem a relação correta nas entidades
@@ -92,12 +93,16 @@ public class UserTaxPayedController {
                     .setParameter("taxaId", taxaId)
                     .uniqueResult();
             if (count != null && count > 0) {
-                status = "Paga";
+                status = "Pago";
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             session.close();
+        }
+
+        if(status.equals("A pagar") && taxController.getTaxById(taxaId).getFinishDate().isAfter(LocalDate.now())){
+            status = "Atrasado";
         }
 
         return status;

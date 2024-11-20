@@ -51,9 +51,6 @@ public class AccReceivableAdd extends JPanel {
         gbc.gridy = 1;
         taxFinishDateInput = createAndAddInputField(formContainer, gbc,"Data de Vencimento (dd/mm/aaaa)");
         gbc.gridy = 2;
-        taxStatusInput = getComboBoxContainer("Status", new String[]{"Pago", "A pagar", "Atrasado"});
-        formContainer.add(taxStatusInput, gbc);
-        gbc.gridy = 3;
         taxValueInput = createAndAddInputField(formContainer, gbc,"Valor da taxa");
 
         // Centralizar o formulário

@@ -3,6 +3,9 @@ package org.sysCondo.views;
 import org.sysCondo.components.RoundJButton;
 import org.sysCondo.components.RoundJPasswordField;
 import org.sysCondo.components.RoundJTextField;
+import org.sysCondo.components.Session;
+import org.sysCondo.controller.AuthenticationController;
+import org.sysCondo.model.user.User;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -70,10 +73,17 @@ public class LoginScreen extends JPanel {
         RoundJButton loginButton = new RoundJButton("Conecte-se");
 
         loginButton.addActionListener(e -> { // aqui vai ser a parte da validação e envio dos dados @arthur
-            SysCondoMainScreen mainScreen = new SysCondoMainScreen(parentFrame);
-            parentFrame.setContentPane(mainScreen);
-            parentFrame.revalidate();
-            parentFrame.repaint();
+            AuthenticationController authenticationController = new AuthenticationController();
+            User user = authenticationController.login(userField.getText(), passwordField.getText());
+            if(user == null){
+                //adicionar aviso de senha ou documento errado
+            }else{
+                Session.setCurrentUser(user);
+                SysCondoMainScreen mainScreen = new SysCondoMainScreen(parentFrame);
+                parentFrame.setContentPane(mainScreen);
+                parentFrame.revalidate();
+                parentFrame.repaint();
+            }
         });
         buttonPanel.add(loginButton);
 
