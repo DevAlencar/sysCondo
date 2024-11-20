@@ -1,6 +1,8 @@
 package org.sysCondo.views;
 
 import org.sysCondo.components.RoundJButton;
+import org.sysCondo.controller.MaintenanceController;
+import org.sysCondo.model.maintenance.Maintenance;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -39,7 +41,16 @@ public class CommonAreasMaintenenceRequests extends JPanel {
         cardsPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Centralizar cardsPanel
 
         // Criar e adicionar alguns cards de exemplo
-        List<CommonAreasMaintenenceRequests.CardData> cardDataList = createDummyCardData();
+        //List<CommonAreasMaintenenceRequests.CardData> cardDataList = createDummyCardData();
+        MaintenanceController maintenanceController = new MaintenanceController();
+        // retorna as manutenções do usuário logado
+        List<Maintenance> maintenances = maintenanceController.getMaintenancesByUserDocument("123456789");
+        List<CommonAreasMaintenenceRequests.CardData> cardDataList = new ArrayList<>();
+
+        for (Maintenance maintenance : maintenances) {
+            cardDataList.add(new CommonAreasMaintenenceRequests.CardData(maintenance.getCommonAreaMaintenanceFk().getCommonAreaName(), maintenance.getType(), maintenance.getStatus(), maintenance.getCreatedAt().toString(), new ArrayList<>()));
+        }
+
         for (CommonAreasMaintenenceRequests.CardData cardData : cardDataList) {
             JPanel card = createCard(cardData);
             cardsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -72,7 +83,7 @@ public class CommonAreasMaintenenceRequests extends JPanel {
 
         card.addMouseListener(new MouseAdapter() {
             @Override
-           public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 // se o card possuir status em progresso ou concluida, o user pode acessar os custos associados, caso contrario, recebe mensagem de alerta
                 if (!cardData.status.equals("Aguardando aprovação") && !cardData.status.equals("Cancelada")) {
                     showCardDetailsDialog(parentFrame, cardData);
@@ -241,5 +252,15 @@ public class CommonAreasMaintenenceRequests extends JPanel {
         public String getValue() {
             return "R$ " + value;
         }
+    }
+
+    // main
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Solicitações de manutenção");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.add(new CommonAreasMaintenenceRequests(frame));
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 }

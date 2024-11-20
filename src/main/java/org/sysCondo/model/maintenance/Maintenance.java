@@ -7,6 +7,7 @@ import org.sysCondo.model.cost.Cost;
 import org.sysCondo.model.user.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,4 +37,9 @@ public class Maintenance {
 
     @Column(name = "type")
     private String type;
+
+    // created at
+    @Column(name = "created_at") // date time
+    private LocalDateTime createdAt;
+
 }

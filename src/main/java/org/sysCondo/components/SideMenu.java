@@ -50,8 +50,8 @@ public class SideMenu {
 
         AdditionalOptionsPanel accountsPayableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] payableItems = {
-                new MenuItem("Adicionar conta", new AccPayableAdd()),
-                new MenuItem("Overview", new AccPayableOverview())
+                new MenuItem("Adicionar taxa", new AccPayableAdd()),
+                new MenuItem("Visão geral", new AccPayableOverview())
         };
         accountsPayableOptionsPanel.createAdditionalOptionsPanel(payableItems);
 
@@ -66,8 +66,9 @@ public class SideMenu {
         MenuItem[] commonAreasItems = {
                 new MenuItem("Solicitar manutenção", new CommonAreasMaintenence()),
                 new MenuItem("Solicitações realizadas", new CommonAreasMaintenenceRequests(parentFrame)),
+                new MenuItem("Gestão de manutenções", new CommonAreasMaintenenceOverview()),
                 new MenuItem("Áreas comuns", new CommonAreasFacilities()),
-                new MenuItem("Gerenciar reservas", new ReservationOverview())  // Make sure this matches the class name
+                new MenuItem("Gerenciar reservas", new ReservationOverview()) // Certifique-se de que essa classe existe
         };
         commonAreasOptionsPanel.createAdditionalOptionsPanel(commonAreasItems);
 
@@ -96,14 +97,41 @@ public class SideMenu {
         sideMenu.add(reservationButton);
         sideMenu.add(commonAreasOptionsPanel.getPanel());
 
-        //sideMenu.add(createSideMenuButton("Manutenções", "src/main/java/org/sysCondo/assets/maintenance.png"));
-
         JButton commsButton = createSideMenuButton("Comunicação", "src/main/java/org/sysCondo/assets/chat.png", commsOptionsPanel);
         sideMenu.add(commsButton);
         sideMenu.add(commsOptionsPanel.getPanel());
 
+        JButton reportsButton = createSideMenuButton("Gerar relatórios", "src/main/java/org/sysCondo/assets/reports.png", null);
+        reportsButton.addActionListener(e -> {
+            // Criando o Reports como um JDialog
+            Reports reports = new Reports(parentFrame); // Certifique-se de que a classe Reports aceita um JFrame no construtor
+
+            // Criando o JDialog para exibir os relatórios
+            JDialog reportsDialog = new JDialog(parentFrame, "Relatórios", true);
+            reportsDialog.setLayout(new BorderLayout());
+            reportsDialog.add(reports, BorderLayout.CENTER);
+
+            // Definindo o tamanho e outras propriedades do JDialog
+            reportsDialog.setSize(800, 600);  // Ajuste o tamanho conforme necessário
+            reportsDialog.setLocationRelativeTo(parentFrame); // Centraliza o pop-up
+            reportsDialog.setVisible(true); // Torna o JDialog visível
+        });
+        sideMenu.add(reportsButton);
+
+
+
+//        // Adicionando o JScrollPane
+//        JScrollPane scrollPane = new JScrollPane(sideMenu);
+//        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+//        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Suaviza o scrolling
+//
+//        JPanel container = new JPanel(new BorderLayout());
+//        container.add(scrollPane, BorderLayout.CENTER);
+
         return sideMenu;
     }
+
 
     private JButton createSideMenuButton(String text, String iconPath, AdditionalOptionsPanel optionsPanel) {
         ImageIcon icon = new ImageIcon(iconPath);

@@ -7,6 +7,8 @@ import org.sysCondo.infra.HibernateUtil;
 import org.sysCondo.model.commonArea.CommonArea;
 import org.sysCondo.model.maintenance.Maintenance;
 import org.sysCondo.model.user.User;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class MaintenanceController {
@@ -21,6 +23,9 @@ public class MaintenanceController {
             maintenance.setCommonAreaMaintenanceFk(commonAreaMaintenance);
             maintenance.setStatus(status);
             maintenance.setType(type);
+            // maintenance.setCreatedAt com a data e horario formatada
+            // data e hora formata
+            maintenance.setCreatedAt(LocalDateTime.now());
 
             session.save(maintenance);
             transaction.commit();

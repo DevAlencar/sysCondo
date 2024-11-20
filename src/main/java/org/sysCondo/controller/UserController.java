@@ -12,7 +12,7 @@ import java.util.List;
 
 public class UserController {
 
-    public void createUser(String name, String contact, String document, UserRole role, String residenceNumber, List<Vehicle> vehicles) {
+    public User createUser(String name, String contact, String document, UserRole role, String residenceNumber, List<Vehicle> vehicles) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
@@ -26,6 +26,7 @@ public class UserController {
             user.setUnitResidentialFk(residenceNumber);
             user.setUserPassword(document);
 
+
             session.save(user); // Salva o usuário primeiro para gerar um ID
             session.flush(); // Garante que o ID seja gerado imediatamente
 
@@ -36,12 +37,14 @@ public class UserController {
             }
 
             transaction.commit();
+            return user;
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
             e.printStackTrace();
         } finally {
             session.close();
         }
+        return null;
     }
 
 

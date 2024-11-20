@@ -1,12 +1,20 @@
 package org.sysCondo.views;
 
 import org.sysCondo.components.RoundJButton;
+import org.sysCondo.controller.CommonAreaController;
+import org.sysCondo.controller.MaintenanceController;
+import org.sysCondo.controller.UserController;
+import org.sysCondo.model.commonArea.CommonArea;
+import org.sysCondo.model.user.User;
+import org.sysCondo.model.user.UserRole;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommonAreasMaintenence extends JPanel {
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -37,7 +45,18 @@ public class CommonAreasMaintenence extends JPanel {
 
         // Adicionar campos ao formulário
         gbc.gridy = 0;
-        JComboBox<String> area = getComboBoxContainer("Área", new String[]{"Piscina", "Churrasqueira", "Quadra poli-esportiva", "Quadra tênis"}); // TODO: esse combobox tem q possuir o objeto da área comum retornado do banco {id, nome, etc}
+
+        CommonAreaController commonAreaController = new CommonAreaController();
+        // retorna as áreas comuns salvas no banco
+        List<CommonArea> commonAreas = commonAreaController.getAllCommonAreas();
+        String[] commonAreasNames = new String[commonAreas.size()];
+        for (CommonArea commonArea : commonAreas) {
+            System.out.println(commonArea.getCommonAreaName());
+            commonAreasNames[commonAreas.indexOf(commonArea)] = commonArea.getCommonAreaName();
+        }
+
+        JComboBox<String> area = getComboBoxContainer("Área", commonAreasNames);
+
         // Adicionar o campo de data
         gbc.gridy = 1;
         JComboBox<String> maintenence = getComboBoxContainer("Tipo de manutenção", new String[]{"Tipo 1", "Tipo 2", "Tipo 3"});
@@ -58,6 +77,20 @@ public class CommonAreasMaintenence extends JPanel {
 
         // Exibe a janela
         setVisible(true);
+
+        MaintenanceController maintenanceController = new MaintenanceController();
+
+        // Cria um usuário para testar
+        // TODO: remover após implementar a autenticação, pois o usuário é definido a partir do login
+        UserController userController = new UserController();
+        User teste = userController.getUserByDocument("123456789");
+
+        // onclick botão de enviar
+        submitButton.addActionListener(e -> {
+            maintenanceController.createMaintenance(teste, commonAreas.get(area.getSelectedIndex()), "Em progresso", maintenence.getSelectedItem().toString());
+        });
+
+
     }
 
     private JComboBox<String> getComboBoxContainer(String label, String[] options) {
@@ -91,5 +124,13 @@ public class CommonAreasMaintenence extends JPanel {
         formContainer.add(comboBoxContainer, gbc);
 
         return comboBox;
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Solicitar manutenção de área comum");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.add(new CommonAreasMaintenence());
+        frame.setVisible(true);
     }
 }

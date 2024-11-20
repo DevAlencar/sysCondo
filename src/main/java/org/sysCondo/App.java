@@ -20,5 +20,17 @@ public class App {
         UserController userController = new UserController();
 
         DevUtil.clearAllData();
+
+        // cria um usuário
+        User user = userController.createUser("João", "11999999999", "123456789", UserRole.USER, "101", null);
+
+        // cria as áreas comuns
+        CommonAreaController commonAreaController = new CommonAreaController();
+        commonAreaController.createCommonArea("Salão de festas");
+        commonAreaController.createCommonArea("Churrasqueira");
+        commonAreaController.createCommonArea("Piscina");
+        commonAreaController.createCommonArea("Academia");
+        commonAreaController.createCommonArea("Quadra de esportes");
+
     }
 }
