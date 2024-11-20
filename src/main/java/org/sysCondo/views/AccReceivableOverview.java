@@ -164,7 +164,7 @@ public class AccReceivableOverview extends JPanel {
         UserTaxPayedController userTaxPayedController = new UserTaxPayedController();
         UserController userController = new UserController();
         //usuario tem que ta logado
-        User currentUser = userController.getUserById(1L);//Session.getCurrentUser();
+        User currentUser = Session.getCurrentUser();
         List<Tax> taxes = taxController.getAllTaxes();
         String[] columnNames = {"Id", "Nome da Taxa", "Data de Vencimento", "Valor da Taxa", "Status"};
         Object[][] data = taxes.stream()
@@ -291,7 +291,7 @@ public class AccReceivableOverview extends JPanel {
         TaxController taxController = new TaxController();
         UserController userController = new UserController();
         //usuario tem que ta logado
-        User currentUser = userController.getUserById(1L);//Session.getCurrentUser();
+        User currentUser = Session.getCurrentUser();
         int selectedRow = table.getSelectedRow();
         if (selectedRow >= 0) {
             int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja pagar esta taxa?", "Confirmar Pagamento", JOptionPane.YES_NO_OPTION);
