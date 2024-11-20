@@ -24,6 +24,13 @@ public class HibernateUtil {
     private static SessionFactory buildSessionFactory() {
         try {
             Dotenv dotenv = Dotenv.load();
+            String dbUrl = dotenv.get("DB_NAME");
+            String dbUsername = dotenv.get("DB_USER");
+            String dbPassword = dotenv.get("DB_PASS");
+
+            System.out.println("DB_NAME: " + dbUrl);
+            System.out.println("DB_USERNAME: " + dbUsername);
+            System.out.println("DB_PASSWORD: " + dbPassword);
 
             Configuration configuration = new Configuration();
             configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");

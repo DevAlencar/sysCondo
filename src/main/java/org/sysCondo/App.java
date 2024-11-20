@@ -10,7 +10,10 @@ import org.sysCondo.model.maintenance.Maintenance;
 import org.sysCondo.model.user.User;
 import org.sysCondo.model.user.UserRole;
 import org.sysCondo.model.commonArea.CommonArea;
+import org.sysCondo.views.LoginScreen;
 
+import javax.swing.*;
+import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.List;
 public class App {
@@ -31,6 +34,17 @@ public class App {
         commonAreaController.createCommonArea("Piscina");
         commonAreaController.createCommonArea("Academia");
         commonAreaController.createCommonArea("Quadra de esportes");
+        // cria a aplicação, iniciando com a tela de login
+        JFrame app = new JFrame();
+        LoginScreen loginScreen = new LoginScreen(app);
+        app.setTitle("SysCondo");
+        app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        app.setMinimumSize(new Dimension(1200, 800));
+        app.setLocationRelativeTo(null); // Centraliza a janela
+        app.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        app.add(loginScreen);
+
+        app.setVisible(true);
 
     }
 }

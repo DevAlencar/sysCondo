@@ -5,25 +5,23 @@ import org.sysCondo.components.RoundJPasswordField;
 import org.sysCondo.components.RoundJTextField;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 
-public class LoginScreen {
-
-    public static void main(String[] args) {
-        // Cria o JFrame (janela principal)
-        JFrame frame = new JFrame("Login");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 300);
-        frame.setLocationRelativeTo(null);
-
+public class LoginScreen extends JPanel {
+    private RoundJTextField userField;
+    private RoundJTextField passwordField;
+    public LoginScreen(JFrame parentFrame) {
         // Cria o painel principal com GridBagLayout
+        setLayout(new BorderLayout());
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBackground(Color.WHITE);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(10, 10, 10, 10); // Espaçamento entre os componentes
+        GridBagConstraints mainPanelGbc = new GridBagConstraints();
+        mainPanelGbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanelGbc.anchor = GridBagConstraints.CENTER;
+        mainPanelGbc.insets = new Insets(10, 10, 10, 10); // Espaçamento entre os componentes
 
         // Criando um painel de títulos
         JPanel titlePanel = new JPanel();
@@ -42,57 +40,73 @@ public class LoginScreen {
         titlePanel.add(subtitleLabel);
 
         // Adiciona o painel de títulos ao painel principal
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        mainPanel.add(titlePanel, gbc);
+        mainPanelGbc.gridx = 0;
+        mainPanel.add(titlePanel, mainPanelGbc);
 
         // Cria o painel do formulário
-        JPanel formPanel = new JPanel();
-        formPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        formPanel.setBackground(Color.WHITE);
-        formPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Centraliza o formulário
+        JPanel formContainer = new JPanel(new GridBagLayout());
+        formContainer.setBackground(Color.WHITE);
+        formContainer.setPreferredSize(new Dimension(200, 200)); // Define a largura e altura do formulário
+        GridBagConstraints formContainerGbc = new GridBagConstraints();
+        formContainerGbc.fill = GridBagConstraints.HORIZONTAL;
+        formContainerGbc.insets = new Insets(5, 0, 5, 0);
+        formContainerGbc.gridx = 0;
+        formContainerGbc.weightx = 1.0;
 
         // Componentes do formulário
-        JLabel cpfLabel = new JLabel("CPF:");
-        RoundJTextField cpfField = new RoundJTextField(15, 15);
-        JLabel senhaLabel = new JLabel("Senha:");
-        RoundJPasswordField senhaField = new RoundJPasswordField(15, 15);
-
-        formPanel.add(cpfLabel);
-        formPanel.add(cpfField);
-        formPanel.add(senhaLabel);
-        formPanel.add(senhaField);
+        formContainerGbc.gridy = 0;
+        userField = createAndAddInputField(formContainer, formContainerGbc, "CPF");
+        formContainerGbc.gridy = 1;
+        passwordField = createAndAddInputField(formContainer, formContainerGbc, "Senha");
 
         // Adiciona o painel do formulário ao painel principal
-        gbc.gridy = 1;
-        mainPanel.add(formPanel, gbc);
+        mainPanelGbc.gridy = 1;
+        mainPanel.add(formContainer, mainPanelGbc);
 
         // Cria e adiciona o botão
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Centraliza o botão
         RoundJButton loginButton = new RoundJButton("Conecte-se");
+
+        loginButton.addActionListener(e -> { // aqui vai ser a parte da validação e envio dos dados @arthur
+            SysCondoMainScreen mainScreen = new SysCondoMainScreen(parentFrame);
+            parentFrame.setContentPane(mainScreen);
+            parentFrame.revalidate();
+            parentFrame.repaint();
+        });
         buttonPanel.add(loginButton);
 
         // Adiciona o painel do botão ao painel principal
-        gbc.gridy = 2;
-        mainPanel.add(buttonPanel, gbc);
+        mainPanelGbc.gridy = 2;
+        mainPanel.add(buttonPanel, mainPanelGbc);
 
         // Cria e adiciona o painel de rodapé
         JPanel footerPanel = new JPanel();
         footerPanel.setBackground(Color.WHITE);
-        JLabel footerLabel = new JLabel("© 2022 SysCondo. All rights reserved.");
+        JLabel footerLabel = new JLabel("© 2024 SysCondo. All rights reserved.");
         footerLabel.setFont(new Font("Roboto Light", Font.PLAIN, 10));
         footerPanel.add(footerLabel);
         footerPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Centraliza o rodapé
 
         // Adiciona o painel de rodapé ao painel principal
-        gbc.gridy = 3;
-        mainPanel.add(footerPanel, gbc);
+        mainPanelGbc.gridy = 3;
+        mainPanel.add(footerPanel, mainPanelGbc);
 
         // Exibe a janela
-        frame.add(mainPanel);
-        frame.setVisible(true);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // Inicia a janela em tela cheia
+        add(mainPanel);
+        setVisible(true);
+    }
+    private RoundJTextField createAndAddInputField(JPanel formContainer, GridBagConstraints gbc, String label) {
+        JPanel container = new JPanel(new BorderLayout());
+        JLabel inputLabel = new JLabel(label);
+        inputLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
+        container.setBackground(Color.WHITE);
+        RoundJTextField input = new RoundJTextField(1, 10);
+        input.setFont(new Font("Roboto", Font.PLAIN, 14));
+        container.add(inputLabel, BorderLayout.NORTH);
+        container.add(input, BorderLayout.CENTER);
+        formContainer.add(container, gbc);
+        return input; // Retorna o campo de entrada para que possamos armazenar a referência
     }
 }
