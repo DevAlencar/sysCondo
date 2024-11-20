@@ -65,7 +65,6 @@ public class TaxController {
             Tax tax = session.get(Tax.class, taxId);
             if (tax != null) {
                 tax.setValue(value);
-                tax.setStatus(status);
                 tax.setFinishDate(finishDate);
                 tax.setName(name);
                 session.update(tax);
