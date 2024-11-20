@@ -2,10 +2,14 @@ package org.sysCondo.model.tax;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.sysCondo.model.booking.Booking;
 import org.sysCondo.model.user.User;
+import org.sysCondo.model.userTaxPayed.UserTaxPayed;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tax")
@@ -28,5 +32,9 @@ public class Tax {
 
     @Column(name = "name")
     private String name;
+
+    @OneToMany(mappedBy = "fkTax")
+    private Set<UserTaxPayed> taxPayedSet;
+
 
 }

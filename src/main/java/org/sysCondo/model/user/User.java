@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.sysCondo.model.booking.Booking;
 import org.sysCondo.model.maintenance.Maintenance;
 import org.sysCondo.model.tax.Tax;
+import org.sysCondo.model.userTaxPayed.UserTaxPayed;
 import org.sysCondo.model.vehicle.Vehicle;
 
 import javax.persistence.*;
@@ -51,4 +52,8 @@ public class User {
 
     @Column(name = "userPassword", nullable = false)
     private String userPassword;
+
+    @OneToMany(mappedBy = "fkUser")
+    private Set<UserTaxPayed> taxPayedSet;
+
 }
