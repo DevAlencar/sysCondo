@@ -173,7 +173,7 @@ public class AccReceivableOverview extends JPanel {
                         tax.getName(),
                         tax.getFinishDate(),
                         tax.getValue(),
-                        userTaxPayedController.obterStatusTaxa(currentUser.getUserId(), tax.getTaxId())
+                        currentUser == null ? "SEM USUARIO" : userTaxPayedController.obterStatusTaxa(currentUser.getUserId(), tax.getTaxId())
                 })
                 .toArray(Object[][]::new);
 
