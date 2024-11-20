@@ -24,9 +24,6 @@ public class Tax {
     @Column(name = "value")
     private float value;
 
-    @Column(name = "status")
-    private String status;
-
     @Column(name = "finishDate")
     private LocalDate finishDate;
 

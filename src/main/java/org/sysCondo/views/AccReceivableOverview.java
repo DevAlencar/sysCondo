@@ -8,6 +8,7 @@ import org.sysCondo.components.RoundJButton;
 import org.sysCondo.components.RoundJTextField;
 import org.sysCondo.components.Session;
 import org.sysCondo.controller.TaxController;
+import org.sysCondo.controller.UserController;
 import org.sysCondo.controller.UserTaxPayedController;
 import org.sysCondo.model.tax.Tax;
 import org.sysCondo.model.user.User;
@@ -150,9 +151,20 @@ public class AccReceivableOverview extends JPanel {
         }
     }
 
+    // Método para definir o status da taxa
+    private void findStatus(int taxId, int userId){
+        UserTaxPayedController userTaxPayedController = new UserTaxPayedController();
+
+
+    }
+
     // Método para atualizar a tabela com dados reais
     private void updateTable() {
         TaxController taxController = new TaxController();
+        UserTaxPayedController userTaxPayedController = new UserTaxPayedController();
+        UserController userController = new UserController();
+        //usuario tem que ta logado
+        User currentUser = userController.getUserById(1L);//Session.getCurrentUser();
         List<Tax> taxes = taxController.getAllTaxes();
         String[] columnNames = {"Id", "Nome da Taxa", "Data de Vencimento", "Valor da Taxa", "Status"};
         Object[][] data = taxes.stream()
@@ -161,7 +173,7 @@ public class AccReceivableOverview extends JPanel {
                         tax.getName(),
                         tax.getFinishDate(),
                         tax.getValue(),
-                        tax.getStatus()
+                        userTaxPayedController.obterStatusTaxa(currentUser.getUserId(), tax.getTaxId())
                 })
                 .toArray(Object[][]::new);
 
@@ -198,7 +210,7 @@ public class AccReceivableOverview extends JPanel {
                 String status = value.toString();
                 if (status.equals("Pago")) {
                     label.setBackground(new Color(145,255,145));
-                } else if (status.equals("A receber")) {
+                } else if (status.equals("A pagar")) {
                     label.setBackground(new Color(245,255,145));
                 } else if (status.equals("Atrasado")) {
                     label.setBackground(new Color(255,145,145));
@@ -277,8 +289,9 @@ public class AccReceivableOverview extends JPanel {
     private void paySelectedAccount(){
         UserTaxPayedController userTaxPayedController = new UserTaxPayedController();
         TaxController taxController = new TaxController();
+        UserController userController = new UserController();
         //usuario tem que ta logado
-        User currentUser = Session.getCurrentUser();
+        User currentUser = userController.getUserById(1L);//Session.getCurrentUser();
         int selectedRow = table.getSelectedRow();
         if (selectedRow >= 0) {
             int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja pagar esta taxa?", "Confirmar Pagamento", JOptionPane.YES_NO_OPTION);

@@ -51,7 +51,7 @@ public class AccReceivableAdd extends JPanel {
         gbc.gridy = 1;
         taxFinishDateInput = createAndAddInputField(formContainer, gbc,"Data de Vencimento (dd/mm/aaaa)");
         gbc.gridy = 2;
-        taxStatusInput = getComboBoxContainer("Status", new String[]{"Pago", "A receber", "Atrasado"});
+        taxStatusInput = getComboBoxContainer("Status", new String[]{"Pago", "A pagar", "Atrasado"});
         formContainer.add(taxStatusInput, gbc);
         gbc.gridy = 3;
         taxValueInput = createAndAddInputField(formContainer, gbc,"Valor da taxa");
@@ -79,10 +79,9 @@ public class AccReceivableAdd extends JPanel {
             String taxName = taxNameInput.getText();
             float taxValue = Float.parseFloat(taxValueInput.getText());
             LocalDate taxFinishDate = LocalDate.parse(taxFinishDateInput.getText(), formatter);
-            String taxStatus = Objects.requireNonNull(taxStatusInput.getSelectedItem()).toString();
 
             TaxController taxController = new TaxController();
-            taxController.createTax(taxName, taxValue, taxStatus, taxFinishDate);
+            taxController.createTax(taxName, taxValue, taxFinishDate);
             // Limpa os campos após adicionar
         });
 
