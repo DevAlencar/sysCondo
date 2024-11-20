@@ -6,8 +6,11 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.sysCondo.components.RoundJButton;
 import org.sysCondo.components.RoundJTextField;
+import org.sysCondo.components.Session;
 import org.sysCondo.controller.TaxController;
+import org.sysCondo.controller.UserTaxPayedController;
 import org.sysCondo.model.tax.Tax;
+import org.sysCondo.model.user.User;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -63,6 +66,9 @@ public class AccReceivableOverview extends JPanel {
         JButton deleteButton = new RoundJButton("Apagar taxa");
         deleteButton.addActionListener(e -> deleteSelectedAccount()); // Ação para excluir a conta selecionada
 
+        JButton payButton = new RoundJButton("Pagar taxa");
+        payButton.addActionListener(e -> paySelectedAccount());
+
         Font labelFont = new Font("Roboto Medium", Font.PLAIN, 14); // Para os rótulos
 
         // Adicionar componentes ao painel de controles
@@ -74,6 +80,7 @@ public class AccReceivableOverview extends JPanel {
         controlsPanel.add(exportButton);
         controlsPanel.add(editButton); // Adiciona o botão de editar
         controlsPanel.add(deleteButton); // Adiciona o botão de apagar
+        controlsPanel.add(payButton);
 
         headerPanel.add(controlsPanel, BorderLayout.SOUTH); // Adiciona o painel de controle ao painel de cabeçalho
 
@@ -264,6 +271,24 @@ public class AccReceivableOverview extends JPanel {
             }
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, selecione uma conta para excluir.");
+        }
+    }
+
+    private void paySelectedAccount(){
+        UserTaxPayedController userTaxPayedController = new UserTaxPayedController();
+        TaxController taxController = new TaxController();
+        //usuario tem que ta logado
+        User currentUser = Session.getCurrentUser();
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow >= 0) {
+            int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja pagar esta conta?", "Confirmar Pagamento", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                Tax selectTax = taxController.getTaxById((Integer) table.getValueAt(selectedRow, 0));
+                userTaxPayedController.createUserTaxPayed(currentUser, selectTax);
+                //TODO funcao para renderizar a tabela com o banco atualizado
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, selecione uma conta para pagar.");
         }
     }
 }
