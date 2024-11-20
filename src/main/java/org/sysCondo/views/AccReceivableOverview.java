@@ -215,9 +215,9 @@ public class AccReceivableOverview extends JPanel {
     private void exportToPDF() {
         Document document = new Document();
         try {
-            PdfWriter.getInstance(document, new FileOutputStream("ContasAReceber.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream("TaxasAReceber.pdf"));
             document.open();
-            document.add(new Paragraph("Overview de Contas a Receber", new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.HELVETICA, 16))); // Usando importação completa
+            document.add(new Paragraph("Overview de Taxas a Receber", new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.HELVETICA, 16))); // Usando importação completa
             document.add(new Paragraph(" ")); // Espaço
             PdfPTable pdfTable = new PdfPTable(table.getColumnCount());
             for (int i = 0; i < table.getColumnCount(); i++) {
@@ -249,14 +249,14 @@ public class AccReceivableOverview extends JPanel {
 
             // Criar a tela de edição e passá-la para a janela
             AccReceivableEdit editScreen = new AccReceivableEdit(accountName, dueDate, amount, status);
-            JFrame frame = new JFrame("Editar Conta");
+            JFrame frame = new JFrame("Editar Taxa");
             frame.setContentPane(editScreen);
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.pack();
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecione uma conta para editar.");
+            JOptionPane.showMessageDialog(this, "Por favor, selecione uma taxa para editar.");
         }
     }
 
@@ -264,13 +264,13 @@ public class AccReceivableOverview extends JPanel {
         TaxController taxController = new TaxController();
         int selectedRow = table.getSelectedRow();
         if (selectedRow >= 0) {
-            int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja excluir esta conta?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja excluir esta taxa?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 taxController.deleteTax((Integer) table.getValueAt(selectedRow, 0));
                 tableModel.removeRow(selectedRow); // Remove a conta da tabela
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecione uma conta para excluir.");
+            JOptionPane.showMessageDialog(this, "Por favor, selecione uma taxa para excluir.");
         }
     }
 
@@ -281,14 +281,14 @@ public class AccReceivableOverview extends JPanel {
         User currentUser = Session.getCurrentUser();
         int selectedRow = table.getSelectedRow();
         if (selectedRow >= 0) {
-            int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja pagar esta conta?", "Confirmar Pagamento", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja pagar esta taxa?", "Confirmar Pagamento", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 Tax selectTax = taxController.getTaxById((Integer) table.getValueAt(selectedRow, 0));
                 userTaxPayedController.createUserTaxPayed(currentUser, selectTax);
-                //TODO funcao para renderizar a tabela com o banco atualizado
+                updateTable();
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecione uma conta para pagar.");
+            JOptionPane.showMessageDialog(this, "Por favor, selecione uma taxa para pagar.");
         }
     }
 }

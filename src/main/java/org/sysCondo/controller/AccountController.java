@@ -98,4 +98,23 @@ public class AccountController {
             session.close();
         }
     }
+
+    public void updateAccountStatus(int accountId, String status) {
+        Session session = HibernateUtil.getSession();
+        Transaction transaction = session.beginTransaction();
+
+        try {
+            Account account = session.get(Account.class, accountId);
+            if (account != null) {
+                account.setStatus(status);
+                session.update(account);
+                transaction.commit();
+            }
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
 }
