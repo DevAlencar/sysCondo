@@ -26,9 +26,6 @@ public class User {
     @OneToMany(mappedBy = "userVehicleFk", fetch = FetchType.LAZY)
     private List<Vehicle> vehicleList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "userTaxFk", fetch = FetchType.LAZY)
-    private Set<Tax> taxSet = new HashSet<>();
-
     @OneToMany(mappedBy = "userMaintenanceFk")
     private Set<Maintenance> maintenanceSet = new HashSet<>();
 

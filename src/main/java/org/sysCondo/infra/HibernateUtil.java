@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.sysCondo.model.Statement;
+import org.sysCondo.model.account.Account;
 import org.sysCondo.model.booking.Booking;
 import org.sysCondo.model.commonArea.CommonArea;
 import org.sysCondo.model.cost.Cost;
@@ -43,6 +44,7 @@ public class HibernateUtil {
             configuration.addAnnotatedClass(Maintenance.class);
             configuration.addAnnotatedClass(CommonArea.class);
             configuration.addAnnotatedClass(Booking.class);
+            configuration.addAnnotatedClass(Account.class);
 
             return configuration.buildSessionFactory();
         } catch (Throwable ex) {

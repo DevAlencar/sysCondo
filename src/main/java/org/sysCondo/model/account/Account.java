@@ -1,32 +1,34 @@
-package org.sysCondo.model.tax;
+package org.sysCondo.model.account;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.sysCondo.model.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "tax")
+@Table(name = "account")
 @Getter
 @Setter
-public class Tax {
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int taxId;
+    private int accountId;
+
+    @Column(name = "supplier")
+    private String supplier;
 
     @Column(name = "value")
     private float value;
+
+    @Column(name = "type")
+    private String type;
 
     @Column(name = "status")
     private String status;
 
     @Column(name = "finishDate")
     private LocalDate finishDate;
-
-    @Column(name = "name")
-    private String name;
 
 }

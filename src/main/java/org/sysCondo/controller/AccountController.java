@@ -3,26 +3,26 @@ package org.sysCondo.controller;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.sysCondo.infra.HibernateUtil;
-import org.sysCondo.model.tax.Tax;
-import org.sysCondo.model.user.User;
+import org.sysCondo.model.account.Account;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class TaxController {
+public class AccountController {
 
-    public void createTax(String name, float value, String status, LocalDate finishDate) {
+    public void createAccount(String supplier, float value, String type, String status, LocalDate finishDate) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
         try {
-            Tax tax = new Tax();
-            tax.setValue(value);
-            tax.setStatus(status);
-            tax.setFinishDate(finishDate);
-            tax.setName(name);
+            Account account = new Account();
+            account.setValue(value);
+            account.setStatus(status);
+            account.setFinishDate(finishDate);
+            account.setType(type);
+            account.setSupplier(supplier);
 
-            session.save(tax);
+            session.save(account);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
@@ -32,44 +32,45 @@ public class TaxController {
         }
     }
 
-    public Tax getTaxById(int taxId) {
+    public Account getAccountById(int accountId) {
         Session session = HibernateUtil.getSession();
-        Tax tax = null;
+        Account account = null;
         try {
-            tax = session.get(Tax.class, taxId);
+            account = session.get(Account.class, accountId);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             session.close();
         }
-        return tax;
+        return account;
     }
 
-    public List<Tax> getAllTaxes() {
+    public List<Account> getAllAccounts() {
         Session session = HibernateUtil.getSession();
-        List<Tax> taxes = null;
+        List<Account> accounts = null;
         try {
-            taxes = session.createQuery("from Tax", Tax.class).list();
+            accounts = session.createQuery("from Account", Account.class).list();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             session.close();
         }
-        return taxes;
+        return accounts;
     }
 
-    public void updateTax(int taxId, String name, float value, String status, LocalDate finishDate) {
+    public void updateAccount(int accountId, String supplier, float value, String type, String status, LocalDate finishDate) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
         try {
-            Tax tax = session.get(Tax.class, taxId);
-            if (tax != null) {
-                tax.setValue(value);
-                tax.setStatus(status);
-                tax.setFinishDate(finishDate);
-                tax.setName(name);
-                session.update(tax);
+            Account account = session.get(Account.class, accountId);
+            if (account != null) {
+                account.setValue(value);
+                account.setStatus(status);
+                account.setFinishDate(finishDate);
+                account.setType(type);
+                account.setSupplier(supplier);
+                session.update(account);
                 transaction.commit();
             }
         } catch (Exception e) {
@@ -80,14 +81,14 @@ public class TaxController {
         }
     }
 
-    public void deleteTax(int taxId) {
+    public void deleteAccount(int accountId) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
         try {
-            Tax tax = session.get(Tax.class, taxId);
-            if (tax != null) {
-                session.delete(tax);
+            Account account = session.get(Account.class, accountId);
+            if (account != null) {
+                session.delete(account);
                 transaction.commit();
             }
         } catch (Exception e) {

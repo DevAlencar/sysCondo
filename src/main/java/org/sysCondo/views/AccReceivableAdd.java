@@ -74,7 +74,6 @@ public class AccReceivableAdd extends JPanel {
 
         // Ação do botão de adicionar conta
         addButton.addActionListener(e -> {
-            // Aqui você pode adicionar a lógica para salvar a conta
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
             String taxName = taxNameInput.getText();

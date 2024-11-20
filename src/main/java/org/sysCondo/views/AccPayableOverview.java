@@ -5,6 +5,10 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.sysCondo.components.RoundJButton;
 import org.sysCondo.components.RoundJTextField;
+import org.sysCondo.controller.AccountController;
+import org.sysCondo.controller.TaxController;
+import org.sysCondo.model.account.Account;
+import org.sysCondo.model.tax.Tax;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -15,6 +19,7 @@ import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
+import java.util.List;
 
 
 public class AccPayableOverview extends JPanel {
@@ -129,17 +134,24 @@ public class AccPayableOverview extends JPanel {
     }
 
     private void updateTable() {
-        String[] columnNames = {"Nome do Fornecedor", "Data de Vencimento", "Tipo de Despesa", "Valor da Conta", "Status"};
-        Object[][] data = {
-                {"Aluguel de Escritório", "05/10/2024", "Aluguel", "R$ 2.000,00", "Pago"},
-                {"Conta de Energia", "15/10/2024", "Serviços", "R$ 500,00", "Pendente"},
-                {"Limpeza do Prédio", "25/10/2024", "Serviços", "R$ 300,00", "Atrasado"}
-        };
+        String[] columnNames = {"Id", "Nome do Fornecedor", "Data de Vencimento", "Tipo de Despesa", "Valor da Conta", "Status"};
+        AccountController accountController = new AccountController();
+        List<Account> accounts = accountController.getAllAccounts();
+        Object[][] data = accounts.stream()
+                .map(account -> new Object[]{
+                        account.getAccountId(),
+                        account.getSupplier(),
+                        account.getFinishDate(),
+                        account.getType(),
+                        account.getValue(),
+                        account.getStatus()
+                })
+                .toArray(Object[][]::new);
 
         tableModel = new DefaultTableModel(data, columnNames) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 4) { // Se for a coluna de status
+                if (columnIndex == 5) { // Se for a coluna de status
                     return String.class; // Retorna como String para cores
                 }
                 return super.getColumnClass(columnIndex);
@@ -152,6 +164,13 @@ public class AccPayableOverview extends JPanel {
         sorter.toggleSortOrder(0);
 
         setStatusColors();
+
+        table.getColumnModel().getColumn(0).setPreferredWidth(30); // Coluna ID com largura menor
+        table.getColumnModel().getColumn(1).setPreferredWidth(200); // Nome da Fornecedor
+        table.getColumnModel().getColumn(2).setPreferredWidth(150); // Data de Vencimento
+        table.getColumnModel().getColumn(2).setPreferredWidth(150); // Tipo de despesa
+        table.getColumnModel().getColumn(3).setPreferredWidth(150); // Valor da Conta
+        table.getColumnModel().getColumn(4).setPreferredWidth(100); // Status
     }
 
     private void setStatusColors() {
@@ -162,7 +181,7 @@ public class AccPayableOverview extends JPanel {
                 String status = value.toString();
                 if (status.equals("Pago")) {
                     label.setBackground(new Color(145,255,145));
-                } else if (status.equals("Pendente")) {
+                } else if (status.equals("A pagar")) {
                     label.setBackground(new Color(245,255,145));
                 } else if (status.equals("Atrasado")) {
                     label.setBackground(new Color(255,145,145));
