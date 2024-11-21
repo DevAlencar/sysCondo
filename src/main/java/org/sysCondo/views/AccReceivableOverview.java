@@ -14,6 +14,7 @@ import org.sysCondo.model.tax.Tax;
 import org.sysCondo.model.user.User;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -31,6 +32,8 @@ public class AccReceivableOverview extends JPanel {
 
     public AccReceivableOverview() {
         setLayout(new BorderLayout());
+        setBorder(new EmptyBorder(30, 0, 30, 0));
+        setBackground(Color.WHITE);
 
         // Criar um painel para o título e o painel de controle
         JPanel headerPanel = new JPanel();
@@ -38,9 +41,9 @@ public class AccReceivableOverview extends JPanel {
         headerPanel.setLayout(new BorderLayout()); // Usar BorderLayout para organizar o título e os controles
 
         // Adicionar um título
-        JLabel titleLabel = new JLabel("TAXAS", JLabel.CENTER);
-        titleLabel.setFont(new java.awt.Font("Roboto Medium", Font.PLAIN, 30));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
+        JLabel titleLabel = new JLabel("Taxas", JLabel.CENTER);
+        titleLabel.setFont(new Font("Roboto", Font.BOLD, 28));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         headerPanel.add(titleLabel, BorderLayout.NORTH); // Adiciona o título ao painel de cabeçalho
 
         // Painel de controle para busca e botões

@@ -23,16 +23,16 @@ public class AccReceivableAdd extends JPanel {
     public AccReceivableAdd() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
+        setBorder(new EmptyBorder(30, 0, 30 ,0));
 
         // Painel para centralizar o conteúdo
         JPanel contentContainer = new JPanel(new BorderLayout());
         contentContainer.setBackground(Color.WHITE);
-        contentContainer.setBorder(new EmptyBorder(30, 0, 30, 0));
         add(contentContainer);
 
         // Título centralizado
         JLabel titleLabel = new JLabel("Adicionar Nova Taxa", JLabel.CENTER);
-        titleLabel.setFont(new Font("Roboto Bold", Font.PLAIN, 28));
+        titleLabel.setFont(new Font("Roboto", Font.BOLD, 28));
         contentContainer.add(titleLabel, BorderLayout.NORTH);
 
         // Painel para o formulário
@@ -44,6 +44,7 @@ public class AccReceivableAdd extends JPanel {
         gbc.insets = new Insets(5, 0, 5, 0);
         gbc.gridx = 0;
         gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.NORTH;
 
         // Adicionar campos ao formulário
         gbc.gridy = 0;
@@ -66,8 +67,13 @@ public class AccReceivableAdd extends JPanel {
         formButtonsContainer.add(cancelButton);
         formButtonsContainer.add(addButton);
         formButtonsContainer.setBackground(Color.WHITE);
-        gbc.gridy = 4;
+        gbc.gridy = 3;
         formContainer.add(formButtonsContainer, gbc);
+        gbc.weighty = 1.0;
+        gbc.gridy = 4;
+        JPanel paddingBottom = new JPanel();
+        paddingBottom.setBackground(Color.WHITE);
+        formContainer.add(paddingBottom, gbc);
 
         // Ação do botão de adicionar conta
         addButton.addActionListener(e -> {

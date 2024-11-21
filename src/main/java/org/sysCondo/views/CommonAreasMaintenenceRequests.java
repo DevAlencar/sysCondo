@@ -23,11 +23,11 @@ public class CommonAreasMaintenenceRequests extends JPanel {
         this.parentFrame = parentFrame;
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
+        setBorder(new EmptyBorder(30, 0, 30, 0));
 
         JPanel contentContainer = new JPanel();
         contentContainer.setLayout(new BoxLayout(contentContainer, BoxLayout.Y_AXIS));
         contentContainer.setBackground(Color.WHITE);
-        contentContainer.setBorder(new EmptyBorder(30, 0, 30, 0));
         add(contentContainer, BorderLayout.CENTER);
 
         JLabel contentTitle = new JLabel("Solicitações de manutenção", JLabel.CENTER);

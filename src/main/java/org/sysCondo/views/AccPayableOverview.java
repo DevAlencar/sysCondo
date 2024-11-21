@@ -11,6 +11,7 @@ import org.sysCondo.model.account.Account;
 import org.sysCondo.model.tax.Tax;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -30,19 +31,21 @@ public class AccPayableOverview extends JPanel {
 
     public AccPayableOverview() {
         setLayout(new BorderLayout());
-
+        setBackground(Color.WHITE);
+        setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
         // Painel para o título e controles
         JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(Color.WHITE);
 
         // Título
-        JLabel titleLabel = new JLabel("CONTAS A PAGAR", JLabel.CENTER);
-        titleLabel.setFont(new java.awt.Font("Roboto Medium", java.awt.Font.PLAIN, 30));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
+        JLabel titleLabel = new JLabel("Contas a pagar", JLabel.CENTER);
+        titleLabel.setFont(new Font("Roboto", Font.BOLD, 28));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         headerPanel.add(titleLabel, BorderLayout.NORTH);
 
         // Painel de controles
         JPanel controlsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        controlsPanel.setBackground(Color.WHITE);
+        controlsPanel.setBackground(new Color(202, 202, 202));
 
         searchField = new RoundJTextField(20, 10);
         searchField.setToolTipText("Buscar Conta...");
@@ -85,7 +88,7 @@ public class AccPayableOverview extends JPanel {
         customizeTable();
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         add(scrollPane, BorderLayout.CENTER);
 
         updateTable();

@@ -19,7 +19,7 @@ import java.util.List;
 
 
 public class NewResident extends JPanel {
-    private int gridyCounter = 4;
+    private int gridyCounter = 6;
     private List<RoundJTextField[]> vehiclesInputs = new ArrayList<RoundJTextField[]>(); // stores all the vehicles input references
     private JPanel formContainer = new JPanel(new GridBagLayout());
     private GridBagConstraints gbc = new GridBagConstraints();
@@ -31,19 +31,19 @@ public class NewResident extends JPanel {
         // Painel principal com BorderLayout
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
+        setBorder(new EmptyBorder(30, 0, 30, 0));
 
         // cria painel de conteudo para armazenar todo o conteudo da página
         JPanel contentContainer = new JPanel(new BorderLayout());
         JLabel contentTitle = new JLabel("Cadastro de Moradores", JLabel.CENTER);
-        contentTitle.setFont(new Font("Roboto Bold", Font.PLAIN, 28));
+        contentTitle.setFont(new Font("Roboto", Font.BOLD, 28));
         contentContainer.add(contentTitle, BorderLayout.NORTH);
         contentContainer.setBackground(Color.WHITE);
-        contentContainer.setBorder(new EmptyBorder(30, 0, 30, 0));
+        contentContainer.setBorder(new EmptyBorder(0, 0, 20, 0));
         add(contentContainer);
 
         // cria container de formulário scrolavel
         formContainer.setBackground(Color.WHITE);
-        formContainer.setBorder(new EmptyBorder(60, 0, 0, 0));
         JScrollPane formScrollPane = new JScrollPane(formContainer);
         formScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         formScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -55,6 +55,7 @@ public class NewResident extends JPanel {
         gbc.insets = new Insets(5, 0, 5, 0);
         gbc.gridx = 0;
         gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.NORTH;
         gbc.gridy = 0;
         RoundJTextField nameInput = getInputContainer("Nome do morador");
         gbc.gridy = 1;
@@ -74,12 +75,12 @@ public class NewResident extends JPanel {
 
         // apresenta no combobox as residencias cadastradas
         JComboBox<String> residenceNumber = getComboBoxContainer("Número da residência", residenceOptions);
-        gbc.gridy = gridyCounter++;
+        gbc.gridy = 4;
         formContainer.add(residenceNumber, gbc);
 
         //JComboBox<String> residenceNumber = getComboBoxContainer("Número da residência", new String[]{"Unidade 1", "Unidade 2", "Unidade 3"});
 
-        gbc.gridy = gridyCounter++;
+        gbc.gridy = 5;
         RoundJButton newVehicle = new RoundJButton("Adicionar veículo");
         newVehicle.addActionListener(new ActionListener() {
             @Override
@@ -88,6 +89,11 @@ public class NewResident extends JPanel {
             }
         });
         formContainer.add(newVehicle, gbc);
+        gbc.gridy = gridyCounter;
+        gbc.weighty = 1.0;
+        JPanel paddingBottom = new JPanel();
+        paddingBottom.setBackground(Color.WHITE);
+        formContainer.add(paddingBottom, gbc);
 
         // Centraliza o formContainer
         JPanel formWrapper = new JPanel();
@@ -179,7 +185,6 @@ public class NewResident extends JPanel {
         comboBoxLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
 
         comboBoxContainer.setBackground(Color.WHITE);
-        comboBoxContainer.setPreferredSize(new Dimension(100, 50));
         JComboBox<String> comboBox = new JComboBox<>(options);
         comboBox.setUI(new BasicComboBoxUI() {
             @Override
@@ -193,7 +198,7 @@ public class NewResident extends JPanel {
         comboBox.setBackground(Color.WHITE);
         comboBox.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(Color.BLACK, 1, true),
-                BorderFactory.createEmptyBorder(3, 3, 3, 3)
+                BorderFactory.createEmptyBorder(0, 0, 0, 0)
         ));
 
         comboBox.setFont(new Font("Roboto", Font.PLAIN, 14));

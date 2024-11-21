@@ -34,12 +34,14 @@ public class CommonAreasMaintenenceOverview extends JPanel {
 
     public CommonAreasMaintenenceOverview() {
         setLayout(new BorderLayout());
+        setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
+        setBackground(Color.WHITE);
 
         // Painel de Cabeçalho
         JPanel headerPanel = new JPanel(new BorderLayout());
-        JLabel titleLabel = new JLabel("SOLICITAÇÕES DE MANUTENÇÃO", JLabel.CENTER);
-        titleLabel.setFont(new Font("Roboto Medium", Font.PLAIN, 30));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
+        JLabel titleLabel = new JLabel("Solicitações de manutenção", JLabel.CENTER);
+        titleLabel.setFont(new Font("Roboto", Font.BOLD, 28));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         headerPanel.add(titleLabel, BorderLayout.NORTH);
         headerPanel.setBackground(Color.WHITE);
 

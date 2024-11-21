@@ -14,17 +14,16 @@ public class CommonAreasFacilities extends JPanel {
     public CommonAreasFacilities() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
+        setBorder(new EmptyBorder(30, 30, 30, 30));
 
         initializeReservations();
-
         JPanel contentContainer = new JPanel(new BorderLayout());
         contentContainer.setBackground(Color.WHITE);
-        contentContainer.setBorder(new EmptyBorder(30, 30, 30, 30));
         add(contentContainer);
 
         JLabel titleLabel = new JLabel("Áreas Comuns Disponíveis", JLabel.CENTER);
-        titleLabel.setFont(new Font("Roboto Bold", Font.PLAIN, 28));
-        titleLabel.setBorder(new EmptyBorder(10, 0, 10, 0));
+        titleLabel.setFont(new Font("Roboto", Font.BOLD, 28));
+        titleLabel.setBorder(new EmptyBorder(0, 0, 20, 0));
         contentContainer.add(titleLabel, BorderLayout.NORTH);
 
         JPanel areasPanel = new JPanel(new GridLayout(2, 5, 10, 10));

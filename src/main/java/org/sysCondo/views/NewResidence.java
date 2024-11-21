@@ -18,10 +18,11 @@ public class NewResidence extends JPanel {
     public NewResidence() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
+        setBorder(new EmptyBorder(30, 0, 30, 0));
+
         JPanel contentContainer = new JPanel();
         contentContainer.setLayout(new BoxLayout(contentContainer, BoxLayout.Y_AXIS));
         contentContainer.setBackground(Color.WHITE);
-        contentContainer.setBorder(new EmptyBorder(30, 0, 30, 0));
         add(contentContainer, BorderLayout.CENTER);
 
         JLabel contentTitle = new JLabel("Cadastro de residência", JLabel.CENTER);
@@ -37,6 +38,7 @@ public class NewResidence extends JPanel {
         gbc.insets = new Insets(5, 0, 5, 0);
         gbc.gridx = 0;
         gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.NORTH;
 
         // Cria e adiciona os campos de entrada com variáveis de instância
         gbc.gridy = 0;
@@ -62,6 +64,11 @@ public class NewResidence extends JPanel {
         formButtonsContainer.setBackground(Color.WHITE);
         gbc.gridy = 4;
         formContainer.add(formButtonsContainer, gbc);
+        gbc.gridy = 5;
+        gbc.weighty = 1.0;
+        JPanel paddingBottom = new JPanel();
+        paddingBottom.setBackground(Color.WHITE);
+        formContainer.add(paddingBottom, gbc);
 
         saveBtn.addActionListener(e -> {
             String propertyNumber = propertyNumberInput.getText();

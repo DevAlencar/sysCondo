@@ -23,16 +23,16 @@ public class CommonAreasMaintenence extends JPanel {
     public CommonAreasMaintenence() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
+        setBorder(new EmptyBorder(30, 0, 30, 0));
 
         // Painel para centralizar o conteúdo
         JPanel contentContainer = new JPanel(new BorderLayout());
         contentContainer.setBackground(Color.WHITE);
-        contentContainer.setBorder(new EmptyBorder(30, 0, 30, 0));
         add(contentContainer);
 
         // Título centralizado
         JLabel titleLabel = new JLabel("Solicitar manutenção de área comum", JLabel.CENTER);
-        titleLabel.setFont(new Font("Roboto Bold", Font.PLAIN, 28));
+        titleLabel.setFont(new Font("Roboto", Font.BOLD, 28));
         contentContainer.add(titleLabel, BorderLayout.NORTH);
 
         // Painel para o formulário
@@ -42,6 +42,7 @@ public class CommonAreasMaintenence extends JPanel {
         gbc.insets = new Insets(5, 0, 5, 0);
         gbc.gridx = 0;
         gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.NORTH;
 
         // Adicionar campos ao formulário
         gbc.gridy = 0;
@@ -74,6 +75,11 @@ public class CommonAreasMaintenence extends JPanel {
         formButtonsContainer.setBackground(Color.WHITE);
         gbc.gridy = 2;
         formContainer.add(formButtonsContainer, gbc);
+        gbc.gridy = 3;
+        gbc.weighty = 1.0;
+        JPanel paddingBottom = new JPanel();
+        paddingBottom.setBackground(Color.WHITE);
+        formContainer.add(paddingBottom, gbc);
 
         // Exibe a janela
         setVisible(true);
