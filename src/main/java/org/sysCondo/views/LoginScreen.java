@@ -15,7 +15,7 @@ import java.awt.event.*;
 
 public class LoginScreen extends JPanel {
     private RoundJTextField userField;
-    private RoundJTextField passwordField;
+    private RoundJPasswordField passwordField;
     public LoginScreen(JFrame parentFrame) {
         // Cria o painel principal com GridBagLayout
         setLayout(new BorderLayout());
@@ -60,7 +60,7 @@ public class LoginScreen extends JPanel {
         formContainerGbc.gridy = 0;
         userField = createAndAddInputField(formContainer, formContainerGbc, "CPF");
         formContainerGbc.gridy = 1;
-        passwordField = createAndAddInputField(formContainer, formContainerGbc, "Senha");
+        passwordField = createAndAddPasswordField(formContainer, formContainerGbc, "Senha");
 
         // Adiciona o painel do formulário ao painel principal
         mainPanelGbc.gridy = 1;
@@ -73,17 +73,25 @@ public class LoginScreen extends JPanel {
         RoundJButton loginButton = new RoundJButton("Conecte-se");
 
         loginButton.addActionListener(e -> { // aqui vai ser a parte da validação e envio dos dados @arthur
+            String user = userField.getText();
+            String password = passwordField.getText();
+            if (user.isBlank() || password.isBlank()) {
+                JOptionPane.showMessageDialog(null, "Por favor insira suas credenciais para logar no sistema.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             AuthenticationController authenticationController = new AuthenticationController();
-            User user = authenticationController.login(userField.getText(), passwordField.getText());
-            if(user == null){
-                //adicionar aviso de senha ou documento errado
-            }else{
-                Session.setCurrentUser(user);
+            try {
+                User userData = authenticationController.login(userField.getText(), passwordField.getText());
+                Session.setCurrentUser(userData);
                 SysCondoMainScreen mainScreen = new SysCondoMainScreen(parentFrame);
                 parentFrame.setContentPane(mainScreen);
                 parentFrame.revalidate();
                 parentFrame.repaint();
+                JOptionPane.showMessageDialog(null, "Login realizado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(null, "Credenciais incorretas, por favor tente novamente.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
+
         });
         buttonPanel.add(loginButton);
 
@@ -113,6 +121,18 @@ public class LoginScreen extends JPanel {
         inputLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
         container.setBackground(Color.WHITE);
         RoundJTextField input = new RoundJTextField(1, 10);
+        input.setFont(new Font("Roboto", Font.PLAIN, 14));
+        container.add(inputLabel, BorderLayout.NORTH);
+        container.add(input, BorderLayout.CENTER);
+        formContainer.add(container, gbc);
+        return input; // Retorna o campo de entrada para que possamos armazenar a referência
+    }
+    private RoundJPasswordField createAndAddPasswordField(JPanel formContainer, GridBagConstraints gbc, String label) {
+        JPanel container = new JPanel(new BorderLayout());
+        JLabel inputLabel = new JLabel(label);
+        inputLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
+        container.setBackground(Color.WHITE);
+        RoundJPasswordField input = new RoundJPasswordField(1, 10);
         input.setFont(new Font("Roboto", Font.PLAIN, 14));
         container.add(inputLabel, BorderLayout.NORTH);
         container.add(input, BorderLayout.CENTER);

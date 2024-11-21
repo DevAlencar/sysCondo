@@ -9,14 +9,9 @@ public class AuthenticationController {
     public User login(String userDocument, String password){
         UserController userController = new UserController();
         User user = userController.getUserByDocument(userDocument);
-        try {
-            if( user == null || !Objects.equals(user.getUserPassword(), password)){
-                throw new RuntimeException("Senha ou Documento inválido");
-            }
-        }catch (Exception e) {
-            e.printStackTrace();
+        if( user == null || !Objects.equals(user.getUserPassword(), password)){
+            throw new RuntimeException("Senha ou Documento inválido");
         }
-
         return user;
     }
 }
