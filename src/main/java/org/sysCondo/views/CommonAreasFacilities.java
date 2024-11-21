@@ -2,6 +2,7 @@ package org.sysCondo.views;
 
 import org.sysCondo.components.RoundJButton;
 import org.sysCondo.components.Reservation;
+import org.sysCondo.controller.CommonAreaController;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -70,6 +71,7 @@ public class CommonAreasFacilities extends JPanel {
     }
 
     private JPanel createAreaCard(String areaName, String areaCode, String imagePath) {
+        CommonAreaController commonAreaController = new CommonAreaController();
         JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
         card.setBackground(Color.WHITE);
@@ -124,6 +126,8 @@ public class CommonAreasFacilities extends JPanel {
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.add(checkButton);
         card.add(buttonPanel, BorderLayout.SOUTH);
+
+        commonAreaController.createCommonAreaIfNotExists(areaName, Long.parseLong(areaCode));
 
         return card;
     }

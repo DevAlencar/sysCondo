@@ -18,7 +18,6 @@ import java.util.Set;
 public class CommonArea {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commonAreaId;
 
     @OneToMany(mappedBy = "commonAreaMaintenanceFk")

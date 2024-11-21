@@ -89,4 +89,31 @@ public class CommonAreaController {
             session.close();
         }
     }
+
+    public void createCommonAreaIfNotExists(String areaName, Long areaCode) {
+        Session session = HibernateUtil.getSession();
+        Transaction transaction = session.beginTransaction();
+
+        try {
+            Long count = session.createQuery("""
+            SELECT COUNT(c)
+            FROM CommonArea c
+            WHERE c.commonAreaName = :areaName
+        """, Long.class)
+                    .setParameter("areaName", areaName)
+                    .uniqueResult();
+            if(count == 0){
+                CommonArea commonArea = new CommonArea();
+                commonArea.setCommonAreaId(areaCode);
+                commonArea.setCommonAreaName(areaName);
+                session.save(commonArea);
+                transaction.commit();
+            }
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
 }
