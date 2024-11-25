@@ -58,7 +58,8 @@ public class SideMenu {
         AdditionalOptionsPanel commsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] commsItems = {
                 new MenuItem("Novo Comunicado", new NewStatement()),
-                new MenuItem("Comunicados", new Statements(parentFrame))
+                new MenuItem("Comunicados", new Statements(parentFrame)),
+                new MenuItem("Mensagens", new Messages(parentFrame))
         };
         commsOptionsPanel.createAdditionalOptionsPanel(commsItems);
 
