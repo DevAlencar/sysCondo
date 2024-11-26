@@ -17,21 +17,22 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.Font;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.FileOutputStream;
 import java.util.List;
 
 
 public class AccPayableOverview extends JPanel {
-    private JTable table;
-    private JTextField searchField;
+    private final JTable table;
+    private final JTextField searchField;
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
+    private final AccountController accountController;
+    private Object[][] data;
+    private final String[] columnNames = {"Id", "Nome do Fornecedor", "Data de Vencimento", "Tipo de Despesa", "Valor da Conta", "Status"};
 
     public AccPayableOverview() {
+        this.accountController = new AccountController();
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
@@ -93,7 +94,13 @@ public class AccPayableOverview extends JPanel {
         scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         add(scrollPane, BorderLayout.CENTER);
 
-        updateTable();
+        this.addComponentListener(new ComponentAdapter() { // função chamada cada vez que o painel aparece em tela
+            @Override
+            public void componentShown(ComponentEvent e) {
+                System.out.println("Contas a pagar");
+                updateTable();
+            }
+        });
     }
 
     private void customizeTable() {
@@ -130,10 +137,6 @@ public class AccPayableOverview extends JPanel {
                 return c;
             }
         });
-
-        tableModel = new DefaultTableModel();
-        sorter = new TableRowSorter<>(tableModel);
-        table.setRowSorter(sorter);
     }
 
     private void filterTable(String query) {
@@ -143,10 +146,8 @@ public class AccPayableOverview extends JPanel {
     }
 
     private void updateTable() {
-        String[] columnNames = {"Id", "Nome do Fornecedor", "Data de Vencimento", "Tipo de Despesa", "Valor da Conta", "Status"};
-        AccountController accountController = new AccountController();
         List<Account> accounts = accountController.getAllAccounts();
-        Object[][] data = accounts.stream()
+        data = accounts.stream()
                 .map(account -> new Object[]{
                         account.getAccountId(),
                         account.getSupplier(),
@@ -169,17 +170,16 @@ public class AccPayableOverview extends JPanel {
         table.setModel(tableModel);
         sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
-
         sorter.toggleSortOrder(0);
-
-        setStatusColors();
-
+        sorter = new TableRowSorter<>(tableModel);
+        table.setRowSorter(sorter);
         table.getColumnModel().getColumn(0).setPreferredWidth(30); // Coluna ID com largura menor
         table.getColumnModel().getColumn(1).setPreferredWidth(200); // Nome da Fornecedor
         table.getColumnModel().getColumn(2).setPreferredWidth(150); // Data de Vencimento
         table.getColumnModel().getColumn(2).setPreferredWidth(150); // Tipo de despesa
         table.getColumnModel().getColumn(3).setPreferredWidth(150); // Valor da Conta
         table.getColumnModel().getColumn(4).setPreferredWidth(100); // Status
+        setStatusColors();
     }
 
     private void setStatusColors() {
@@ -235,20 +235,18 @@ public class AccPayableOverview extends JPanel {
     }
 
     private void paySelectedAccount() {
-        AccountController accountController = new AccountController();
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
             int modelRow = table.convertRowIndexToModel(selectedRow);
-            String currentStatus = tableModel.getValueAt(modelRow, 4).toString(); // Corrigir índice da coluna de Status
-
+            String currentStatus = tableModel.getValueAt(modelRow, 5).toString();
             if (currentStatus.equals("Pago")) {
                 JOptionPane.showMessageDialog(this, "Esta conta já está paga.");
                 return;
             }
             Account selectedAccount = accountController.getAccountById((Integer) table.getValueAt(selectedRow, 0));
             accountController.updateAccountStatus(selectedAccount.getAccountId(), "Pago");
-            updateTable();
-
+            table.setValueAt("Pago", selectedRow, 5);
+            setStatusColors();
             JOptionPane.showMessageDialog(this, "Conta marcada como paga com sucesso!");
         } else {
             JOptionPane.showMessageDialog(this, "Selecione uma conta para pagar.");

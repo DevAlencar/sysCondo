@@ -85,31 +85,15 @@ public class AccReceivableAdd extends JPanel {
 
             TaxController taxController = new TaxController();
             taxController.createTax(taxName, taxValue, taxFinishDate);
+            JOptionPane.showMessageDialog(this, "Taxa " + taxName + " adicionada com sucesso.");
+            taxNameInput.setText("");
+            taxValueInput.setText("");
+            taxFinishDateInput.setText("");
             // Limpa os campos após adicionar
         });
 
         // Exibe a janela
         setVisible(true);
-    }
-
-    // Método para criar um campo de entrada com bordas arredondadas
-    private JPanel getInputContainer(String label) {
-        JPanel container = new JPanel(new BorderLayout());
-        JLabel inputLabel = new JLabel(label);
-
-        // Defina a fonte do rótulo
-        inputLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
-
-        container.setBackground(Color.WHITE);
-        RoundJTextField input = new RoundJTextField(1, 10);
-
-        // Defina a fonte do campo de entrada
-        input.setFont(new Font("Roboto", Font.PLAIN, 14));
-
-        container.add(inputLabel, BorderLayout.NORTH);
-        container.add(input, BorderLayout.CENTER);
-
-        return container;
     }
 
     private RoundJTextField createAndAddInputField(JPanel formContainer, GridBagConstraints gbc, String label) {

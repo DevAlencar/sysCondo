@@ -35,9 +35,9 @@ public class NewStatement extends JPanel {
         gbc.anchor = GridBagConstraints.NORTH;
 
         gbc.gridy = 0;
-        formContainer.add(getInputContainer("Título"), gbc);
+        RoundJTextField titleField = createAndAddInputField(formContainer, gbc, "Título");
         gbc.gridy = 1;
-        formContainer.add(getTextArea("Mensagem"), gbc);
+        RoundJTextArea messageField = createAndAddTextArea(formContainer, gbc, "Mensagem");
 
         // Centraliza o formContainer
         JPanel formWrapper = new JPanel();
@@ -62,10 +62,12 @@ public class NewStatement extends JPanel {
         // onclick saveBtn
         saveBtn.addActionListener(e -> {
             StatementController statementController = new StatementController();
-            String title = ((RoundJTextField) ((JPanel) formContainer.getComponent(0)).getComponent(1)).getText();
-            String message = ((RoundJTextArea) ((JScrollPane) ((JPanel) formContainer.getComponent(1)).getComponent(1)).getViewport().getView()).getText();
+            String title = titleField.getText();
+            String message = messageField.getText();
             statementController.createStatement(title, message);
-            System.out.println("Comunicado criado com sucesso!");
+            JOptionPane.showMessageDialog(this, "Comunicado criado com sucesso");
+            titleField.setText("");
+            messageField.setText("");
         });
 
         // onclick cancelBtn
@@ -78,18 +80,21 @@ public class NewStatement extends JPanel {
         setVisible(true);
     }
 
-    private JPanel getInputContainer(String label) {
+    private RoundJTextField createAndAddInputField(JPanel formContainer, GridBagConstraints gbc, String label) {
         JPanel container = new JPanel(new BorderLayout());
         JLabel inputLabel = new JLabel(label);
-
+        inputLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
         container.setBackground(Color.WHITE);
         RoundJTextField input = new RoundJTextField(1, 10);
+        input.setFont(new Font("Roboto", Font.PLAIN, 14));
         container.add(inputLabel, BorderLayout.NORTH);
         container.add(input, BorderLayout.CENTER);
+        formContainer.add(container, gbc);
 
-        return container;
+        return input; // Retorna o campo de entrada para que possamos armazenar a referência
     }
-    private JPanel getTextArea(String label) {
+
+    private RoundJTextArea createAndAddTextArea(JPanel formContainer, GridBagConstraints gbc, String label) {
         JPanel container = new JPanel(new BorderLayout());
         JLabel inputLabel = new JLabel(label);
 
@@ -101,8 +106,9 @@ public class NewStatement extends JPanel {
         scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
         container.add(inputLabel, BorderLayout.NORTH);
         container.add(scrollPane, BorderLayout.CENTER);
+        formContainer.add(container, gbc);
 
-        return container;
+        return textArea;
     }
 
     public static void main(String[] args) {

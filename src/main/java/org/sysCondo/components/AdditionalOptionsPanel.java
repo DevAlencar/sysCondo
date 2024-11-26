@@ -37,10 +37,17 @@ public class AdditionalOptionsPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     JPanel panel = item.getPanel(); // Certifique-se que isso retorna um JPanel
-                    contentPanel.removeAll();
-                    contentPanel.add(panel, BorderLayout.CENTER);
-                    contentPanel.revalidate();
-                    contentPanel.repaint();
+                    if (contentPanel.getLayout() instanceof CardLayout) {
+                        CardLayout layout = (CardLayout) contentPanel.getLayout();
+                        contentPanel.add(panel, item.getTitle()); // Use o título como identificador
+                        layout.show(contentPanel, item.getTitle());
+                    } else {
+                        // Abordagem atual para layouts que não sejam CardLayout
+                        contentPanel.removeAll();
+                        contentPanel.add(panel, BorderLayout.CENTER);
+                        contentPanel.revalidate();
+                        contentPanel.repaint();
+                    }
                 }
                 // Adiciona efeitos de mouse para melhorar a experiência do usuário
                 @Override

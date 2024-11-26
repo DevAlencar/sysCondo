@@ -29,47 +29,62 @@ public class SideMenu {
     }
 
     private JPanel createSideMenu() {
+        NewResident newResident = new NewResident();
+        NewResidence newResidence = new NewResidence();
+        AccReceivableAdd accReceivableAdd = new AccReceivableAdd();
+        AccReceivableOverview accRecievableOverview = new AccReceivableOverview();
+        AccPayableAdd accPayableAdd = new AccPayableAdd();
+        AccPayableOverview accPayableOverview = new AccPayableOverview();
+        NewStatement newStatement = new NewStatement();
+        Statements statements = new Statements(parentFrame);
+        Messages messages = new Messages(parentFrame);
+        CommonAreasMaintenence commonAreasMaintenence = new CommonAreasMaintenence();
+        CommonAreasMaintenenceRequests commonAreasMaintenenceRequests = new CommonAreasMaintenenceRequests(parentFrame);
+        CommonAreasMaintenenceOverview commonAreasMaintenenceOverview = new CommonAreasMaintenenceOverview();
+        CommonAreasFacilities commonAreasFacilities = new CommonAreasFacilities();
+        ReservationOverview reservationOverview = new ReservationOverview();
+
         AdditionalOptionsPanel residentsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] residentsItems = {
-                new MenuItem("Cadastrar morador", new NewResident()),
+                new MenuItem("Cadastrar morador", newResident),
         };
         residentsOptionsPanel.createAdditionalOptionsPanel(residentsItems);
 
         AdditionalOptionsPanel residenceOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] residenceItems = {
-                new MenuItem("Cadastrar residência", new NewResidence())
+                new MenuItem("Cadastrar residência", newResidence)
         };
         residenceOptionsPanel.createAdditionalOptionsPanel(residenceItems);
 
         AdditionalOptionsPanel accountsReceivableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] receivableItems = {
-                new MenuItem("Adicionar taxa", new AccReceivableAdd()),
-                new MenuItem("Visão geral", new AccReceivableOverview())
+                new MenuItem("Adicionar taxa", accReceivableAdd),
+                new MenuItem("Visão geral", accRecievableOverview)
         };
         accountsReceivableOptionsPanel.createAdditionalOptionsPanel(receivableItems);
 
         AdditionalOptionsPanel accountsPayableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] payableItems = {
-                new MenuItem("Adicionar conta", new AccPayableAdd()),
-                new MenuItem("Visão geral", new AccPayableOverview())
+                new MenuItem("Adicionar conta", accPayableAdd),
+                new MenuItem("Visão geral", accPayableOverview)
         };
         accountsPayableOptionsPanel.createAdditionalOptionsPanel(payableItems);
 
         AdditionalOptionsPanel commsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] commsItems = {
-                new MenuItem("Novo Comunicado", new NewStatement()),
-                new MenuItem("Comunicados", new Statements(parentFrame)),
-                new MenuItem("Mensagens", new Messages(parentFrame))
+                new MenuItem("Novo Comunicado", newStatement),
+                new MenuItem("Comunicados", statements),
+                new MenuItem("Mensagens", messages)
         };
         commsOptionsPanel.createAdditionalOptionsPanel(commsItems);
 
         AdditionalOptionsPanel commonAreasOptionsPanel = new AdditionalOptionsPanel(contentPanel);
         MenuItem[] commonAreasItems = {
-                new MenuItem("Solicitar manutenção", new CommonAreasMaintenence()),
-                new MenuItem("Solicitações realizadas", new CommonAreasMaintenenceRequests(parentFrame)),
-                new MenuItem("Gestão de manutenções", new CommonAreasMaintenenceOverview()),
-                new MenuItem("Áreas comuns", new CommonAreasFacilities()),
-                new MenuItem("Gerenciar reservas", new ReservationOverview()) // Certifique-se de que essa classe existe
+                new MenuItem("Solicitar manutenção", commonAreasMaintenence),
+                new MenuItem("Solicitações realizadas", commonAreasMaintenenceRequests),
+                new MenuItem("Gestão de manutenções", commonAreasMaintenenceOverview),
+                new MenuItem("Áreas comuns", commonAreasFacilities),
+                new MenuItem("Gerenciar reservas", reservationOverview) // Certifique-se de que essa classe existe
         };
         commonAreasOptionsPanel.createAdditionalOptionsPanel(commonAreasItems);
 

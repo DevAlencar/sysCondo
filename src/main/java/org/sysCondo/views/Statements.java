@@ -13,10 +13,21 @@ import java.util.List;
 
 public class Statements extends JPanel {
     JFrame parentFrame;
+    JPanel cardsPanel;
+    StatementController statementController;
+
     public Statements(JFrame parentFrame) {
         this.parentFrame = parentFrame;
+        this.statementController = new StatementController();
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
+        this.addComponentListener(new ComponentAdapter() { // função chamada cada vez que o painel aparece em tela
+            @Override
+            public void componentShown(ComponentEvent e) {
+                System.out.println("rodou");
+                loadStatements();
+            }
+        });
 
         JPanel contentContainer = new JPanel();
         contentContainer.setLayout(new BoxLayout(contentContainer, BoxLayout.Y_AXIS));
@@ -29,18 +40,10 @@ public class Statements extends JPanel {
         contentTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         contentContainer.add(contentTitle);
 
-        JPanel cardsPanel = new JPanel();
+        cardsPanel = new JPanel();
         cardsPanel.setLayout(new BoxLayout(cardsPanel, BoxLayout.Y_AXIS));
         cardsPanel.setBackground(Color.WHITE);
         cardsPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Centralizar cardsPanel
-
-        List<Statement> statements = new StatementController().getAllStatements();
-        for (Statement statement : statements) {
-            JPanel card = createCard(new CardData(statement.getStatementTitle(), "Admin", statement.getStatementDate().toString(), statement.getStatementDescription()));
-            cardsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-            card.setAlignmentX(Component.CENTER_ALIGNMENT);
-            cardsPanel.add(card);
-        }
 
         JScrollPane scrollPane = new JScrollPane(cardsPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -53,6 +56,26 @@ public class Statements extends JPanel {
         contentContainer.add(scrollPane);
 
         setVisible(true);
+    }
+
+    private void loadStatements() {
+        List<Statement> statements = statementController.getAllStatements();
+        cardsPanel.removeAll(); // Limpa os cards existentes
+
+        for (Statement statement : statements) {
+            JPanel card = createCard(new CardData(
+                    statement.getStatementTitle(),
+                    "Admin",
+                    statement.getStatementDate().toString(),
+                    statement.getStatementDescription()
+            ));
+            cardsPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espaçamento entre os cards
+            card.setAlignmentX(Component.CENTER_ALIGNMENT);
+            cardsPanel.add(card);
+        }
+
+        cardsPanel.revalidate(); // Atualiza o layout
+        cardsPanel.repaint();    // Re-renderiza o painel
     }
 
     private JPanel createCard(CardData cardData) {

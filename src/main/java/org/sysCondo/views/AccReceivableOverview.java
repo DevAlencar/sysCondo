@@ -19,18 +19,28 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.List;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
 
 public class AccReceivableOverview extends JPanel {
-    private JTable table; // Tabela para visualizar contas
-    private JTextField searchField; // Campo de busca para filtrar
+    private final JTable table; // Tabela para visualizar contas
+    private final JTextField searchField; // Campo de busca para filtrar
     private DefaultTableModel tableModel; // Modelo da tabela para controle
     private TableRowSorter<DefaultTableModel> sorter; // Ordenador para a tabela
+    private final TaxController taxController;
+    private final UserTaxPayedController userTaxPayedController;
+    private final User currentUser;
+    private final String[] columnNames = {"Id", "Nome da Taxa", "Data de Vencimento", "Valor da Taxa", "Status"};
+
 
     public AccReceivableOverview() {
+        this.taxController = new TaxController();
+        this.userTaxPayedController = new UserTaxPayedController();
+        this.currentUser = new User();
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(30, 0, 30, 0));
         setBackground(Color.WHITE);
@@ -104,7 +114,13 @@ public class AccReceivableOverview extends JPanel {
         scrollPane.setBackground(Color.WHITE);
         add(scrollPane, BorderLayout.CENTER);
 
-        updateTable(); // Chama para preencher a tabela inicialmente
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) { // função chamada cada vez que o painel aparece em tela
+                System.out.println("Taxas");
+                updateTable(); // Chama para preencher a tabela inicialmente
+            }
+        });
     }
 
     private void customizeTable() {
@@ -154,22 +170,9 @@ public class AccReceivableOverview extends JPanel {
         }
     }
 
-    // Método para definir o status da taxa
-    private void findStatus(int taxId, int userId){
-        UserTaxPayedController userTaxPayedController = new UserTaxPayedController();
-
-
-    }
-
     // Método para atualizar a tabela com dados reais
     private void updateTable() {
-        TaxController taxController = new TaxController();
-        UserTaxPayedController userTaxPayedController = new UserTaxPayedController();
-        UserController userController = new UserController();
-        //usuario tem que ta logado
-        User currentUser = Session.getCurrentUser();
         List<Tax> taxes = taxController.getAllTaxes();
-        String[] columnNames = {"Id", "Nome da Taxa", "Data de Vencimento", "Valor da Taxa", "Status"};
         Object[][] data = taxes.stream()
                 .map(tax -> new Object[]{
                         tax.getTaxId(),
@@ -292,8 +295,6 @@ public class AccReceivableOverview extends JPanel {
     private void paySelectedAccount(){
         UserTaxPayedController userTaxPayedController = new UserTaxPayedController();
         TaxController taxController = new TaxController();
-        UserController userController = new UserController();
-        //usuario tem que ta logado
         User currentUser = Session.getCurrentUser();
         int selectedRow = table.getSelectedRow();
         if (selectedRow >= 0) {
@@ -301,7 +302,8 @@ public class AccReceivableOverview extends JPanel {
             if (confirm == JOptionPane.YES_OPTION) {
                 Tax selectTax = taxController.getTaxById((Integer) table.getValueAt(selectedRow, 0));
                 userTaxPayedController.createUserTaxPayed(currentUser, selectTax);
-                updateTable();
+                table.setValueAt("Pago", selectedRow, 4);
+                JOptionPane.showMessageDialog(this, "Taxa " + table.getValueAt(selectedRow, 1) + " paga com sucesso.");
             }
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, selecione uma taxa para pagar.");
