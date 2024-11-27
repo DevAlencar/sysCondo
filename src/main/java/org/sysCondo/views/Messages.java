@@ -3,8 +3,13 @@ package org.sysCondo.views;
 import org.sysCondo.components.RoundJButton;
 import org.sysCondo.components.RoundJTextArea;
 import org.sysCondo.components.RoundJTextField;
+import org.sysCondo.components.Session;
 import org.sysCondo.controller.StatementController;
+import org.sysCondo.controller.UserMessageController;
 import org.sysCondo.model.Statement;
+import org.sysCondo.model.user.User;
+import org.sysCondo.model.userMessage.UserMessage;
+import org.sysCondo.model.user.UserRole;
 import org.sysCondo.types.Message;
 
 import javax.swing.*;
@@ -19,7 +24,9 @@ import java.util.Date;
 import java.util.List;
 
 public class Messages extends JPanel {
-    JFrame parentFrame;
+    private JFrame parentFrame;
+    private JPanel cardsPanel;
+
     public Messages(JFrame parentFrame) {
         this.parentFrame = parentFrame;
         setLayout(new BorderLayout());
@@ -43,7 +50,7 @@ public class Messages extends JPanel {
         contentContainer.add(newMessageButton);
         contentContainer.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        JPanel cardsPanel = new JPanel();
+        cardsPanel = new JPanel();
         cardsPanel.setLayout(new BoxLayout(cardsPanel, BoxLayout.Y_AXIS));
         cardsPanel.setBackground(Color.WHITE);
         cardsPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Centralizar cardsPanel
@@ -67,6 +74,21 @@ public class Messages extends JPanel {
         contentContainer.add(scrollPane);
 
         setVisible(true);
+    }
+
+    private void reloadMessages() {
+        cardsPanel.removeAll(); // Remove todos os componentes antigos
+
+        List<Message> messages = getDummyMessages(); // Obtenha as mensagens atualizadas
+        for (Message message : messages) {
+            JPanel card = createCard(message);
+            cardsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            card.setAlignmentX(Component.CENTER_ALIGNMENT);
+            cardsPanel.add(card);
+        }
+
+        cardsPanel.revalidate(); // Atualiza o layout
+        cardsPanel.repaint(); // Re-renderiza o painel
     }
 
     private JPanel createCard(Message data) {
@@ -114,42 +136,33 @@ public class Messages extends JPanel {
     private List<Message> getDummyMessages() {
         List<Message> messages = new ArrayList<>();
 
-        messages.add(new Message(
-                "Reunião de condomínio marcada",
-                new Date(),
-                "Informamos que a próxima reunião do condomínio será no dia 30/11 às 19h no salão de festas.",
-                "Síndico Carlos"
-        ));
+        User currentUser = Session.getCurrentUser();
+        UserMessageController userMessageController = new UserMessageController();
 
-        messages.add(new Message(
-                "Manutenção agendada para a piscina",
-                new Date(System.currentTimeMillis() - 86400000L), // Ontem
-                "A piscina estará fechada para manutenção entre os dias 25/11 e 27/11.",
-                "Equipe de Manutenção"
-        ));
-
-        messages.add(new Message(
-                "Pagamento de taxa atrasado",
-                new Date(System.currentTimeMillis() - 604800000L), // 7 dias atrás
-                "Lembrete: sua taxa de condomínio está atrasada. Regularize sua situação até o dia 30/11 para evitar multas.",
-                "Administração"
-        ));
-
-        messages.add(new Message(
-                "Nova regra para uso do salão de festas",
-                new Date(System.currentTimeMillis() + 86400000L), // Amanhã
-                "A partir de 01/12, será necessário agendar o salão de festas com pelo menos 15 dias de antecedência.",
-                "Síndico Carlos"
-        ));
-
-        messages.add(new Message(
-                "Campanha de doação para funcionários",
-                new Date(System.currentTimeMillis() + 604800000L), // Daqui a 7 dias
-                "Participe da campanha de arrecadação de fundos para os funcionários do condomínio. Doações até 05/12.",
-                "Administração"
-        ));
-
-        return messages;
+        //logica para verificar se o user é ADM e retornar todas as msgs, ou se o user é apenas user e retornar as enviadas
+        if(currentUser.getUserRole().equals(UserRole.ADMIN)){
+            List<UserMessage> userMessages = userMessageController.getAllMessages();
+            for(UserMessage um : userMessages){
+                messages.add(new Message(
+                        um.getTitle(),
+                        um.getCreatedAt(),
+                        um.getMessage(),
+                        um.getUserFrom().getUserName()
+                ));
+            }
+            return messages;
+        }else{
+            List<UserMessage> userMessages = userMessageController.getMessagesByUser(currentUser);
+            for(UserMessage um : userMessages){
+                messages.add(new Message(
+                        um.getTitle(),
+                        um.getCreatedAt(),
+                        um.getMessage(),
+                        um.getUserFrom().getUserName()
+                ));
+            }
+            return messages;
+        }
     }
     private static void showMessageDialog(JFrame parentFrame, Message data) {
         JDialog dialog = new JDialog(parentFrame, data.getTitle(), true);
@@ -231,9 +244,17 @@ public class Messages extends JPanel {
         RoundJTextArea message = createAndAddTextArea(formContainer, gbc, "Mensagem");
         gbc.gridy = 2;
         RoundJButton submitMessage = new RoundJButton("Adicionar nova mensagem");
+
+        //cria nova mensagem a partir do usuario logado
         submitMessage.addActionListener(e -> {
-            // aqui vai a lógica pra submitar a mensagem
+            UserMessageController userMessageController = new UserMessageController();
+            User currentUser = Session.getCurrentUser();
+
+            userMessageController.createMessage(currentUser, title.getText(), message.getText());
+            dialog.dispose();
+            reloadMessages();
         });
+
         formContainer.add(submitMessage, gbc);
         gbc.gridy = 3;
         gbc.weighty = 1.0;

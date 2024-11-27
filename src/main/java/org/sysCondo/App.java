@@ -22,10 +22,10 @@ public class App {
 
         UserController userController = new UserController();
 
-        DevUtil.clearAllData();
+        //DevUtil.clearAllData();
 
         // cria um usuário
-        User user = userController.createUser("João", "11999999999", "123456789", UserRole.USER, "101", null);
+        //User user = userController.createUser("João", "11999999999", "123456789", UserRole.USER, "101", null);
 
         // cria a aplicação, iniciando com a tela de login
         JFrame app = new JFrame();

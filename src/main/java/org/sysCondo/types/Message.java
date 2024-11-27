@@ -1,14 +1,14 @@
 package org.sysCondo.types;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Message {
     String title;
     String author;
-    Date date;
+    LocalDate date;
     String text;
 
-    public Message(String title, Date date, String text, String author) {
+    public Message(String title, LocalDate date, String text, String author) {
         this.title = title;
         this.date = date;
         this.text = text;
@@ -17,7 +17,7 @@ public class Message {
     public String getTitle() {
         return title;
     }
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
     public String getText() {

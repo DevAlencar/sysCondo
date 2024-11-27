@@ -13,6 +13,7 @@ import org.sysCondo.model.maintenance.Maintenance;
 import org.sysCondo.model.tax.Tax;
 import org.sysCondo.model.unitResidential.UnitResidential;
 import org.sysCondo.model.user.User;
+import org.sysCondo.model.userMessage.UserMessage;
 import org.sysCondo.model.userResidential.UserResidential;
 import org.sysCondo.model.userTaxPayed.UserTaxPayed;
 import org.sysCondo.model.vehicle.Vehicle;
@@ -50,6 +51,7 @@ public class HibernateUtil {
             configuration.addAnnotatedClass(Booking.class);
             configuration.addAnnotatedClass(Account.class);
             configuration.addAnnotatedClass(UserTaxPayed.class);
+            configuration.addAnnotatedClass(UserMessage.class);
 
             return configuration.buildSessionFactory();
         } catch (Throwable ex) {

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.sysCondo.model.booking.Booking;
 import org.sysCondo.model.maintenance.Maintenance;
-import org.sysCondo.model.tax.Tax;
+import org.sysCondo.model.userMessage.UserMessage;
 import org.sysCondo.model.userTaxPayed.UserTaxPayed;
 import org.sysCondo.model.vehicle.Vehicle;
 
@@ -55,5 +55,8 @@ public class User {
 
     @OneToMany(mappedBy = "fkUser")
     private Set<UserTaxPayed> taxPayedSet;
+
+    @OneToMany(mappedBy = "userFrom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserMessage> messageFrom = new HashSet<>();
 
 }
