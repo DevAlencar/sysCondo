@@ -1,9 +1,11 @@
 package org.sysCondo.views;
 
+import org.jboss.jandex.Main;
 import org.sysCondo.components.Cost;
-import org.sysCondo.components.Maintenence;
 import org.sysCondo.components.RoundJButton;
 import org.sysCondo.components.RoundJTextField;
+import org.sysCondo.controller.MaintenanceController;
+import org.sysCondo.model.maintenance.Maintenance;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -20,16 +22,6 @@ public class CommonAreasMaintenenceOverview extends JPanel {
     private JTextField searchField;
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
-    private static List<Maintenence> todasManutencoes = new ArrayList<>();
-
-    static {
-        List<Cost> custosPiscina = new ArrayList<>();
-        //todasManutencoes.add(new Maintenence("Piscina", "Limpeza", "João Silva", "Aceita", custosPiscina, ""));
-
-        List<Cost> custosSalaoFestas = new ArrayList<>();
-        //todasManutencoes.add(new Maintenence("Salão de Festas", "Reparo de Ar Condicionado", "Maria Oliveira", "Pendente", custosSalaoFestas, ""));
-
-    }
 
 
     public CommonAreasMaintenenceOverview() {
@@ -85,7 +77,7 @@ public class CommonAreasMaintenenceOverview extends JPanel {
 
         // Configuração da Tabela
         // Configuração da Tabela
-        tableModel = new DefaultTableModel(new String[]{"Área", "Tipo", "Solicitante", "Status"}, 0) {
+        tableModel = new DefaultTableModel(new String[]{"ID","Área", "Tipo", "Solicitante", "Status"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Desabilita a edição de qualquer célula
@@ -99,6 +91,7 @@ public class CommonAreasMaintenenceOverview extends JPanel {
         manutencoesTable.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
+
                 if (evt.getClickCount() == 2) { // Verifica se é um duplo clique
                     // Se a célula estiver sendo editada, cancela a edição
                     if (manutencoesTable.isEditing()) {
@@ -109,17 +102,19 @@ public class CommonAreasMaintenenceOverview extends JPanel {
                     if (selectedRow >= 0) {
                         // Obtém a área correspondente à linha selecionada
                         String area = (String) manutencoesTable.getValueAt(selectedRow, 0);
-                        Maintenence manutencao = encontrarManutencao(area);
+                        MaintenanceController maintenanceController = new MaintenanceController();
+
+                        Maintenance manutencao = maintenanceController.getMaintenanceById(manutencoesTable.getValueAt(selectedRow, 0).toString());
 
                         if (manutencao != null) {
                             // Cria a mensagem a ser exibida na caixa de diálogo
                             StringBuilder message = new StringBuilder();
-                            message.append("Área: ").append(manutencao.getArea()).append("\n")
-                                    .append("Tipo: ").append(manutencao.getTipo()).append("\n")
-                                    .append("Solicitante: ").append(manutencao.getSolicitante()).append("\n")
+                            message.append("Área: ").append(manutencao.getCommonAreaMaintenanceFk().getCommonAreaName()).append("\n")
+                                    .append("Tipo: ").append(manutencao.getType()).append("\n")
+                                    .append("Solicitante: ").append(manutencao.getUserMaintenanceFk().getUserName()).append("\n")
                                     .append("Status: ").append(manutencao.getStatus()).append("\n");
 
-                            if (!manutencao.getCustos().isEmpty()) {
+                            /*if (!manutencao.getCustos().isEmpty()) {
                                 message.append("Custos:\n");
                                 //for (Cost custo : manutencao.getCustos()) {
                                 //    message.append("  - Valor: R$").append(custo.getValor())
@@ -127,10 +122,10 @@ public class CommonAreasMaintenenceOverview extends JPanel {
                                 //}
                             } else {
                                 message.append("Custos: Nenhum\n");
-                            }
+                            }*/
 
                             if ("Recusada".equalsIgnoreCase(manutencao.getStatus())) {
-                                message.append("Motivo da Recusa: ").append(manutencao.getMotivoRecusa()).append("\n");
+                                message.append("Motivo da Recusa: ").append(manutencao.getRefuseReason()).append("\n");
                             }
 
                             // Exibe a caixa de diálogo com as informações
@@ -146,6 +141,19 @@ public class CommonAreasMaintenenceOverview extends JPanel {
             }
         });
 
+        MaintenanceController maintenanceController = new MaintenanceController();
+        List<Maintenance> allMaintenances = maintenanceController.getAllMaintenances();
+
+        for (Maintenance maintenance : allMaintenances) {
+            tableModel.addRow(new Object[]{
+                    maintenance.getMaintenanceId(),
+                    maintenance.getCommonAreaMaintenanceFk().getCommonAreaName(),
+                    maintenance.getType(),
+                    maintenance.getUserMaintenanceFk().getUserName(),
+                    maintenance.getStatus()
+            });
+        }
+
         customizeTable();
 
         JScrollPane scrollPane = new JScrollPane(manutencoesTable);
@@ -153,7 +161,6 @@ public class CommonAreasMaintenenceOverview extends JPanel {
         scrollPane.setBackground(Color.WHITE);
         add(scrollPane, BorderLayout.CENTER);
 
-        updateTable(); // Preenche a tabela com dados iniciais
     }
 
     private void customizeTable() {
@@ -195,24 +202,12 @@ public class CommonAreasMaintenenceOverview extends JPanel {
         }
     }
 
-    public void updateTable() {
-        tableModel.setRowCount(0); // Limpa a tabela antes de atualizar
-        for (Maintenence manutencao : todasManutencoes) {
-            tableModel.addRow(new Object[]{
-                    manutencao.getArea(),
-                    manutencao.getTipo(),
-                    manutencao.getSolicitante(),
-                    manutencao.getStatus()
-            });
-        }
-        tableModel.fireTableDataChanged();
-    }
 
     private void adicionarCusto() {
         int selectedRow = manutencoesTable.getSelectedRow();
         if (selectedRow >= 0) {
             String area = (String) manutencoesTable.getValueAt(selectedRow, 0);
-            Maintenence manutencao = encontrarManutencao(area);
+            Maintenance manutencao = null; //encontrarManutencao(area);
             if (manutencao != null && manutencao.getStatus().equalsIgnoreCase("Aceita")) {
                 JPanel panel = new JPanel(new GridLayout(2, 2, 10, 10));
 
@@ -261,18 +256,31 @@ public class CommonAreasMaintenenceOverview extends JPanel {
         int selectedRow = manutencoesTable.getSelectedRow();
         if (selectedRow >= 0) {
             String area = (String) manutencoesTable.getValueAt(selectedRow, 0);
-            Maintenence manutencao = encontrarManutencao(area);
+            MaintenanceController maintenanceController = new MaintenanceController();
+            Maintenance manutencao = maintenanceController.getMaintenanceById(manutencoesTable.getValueAt(selectedRow, 0).toString());
+
             if (manutencao != null) {
                 String novoStatus = JOptionPane.showInputDialog(this, "Digite o novo status:");
 
                 if (novoStatus != null && !novoStatus.isEmpty()) {
                     manutencao.setStatus(novoStatus);
+                    maintenanceController.updateMaintenance(manutencao.getMaintenanceId(), manutencao.getUserMaintenanceFk(), manutencao.getCommonAreaMaintenanceFk(), novoStatus);
 
-                    // Debug prints
-                    System.out.println("Status alterado para: " + novoStatus);
-                    System.out.println("Manutenção atualizada: " + manutencao);
+                    // limpa a tabela
+                    tableModel.setRowCount(0);
 
-                    updateTable();
+                    List<Maintenance> allMaintenances = maintenanceController.getAllMaintenances();
+
+                    for (Maintenance maintenance : allMaintenances) {
+                        tableModel.addRow(new Object[]{
+                                maintenance.getMaintenanceId(),
+                                maintenance.getCommonAreaMaintenanceFk().getCommonAreaName(),
+                                maintenance.getType(),
+                                maintenance.getUserMaintenanceFk().getUserName(),
+                                maintenance.getStatus()
+                        });
+                    }
+
                     JOptionPane.showMessageDialog(this, "Status atualizado com sucesso!");
                 } else {
                     JOptionPane.showMessageDialog(this, "Status inválido!");
@@ -283,23 +291,37 @@ public class CommonAreasMaintenenceOverview extends JPanel {
         }
     }
 
+
     private void recusarSolicitacao() {
         int selectedRow = manutencoesTable.getSelectedRow();
         if (selectedRow >= 0) {
+            MaintenanceController maintenanceController = new MaintenanceController();
             String area = (String) manutencoesTable.getValueAt(selectedRow, 0);
-            Maintenence manutencao = encontrarManutencao(area);
+            Maintenance manutencao = maintenanceController.getMaintenanceById(manutencoesTable.getValueAt(selectedRow, 0).toString());
+
             if (manutencao != null) {
                 String motivo = JOptionPane.showInputDialog(this, "Digite o motivo da recusa:");
 
                 if (motivo != null && !motivo.isEmpty()) {
                     manutencao.setStatus("Recusada");
-                    manutencao.setMotivoRecusa(motivo);
+                    maintenanceController.updateMaintenance(manutencao.getMaintenanceId(), manutencao.getUserMaintenanceFk(), manutencao.getCommonAreaMaintenanceFk(), "Recusada");
 
-                    // Debug prints
-                    System.out.println("Solicitação recusada: " + motivo);
-                    System.out.println("Manutenção atualizada: " + manutencao);
+                    maintenanceController.refuseMaintenance(manutencao.getMaintenanceId(), motivo);
 
-                    updateTable();
+                    // limpa a tabela
+                    tableModel.setRowCount(0);
+
+                    List<Maintenance> allMaintenances = maintenanceController.getAllMaintenances();
+
+                    for (Maintenance maintenance : allMaintenances) {
+                        tableModel.addRow(new Object[]{
+                                maintenance.getMaintenanceId(),
+                                maintenance.getCommonAreaMaintenanceFk().getCommonAreaName(),
+                                maintenance.getType(),
+                                maintenance.getUserMaintenanceFk().getUserName(),
+                                maintenance.getStatus()
+                        });
+                    }
                     JOptionPane.showMessageDialog(this, "Solicitação recusada com sucesso!");
                 } else {
                     JOptionPane.showMessageDialog(this, "Motivo da recusa não pode ser vazio!");
@@ -308,15 +330,6 @@ public class CommonAreasMaintenenceOverview extends JPanel {
         } else {
             JOptionPane.showMessageDialog(this, "Selecione uma manutenção!");
         }
-    }
-
-    private Maintenence encontrarManutencao(String area) {
-        for (Maintenence manutencao : todasManutencoes) {
-            if (manutencao.getArea().equalsIgnoreCase(area)) {
-                return manutencao;
-            }
-        }
-        return null;
     }
 
     public static void main(String[] args) {

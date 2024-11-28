@@ -19,7 +19,7 @@ public class Maintenance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long maintenanceId;
+    private String maintenanceId;
 
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -41,5 +41,8 @@ public class Maintenance {
     // created at
     @Column(name = "created_at") // date time
     private LocalDateTime createdAt;
+
+    @Column(name = "refuse_reason")
+    private String refuseReason;
 
 }

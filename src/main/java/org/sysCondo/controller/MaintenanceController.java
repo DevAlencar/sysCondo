@@ -13,7 +13,7 @@ import java.util.List;
 
 public class MaintenanceController {
 
-    public Long createMaintenance(User userMaintenance, CommonArea commonAreaMaintenance, String status, String type) {
+    public String createMaintenance(User userMaintenance, CommonArea commonAreaMaintenance, String status, String type) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
@@ -41,7 +41,7 @@ public class MaintenanceController {
         return null;
     }
 
-    public Maintenance getMaintenanceById(Long maintenanceId) {
+    public Maintenance getMaintenanceById(String maintenanceId) {
         Session session = HibernateUtil.getSession();
         Maintenance maintenance = null;
         try {
@@ -68,7 +68,7 @@ public class MaintenanceController {
         return maintenances;
     }
 
-    public void updateMaintenance(Long maintenanceId, User newUserMaintenance, CommonArea newCommonAreaMaintenance, String newStatus) {
+    public void updateMaintenance(String maintenanceId, User newUserMaintenance, CommonArea newCommonAreaMaintenance, String newStatus) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
@@ -137,6 +137,25 @@ public class MaintenanceController {
             session.close();
         }
         return maintenances;
+    }
+
+    public void refuseMaintenance(String maintenanceId, String refuseReason) {
+        Session session = HibernateUtil.getSession();
+        Transaction transaction = session.beginTransaction();
+
+        try {
+            Maintenance maintenance = session.get(Maintenance.class, maintenanceId);
+            if (maintenance != null) {
+                maintenance.setRefuseReason(refuseReason);
+                session.update(maintenance);
+                transaction.commit();
+            }
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
     }
 
 }
