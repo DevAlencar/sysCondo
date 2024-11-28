@@ -7,6 +7,13 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.sysCondo.components.RoundJButton;
+import org.sysCondo.controller.*;
+import org.sysCondo.model.Statement;
+import org.sysCondo.model.booking.Booking;
+import org.sysCondo.model.maintenance.Maintenance;
+import org.sysCondo.model.tax.Tax;
+import org.sysCondo.model.unitResidential.UnitResidential;
+import org.sysCondo.model.user.User;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -103,51 +110,115 @@ public class Reports extends JPanel {
         switch (reportType) {
             case "Unidades":
                 tableModel.setColumnIdentifiers(new String[]{"Número", "Tamanho", "Nome do Dono", "Telefone"});
-                // Exemplo de dados:
-                addTableData(Arrays.asList(
-                        new String[]{"101", "90m²", "Carlos Silva", "99999-9999"},
-                        new String[]{"102", "80m²", "Maria Oliveira", "98888-8888"}
-                ));
+
+                UnitResidentialController unitResidentialController = new UnitResidentialController();
+
+                // Busca as unidades residenciais no banco de dados
+                List<UnitResidential> units = unitResidentialController.getAllUnits();
+
+                // Adiciona os dados à tabela
+                for (UnitResidential unit : units) {
+                    tableModel.addRow(new String[]{
+                            unit.getUnitResidentialNumber(),
+                            unit.getUnitResidentialSize(),
+                            unit.getOwnerName(),
+                            unit.getOwnerContact()
+                    });
+                }
+
                 break;
 
             case "Moradores":
-                tableModel.setColumnIdentifiers(new String[]{"Nome", "CPF", "Contato", "Unidade", "Veículo"});
-                addTableData(Arrays.asList(
-                        new String[]{"João Souza", "123.456.789-00", "97777-7777", "101", "ABC-1234, Ford"},
-                        new String[]{"Ana Paula", "987.654.321-00", "96666-6666", "102", "XYZ-5678, Toyota"}
-                ));
+                tableModel.setColumnIdentifiers(new String[]{"Nome", "CPF", "Contato", "Unidade"});
+
+                UserController userController = new UserController();
+
+                // Busca os moradores no banco de dados
+                List<User> users = userController.getAllUsers();
+
+                // Adiciona os dados à tabela
+                for (User user : users) {
+                    tableModel.addRow(new String[]{
+                            user.getUserName(),
+                            user.getUserDocument(),
+                            user.getUserContact(),
+                            user.getUnitResidentialFk(),
+                    });
+                }
+
                 break;
 
             case "Taxas":
-                tableModel.setColumnIdentifiers(new String[]{"Nome", "Valor", "Vencimento", "Status"});
-                addTableData(Arrays.asList(
-                        new String[]{"Condomínio", "R$ 300,00", "2024-11-30", "Pago"},
-                        new String[]{"Água", "R$ 150,00", "2024-11-25", "Atrasado"}
-                ));
+                tableModel.setColumnIdentifiers(new String[]{"Nome", "Valor", "Vencimento"});
+
+                TaxController taxController = new TaxController();
+
+                // Busca as taxas no banco de dados
+                List<Tax> taxes = taxController.getAllTaxes();
+
+                // Adiciona os dados à tabela
+                for (Tax tax : taxes) {
+                    tableModel.addRow(new String[]{
+                            tax.getName(),
+                            String.valueOf(tax.getValue()),
+                            tax.getFinishDate().toString(),
+                    });
+                }
+
                 break;
 
             case "Reservas":
-                tableModel.setColumnIdentifiers(new String[]{"Solicitante", "Endereço", "Contato", "Área", "Código", "Data"});
-                addTableData(Arrays.asList(
-                        new String[]{"João Souza", "Apto 101", "97777-7777", "Salão de Festas", "SF-01", "2024-12-10"},
-                        new String[]{"Ana Paula", "Apto 102", "96666-6666", "Churrasqueira", "CH-02", "2024-12-15"}
-                ));
+                tableModel.setColumnIdentifiers(new String[]{"Solicitante", "Contato", "Área", "Código", "Data"});
+
+                BookingController bookingController = new BookingController();
+
+                List<Booking> bookings = bookingController.getAllBookings();
+
+                // Adiciona os dados à tabela
+                for (Booking booking : bookings) {
+                    tableModel.addRow(new String[]{
+                            booking.getUserBookingFk().getUserName(),
+                            booking.getUserBookingFk().getUserContact(),
+                            booking.getCommonAreaBookingFk().getCommonAreaName(),
+                            booking.getBookingId().toString(),
+                            booking.getBookingDateTime().toString(),
+                    });
+                }
+
                 break;
 
             case "Manutenções":
                 tableModel.setColumnIdentifiers(new String[]{"Área", "Tipo", "Solicitante", "Status"});
-                addTableData(Arrays.asList(
-                        new String[]{"Piscina", "Limpeza", "Carlos Silva", "Concluído"},
-                        new String[]{"Elevador", "Reparo", "Administração", "Pendente"}
-                ));
+
+                MaintenanceController maintenanceController = new MaintenanceController();
+                List<Maintenance> maintenances = maintenanceController.getAllMaintenances();
+
+                for (Maintenance maintenance : maintenances) {
+                    tableModel.addRow(new String[]{
+                            maintenance.getCommonAreaMaintenanceFk().getCommonAreaName(),
+                            maintenance.getType(),
+                            maintenance.getUserMaintenanceFk().getUserName(),
+                            maintenance.getStatus(),
+                    });
+                }
+
                 break;
 
             case "Comunicados":
                 tableModel.setColumnIdentifiers(new String[]{"Título", "Mensagem", "Data"});
-                addTableData(Arrays.asList(
-                        new String[]{"Aviso de Reunião", "Haverá uma reunião no dia 25/11", "2024-11-18"},
-                        new String[]{"Manutenção Geral", "A manutenção elétrica será no dia 20/11", "2024-11-15"}
-                ));
+
+                StatementController statementController = new StatementController();
+
+                List<Statement> statements = statementController.getAllStatements();
+
+                for (Statement statement : statements) {
+                    tableModel.addRow(new String[]{
+                            statement.getStatementTitle(),
+                            statement.getStatementDescription(),
+                            statement.getStatementDate().toString(),
+                    });
+                }
+
                 break;
         }
     }
@@ -218,5 +289,15 @@ public class Reports extends JPanel {
 
         sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
+    }
+
+    // main
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Relatórios");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLocationRelativeTo(null);
+        frame.add(new Reports(frame));
+        frame.setVisible(true);
     }
 }
