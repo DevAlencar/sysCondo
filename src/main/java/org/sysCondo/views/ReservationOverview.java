@@ -2,6 +2,9 @@ package org.sysCondo.views;
 
 import org.sysCondo.components.Reservation;
 import org.sysCondo.components.RoundJButton;
+import org.sysCondo.controller.BookingController;
+import org.sysCondo.controller.UnitResidentialController;
+import org.sysCondo.model.booking.Booking;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -10,6 +13,10 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 
@@ -19,7 +26,7 @@ public class ReservationOverview extends JPanel {
     private JTextField searchField;
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
-    private static List<Reservation> allReservations = new ArrayList<>();
+    private static List<Booking> allReservations = new ArrayList<>();
 
     public ReservationOverview() {
         setLayout(new BorderLayout());
@@ -58,7 +65,7 @@ public class ReservationOverview extends JPanel {
         add(headerPanel, BorderLayout.NORTH);
 
         // Table setup
-        tableModel = new DefaultTableModel(new String[]{"Solicitante", "Endereço", "Contato", "Área", "Cód.", "Data da Reserva", "Status"}, 0);
+        tableModel = new DefaultTableModel(new String[]{"Id", "Solicitante", "Endereço", "Contato", "Área", "Cód.", "Data da Reserva", "Status"}, 0);
         reservationsTable = new JTable(tableModel);
         customizeTable();
 
@@ -69,7 +76,7 @@ public class ReservationOverview extends JPanel {
         scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         add(scrollPane, BorderLayout.CENTER);
 
-        updateTable(); // Populate the table with initial data
+        updateTable();
     }
 
     private void customizeTable() {
@@ -105,15 +112,16 @@ public class ReservationOverview extends JPanel {
     // Change access modifier to public
     public void updateTable() {
         tableModel.setRowCount(0);
-        for (Reservation reservation : allReservations) {
+        for (Booking booking : allReservations) {
             tableModel.addRow(new Object[]{
-                    reservation.getSolicitante(),
-                    reservation.getEndereco(),
-                    reservation.getContato(),
-                    reservation.getArea(),
-                    reservation.getCodigoArea(),
-                    reservation.getData(),
-                    reservation.getStatus()
+                    booking.getBookingId(),
+                    booking.getUserBookingFk().getUserName(),
+                    booking.getUserBookingFk().getUnitResidentialFk(),
+                    booking.getUserBookingFk().getUserContact(),
+                    booking.getCommonAreaBookingFk().getCommonAreaName(),
+                    booking.getCommonAreaBookingFk().getCommonAreaId(),
+                    booking.getBookingDateTime(),
+                    booking.getBookingStatus()
             });
         }
         tableModel.fireTableDataChanged();
@@ -125,34 +133,34 @@ public class ReservationOverview extends JPanel {
         setStatusColors();
     }
 
-    public static void addReservation(Reservation reservation) {
-        allReservations.add(reservation);
+    public static void addReservation(Booking booking) {
+        allReservations.add(booking);
     }
 
-    public static List<Reservation> getAllReservations() {
+    public static List<Booking> getAllReservations() {
         return allReservations;
     }
 
     public void updateTableByArea(String areaName) {
         tableModel.setRowCount(0);
         allReservations.stream()
-                .filter(reservation -> reservation.getArea().equalsIgnoreCase(areaName))
-                .sorted(Comparator.comparing(Reservation::getArea))
-                .forEach(reservation -> tableModel.addRow(new Object[]{
-                        reservation.getSolicitante(),
-                        reservation.getEndereco(),
-                        reservation.getContato(),
-                        reservation.getArea(),
-                        reservation.getCodigoArea(),
-                        reservation.getData(),
-                        reservation.getStatus()
+                .filter(booking -> booking.getCommonAreaBookingFk().getCommonAreaName().equalsIgnoreCase(areaName))
+                .forEach(booking -> tableModel.addRow(new Object[]{
+                        booking.getBookingId(),
+                        booking.getUserBookingFk().getUserName(),
+                        booking.getUserBookingFk().getUnitResidentialFk(),
+                        booking.getUserBookingFk().getUserContact(),
+                        booking.getCommonAreaBookingFk().getCommonAreaName(),
+                        booking.getCommonAreaBookingFk().getCommonAreaId(),
+                        booking.getBookingDateTime(),
+                        booking.getBookingStatus()
                 }));
         tableModel.fireTableDataChanged();
         setStatusColors();
     }
 
 
-    public static List<String> getAvailableTimeSlots(String area, Date date) {
+    public static List<String> getAvailableTimeSlots(String area, LocalDate date) {
         // Utilize Arrays.asList para garantir compatibilidade com versões anteriores
         List<String> allTimeSlots = Arrays.asList(
                 "08:00 - 10:00",
@@ -164,9 +172,19 @@ public class ReservationOverview extends JPanel {
         );
 
         List<String> reservedSlots = new ArrayList<>();
-        for (Reservation reservation : allReservations) {
-            if (reservation.getArea().equalsIgnoreCase(area) && reservation.getData().equals(date)) {
-                reservedSlots.add(reservation.getTimeSlot());
+        for (Booking booking : allReservations) {
+            if (booking.getCommonAreaBookingFk().getCommonAreaName().equalsIgnoreCase(area) && booking.getBookingDateTime().toLocalDate().equals(date)) {
+                LocalTime startTime = booking.getBookingDateTime().toLocalTime(); // Obtém o horário inicial
+                LocalTime endTime = startTime.plusHours(2);          // Soma 2 horas
+
+                // Formata os horários no formato HH:mm
+                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                String startFormatted = startTime.format(timeFormatter);
+                String endFormatted = endTime.format(timeFormatter);
+
+                // Retorna o horário formatado
+                String timeSlot = startFormatted + " - " + endFormatted;
+                reservedSlots.add(timeSlot);
             }
         }
 
@@ -178,7 +196,7 @@ public class ReservationOverview extends JPanel {
     }
 
     private void setStatusColors() {
-        reservationsTable.getColumnModel().getColumn(6).setCellRenderer(new DefaultTableCellRenderer() {
+        reservationsTable.getColumnModel().getColumn(7).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -218,18 +236,20 @@ public class ReservationOverview extends JPanel {
 
 
     private void confirmSelectedAccount() {
+        BookingController bookingController = new BookingController();
         int selectedRow = reservationsTable.getSelectedRow();
         if (selectedRow != -1) {
             int modelRow = reservationsTable.convertRowIndexToModel(selectedRow);
-            String currentStatus = tableModel.getValueAt(modelRow, 6).toString();
+            String currentStatus = tableModel.getValueAt(modelRow, 7).toString();
 
             if (currentStatus.equals("Confirmado")) {
                 JOptionPane.showMessageDialog(this, "Esta conta já está confirmada.");
                 return;
             }
 
-            tableModel.setValueAt("Confirmado", modelRow, 6);
+            tableModel.setValueAt("Confirmado", modelRow, 7);
             setStatusColors(); // Atualiza cores
+            bookingController.updateStatus(Long.parseLong(tableModel.getValueAt(modelRow,0).toString()), "Confirmado");
             JOptionPane.showMessageDialog(this, "Conta confirmada com sucesso!");
         } else {
             JOptionPane.showMessageDialog(this, "Selecione uma conta para confirmar.");
@@ -237,10 +257,11 @@ public class ReservationOverview extends JPanel {
     }
 
     private void canceleSelectedAccount() {
+        BookingController bookingController = new BookingController();
         int selectedRow = reservationsTable.getSelectedRow();
         if (selectedRow != -1) {
             int modelRow = reservationsTable.convertRowIndexToModel(selectedRow);
-            String currentStatus = tableModel.getValueAt(modelRow, 6).toString(); // Índice da coluna de Status
+            String currentStatus = tableModel.getValueAt(modelRow, 0).toString(); // Índice da coluna de Status
 
             // Verifica se o status já está como "Cancelado"
             if (currentStatus.equals("Cancelado")) {
@@ -249,9 +270,10 @@ public class ReservationOverview extends JPanel {
             }
 
             // Atualiza o status para "Cancelado"
-            tableModel.setValueAt("Cancelado", modelRow, 6);
+            tableModel.setValueAt("Cancelado", modelRow, 7);
             setStatusColors();  // Atualiza as cores de status
             reservationsTable.repaint();  // Força o redesenho da tabela para aplicar as novas cores
+            bookingController.updateStatus(Long.parseLong(tableModel.getValueAt(modelRow,1).toString()), "Cancelado");
             JOptionPane.showMessageDialog(this, "Conta cancelada com sucesso!");
         } else {
             JOptionPane.showMessageDialog(this, "Selecione uma conta para cancelar.");

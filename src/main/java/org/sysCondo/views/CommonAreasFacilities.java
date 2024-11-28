@@ -3,16 +3,21 @@ package org.sysCondo.views;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
-import org.sysCondo.components.DateLabelFormatter;
-import org.sysCondo.components.RoundJButton;
-import org.sysCondo.components.Reservation;
-import org.sysCondo.components.RoundJTextField;
+import org.sysCondo.components.*;
+import org.sysCondo.controller.BookingController;
 import org.sysCondo.controller.CommonAreaController;
+import org.sysCondo.model.booking.Booking;
+import org.sysCondo.model.user.User;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -124,11 +129,6 @@ public class CommonAreasFacilities extends JPanel {
             reservationFrame.setLayout(new BorderLayout());
             reservationFrame.setSize(600, 350); // Aumentei o tamanho para acomodar os elementos
 
-            // Campos de texto
-            JTextField nomeField = new RoundJTextField(20, 10);
-            JTextField contatoField = new RoundJTextField(20, 10);
-            JTextField enderecoField = new RoundJTextField(20, 10);
-
             // Seleção de data
             UtilDateModel model = new UtilDateModel();
             Properties p = new Properties();
@@ -144,7 +144,7 @@ public class CommonAreasFacilities extends JPanel {
                 Date selectedDate = (Date) datePicker.getModel().getValue();
                 timeSlotComboBox.removeAllItems();
                 if (selectedDate != null) {
-                    List<String> availableTimeSlots = ReservationOverview.getAvailableTimeSlots(areaName, selectedDate);
+                    List<String> availableTimeSlots = ReservationOverview.getAvailableTimeSlots(areaName, selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
                     if (availableTimeSlots.isEmpty()) {
                         timeSlotComboBox.addItem("Nenhum horário disponível");
                     } else {
@@ -164,61 +164,35 @@ public class CommonAreasFacilities extends JPanel {
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.weightx = 1;
 
-            // Configuração de linhas com alturas diferentes
+            // Configuração para a seleção de data
             gbc.gridx = 0;
             gbc.gridy = 0;
-            gbc.weighty = 0.1; // 10% do espaço vertical
-            mainPanel.add(new JLabel("Nome:"), gbc);
-
-            gbc.gridx = 1;
-            gbc.gridy = 0;
-            mainPanel.add(nomeField, gbc);
-
-            gbc.gridx = 0;
-            gbc.gridy = 1;
-            gbc.weighty = 0.1;
-            mainPanel.add(new JLabel("Contato:"), gbc);
-
-            gbc.gridx = 1;
-            gbc.gridy = 1;
-            mainPanel.add(contatoField, gbc);
-
-            gbc.gridx = 0;
-            gbc.gridy = 2;
-            gbc.weighty = 0.1;
-            mainPanel.add(new JLabel("Endereço:"), gbc);
-
-            gbc.gridx = 1;
-            gbc.gridy = 2;
-            mainPanel.add(enderecoField, gbc);
-
-            gbc.gridx = 0;
-            gbc.gridy = 3;
-            gbc.weighty = 0.1;
+            gbc.weighty = 0.5; // Proporção vertical
             mainPanel.add(new JLabel("Escolha uma data:"), gbc);
 
             gbc.gridx = 1;
-            gbc.gridy = 3;
+            gbc.gridy = 0;
             mainPanel.add(datePicker, gbc);
 
+            // Configuração para a seleção de horário
             gbc.gridx = 0;
-            gbc.gridy = 4;
-            gbc.weighty = 0.2;
+            gbc.gridy = 1;
+            gbc.weighty = 0.5;
             mainPanel.add(new JLabel("Escolha um horário:"), gbc);
 
             gbc.gridx = 1;
-            gbc.gridy = 4;
+            gbc.gridy = 1;
             mainPanel.add(timeSlotComboBox, gbc);
 
             // Botão de confirmação
             JButton confirmButton = new JButton("Confirmar");
             confirmButton.addActionListener(confirmEvent -> {
+                BookingController bookingController = new BookingController();
+                User currentUser = Session.getCurrentUser();
+
                 // Obter valores dos campos
-                String nome = nomeField.getText();
-                String contato = contatoField.getText();
                 Date selectedDate = (Date) datePicker.getModel().getValue();
                 String selectedTimeSlot = (String) timeSlotComboBox.getSelectedItem();
-                String endereco = enderecoField.getText();
 
                 String formattedDate = "";
                 if (selectedDate != null) {
@@ -226,25 +200,32 @@ public class CommonAreasFacilities extends JPanel {
                     formattedDate = sdf.format(selectedDate);
                 }
 
-                // Printar no console para verificar
-                System.out.println("Nome: " + nome);
-                System.out.println("Contato: " + contato);
-                System.out.println("Endereço: " + endereco);
-                System.out.println("Data Selecionada: " + formattedDate);
-                System.out.println("Horário Selecionado: " + selectedTimeSlot);
-                System.out.println("Área: " + areaName);
-                System.out.println("Cód. área: " + areaCode);
-
                 // Validar campos
-                if (nome.isEmpty() || contato.isEmpty() || endereco.isEmpty() || selectedDate == null || selectedTimeSlot == null || selectedTimeSlot.equals("Nenhum horário disponível")) {
+                if (selectedDate == null || selectedTimeSlot == null || selectedTimeSlot.equals("Nenhum horário disponível")) {
                     JOptionPane.showMessageDialog(reservationFrame, "Por favor, preencha todos os campos e selecione uma data e horário válidos.", "Erro", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                boolean isAvailable = ReservationOverview.getAvailableTimeSlots(areaName, selectedDate).contains(selectedTimeSlot);
+                boolean isAvailable = ReservationOverview.getAvailableTimeSlots(areaName, selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()).contains(selectedTimeSlot);
                 if (isAvailable) {
-                    Reservation newReservation = new Reservation(nome, endereco, contato, areaName, areaCode, selectedDate, selectedTimeSlot, "Pendente");
-                    ReservationOverview.addReservation(newReservation);
+                    Booking newBooking = new Booking();
+                    newBooking.setUserBookingFk(currentUser);
+                    newBooking.setCommonAreaBookingFk(commonAreaController.getCommonAreaById(Long.parseLong(areaCode)));
+                    newBooking.setBookingStatus("Pendente");
+
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy");
+                    LocalDate bookingDate = LocalDate.parse(formattedDate, formatter);
+                    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                    String startTime = selectedTimeSlot.split(" - ")[0];
+                    LocalTime localTime = LocalTime.parse(startTime, timeFormatter);
+                    LocalDateTime bookingDateTime = LocalDateTime.of(bookingDate, localTime);
+                    newBooking.setBookingDateTime(bookingDateTime);
+
+                    newBooking.setBookingDuration(2);
+
+                    bookingController.createBooking(newBooking.getUserBookingFk(), newBooking.getCommonAreaBookingFk(), newBooking.getBookingDateTime(), newBooking.getBookingDuration());
+
+                    ReservationOverview.addReservation(newBooking);
                     JOptionPane.showMessageDialog(reservationFrame, "Reserva confirmada!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                     reservationFrame.dispose();
                 } else {
@@ -267,9 +248,9 @@ public class CommonAreasFacilities extends JPanel {
         return card;
     }
 
-    private boolean checkAvailability(String areaName, Date date) {
-        for (Reservation reservation : ReservationOverview.getAllReservations()) {
-            if (reservation.getArea().equalsIgnoreCase(areaName) && reservation.getData().equals(date)) {
+    private boolean checkAvailability(String areaName, LocalDate date) {
+        for (Booking booking : ReservationOverview.getAllReservations()) {
+            if (booking.getCommonAreaBookingFk().getCommonAreaName().equalsIgnoreCase(areaName) && booking.getBookingDateTime().toLocalDate().equals(date)) {
                 return false;
             }
         }
@@ -277,24 +258,11 @@ public class CommonAreasFacilities extends JPanel {
     }
 
     private void initializeReservations() {
-        ReservationOverview.addReservation(new Reservation("João Silva", "Rua A", "123456789", "Piscina", "0001", new Date(), "10:00 - 11:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Maria Oliveira", "Rua B", "987654321", "Quadra Poliesportiva", "0002", new Date(), "14:00 - 15:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Carlos Pereira", "Rua C", "456123789", "Academia", "0003", new Date(), "07:00 - 08:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Ana Costa", "Rua D", "789456123", "Churrasqueira", "0004", new Date(), "12:00 - 14:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Pedro Santos", "Rua E", "321654987", "Salão de eventos", "0005", new Date(), "18:00 - 22:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Laura Lima", "Rua F", "654321987", "Sala de reuniões", "0006", new Date(), "09:00 - 10:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Mariana Rocha", "Rua G", "963852741", "Sala de Jogos", "0007", new Date(), "16:00 - 17:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Felipe Almeida", "Rua H", "147258369", "Brinquedoteca", "0008", new Date(), "10:00 - 11:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Camila Ferreira", "Rua I", "258369147", "SPA e Sauna", "0009", new Date(), "15:00 - 17:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Lucas Gomes", "Rua J", "369258147", "Espaço gourmet", "0010", new Date(), "19:00 - 21:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Fernanda Ribeiro", "Rua K", "456789123", "Piscina", "0011", new Date(), "11:00 - 12:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Tiago Martins", "Rua L", "987123654", "Salão de festas", "0012", new Date(), "17:00 - 21:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Roberta Mendes", "Rua M", "654789321", "Piscina", "0013", new Date(), "13:00 - 14:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Vinícius Costa", "Rua N", "321789654", "Churrasqueira", "0014", new Date(), "12:00 - 14:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Juliana Almeida", "Rua O", "852741963", "Churrasqueira", "0015", new Date(), "14:00 - 16:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Rafael Lima", "Rua P", "789123456", "Quadra Poliesportiva", "0016", new Date(), "16:00 - 17:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Sofia Santos", "Rua Q", "147852369", "Sala de Jogos", "0017", new Date(), "17:00 - 18:00", "Pendente"));
-        ReservationOverview.addReservation(new Reservation("Gabriel Souza", "Rua R", "963741258", "Quadra Poliesportiva", "0018", new Date(), "15:00 - 16:00", "Pendente"));
+        BookingController bookingController = new BookingController();
+        List<Booking> allBookings = bookingController.getAllBookings();
+        for(Booking booking : allBookings){
+            ReservationOverview.addReservation(booking);
+        }
     }
 
     public static void main(String[] args) {

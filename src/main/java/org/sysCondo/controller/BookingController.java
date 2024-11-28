@@ -55,6 +55,25 @@ public class BookingController {
         }
     }
 
+    public void updateStatus(Long bookingId, String status){
+        Session session = HibernateUtil.getSession();
+        Transaction transaction = session.beginTransaction();
+
+        try {
+            Booking booking = session.get(Booking.class, bookingId);
+            if (booking != null) {
+                booking.setBookingStatus(status);
+                session.update(booking);
+                transaction.commit();
+            }
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
     // retorna todas as reservas de uma área comum (para verificar disponibilidade)
     public List<Booking> getBookingsByCommonAreaId(Long commonAreaId) {
         Session session = HibernateUtil.getSession();
