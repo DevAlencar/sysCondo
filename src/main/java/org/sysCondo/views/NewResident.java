@@ -14,6 +14,8 @@ import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +25,7 @@ public class NewResident extends JPanel {
     private List<RoundJTextField[]> vehiclesInputs = new ArrayList<RoundJTextField[]>(); // stores all the vehicles input references
     private JPanel formContainer = new JPanel(new GridBagLayout());
     private GridBagConstraints gbc = new GridBagConstraints();
-
-    // Lista de residências (combobox)
-    private JComboBox<UnitResidential> residenceComboBox;
+    private JComboBox<String> residenceComboBox;
 
     public NewResident() {
         // Painel principal com BorderLayout
@@ -68,18 +68,16 @@ public class NewResident extends JPanel {
         UnitResidentialController unitResidentialController = new UnitResidentialController();
         List<UnitResidential> unitResidentials = unitResidentialController.getAllUnits();
 
-        // Converte as unidades residenciais para um array de Strings com os números das unidades
-        String[] residenceOptions = unitResidentials.stream()
-                .map(UnitResidential::getUnitResidentialNumber)
-                .toArray(String[]::new);
-
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                // Atualiza as opções do JComboBox ao mostrar o painel
+                updateResidenceList();
+            }
+        });
         // apresenta no combobox as residencias cadastradas
-        JComboBox<String> residenceNumber = getComboBoxContainer("Número da residência", residenceOptions);
         gbc.gridy = 4;
-        formContainer.add(residenceNumber, gbc);
-
-        //JComboBox<String> residenceNumber = getComboBoxContainer("Número da residência", new String[]{"Unidade 1", "Unidade 2", "Unidade 3"});
-
+        residenceComboBox = getComboBoxContainer("Número da residência", new String[0]);
         gbc.gridy = 5;
         RoundJButton newVehicle = new RoundJButton("Adicionar veículo");
         newVehicle.addActionListener(new ActionListener() {
@@ -118,25 +116,56 @@ public class NewResident extends JPanel {
                 String name = nameInput.getText();
                 String document = documentInput.getText();
                 String phone = phoneInput.getText();
-                String residence = residenceNumber.getSelectedItem().toString();
+                Object residence = residenceComboBox.getSelectedItem();
                 List<Vehicle> vehicles = new ArrayList<Vehicle>();
 
-                // itera sobre os campos de veículos e adiciona à lista
+                if (name.isEmpty() || document.isEmpty() || phone.isEmpty() || residence == null) {
+                    JOptionPane.showMessageDialog(null, "Por favor preencha todos os dados.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 for (RoundJTextField[] vehicleInputs : vehiclesInputs) {
                     Vehicle vehicle = new Vehicle();
-                    vehicle.setVehicleNumber(vehicleInputs[0].getText());
-                    vehicle.setVehicleBrand(vehicleInputs[1].getText());
+                    String vehicleNumber = vehicleInputs[0].getText();
+                    String vehicleBrand = vehicleInputs[1].getText();
+                    if (vehicleNumber.isEmpty() || vehicleBrand.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Por favor preencha todos os dados.", "Erro", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    vehicle.setVehicleNumber(vehicleNumber);
+                    vehicle.setVehicleBrand(vehicleBrand);
                     vehicles.add(vehicle);
                 }
-
                 // apresenta os veículos cadastrados
                 for (Vehicle vehicle : vehicles) {
                     System.out.println("Veículo: " + vehicle.getVehicleNumber() + " - " + vehicle.getVehicleBrand());
                 }
-
                 UserController userController = new UserController();
-                userController.createUser(name, phone, document, UserRole.USER, residence,vehicles);
-
+                userController.createUser(name, phone, document, UserRole.USER, residence.toString(),vehicles);
+                JOptionPane.showMessageDialog(null, "Morador " + name + " cadastrado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                nameInput.setText("");
+                documentInput.setText("");
+                phoneInput.setText("");
+                for (RoundJTextField[] vehicleInputs : vehiclesInputs) {
+                    for (RoundJTextField input : vehicleInputs) {
+                        // Remove o painel que contém o label e o campo de texto
+                        Component parentContainer = input.getParent();
+                        if (parentContainer != null) {
+                            formContainer.remove(parentContainer);
+                        }
+                    }
+                }
+                for (Component component : formContainer.getComponents()) {
+                    if (component instanceof JLabel) {
+                        JLabel label = (JLabel) component;
+                        if (label.getText().startsWith("Veiculo")) {
+                            formContainer.remove(label);
+                        }
+                    }
+                }
+                vehiclesInputs.clear(); // Limpa a lista de inputs
+                gridyCounter = 6; // Reseta o contador de gridy
+                formContainer.revalidate(); // Atualiza o layout
+                formContainer.repaint();    // Re-renderiza o painel
             }
         });
 
@@ -217,7 +246,7 @@ public class NewResident extends JPanel {
         // Limpa o combobox atual e adiciona os itens novamente
         residenceComboBox.removeAllItems();
         for (UnitResidential residence : residences) {
-            residenceComboBox.addItem(residence);
+            residenceComboBox.addItem(residence.getUnitResidentialNumber());
         }
     }
 

@@ -1,6 +1,7 @@
 package org.sysCondo.views;
 
 import org.sysCondo.components.RoundJButton;
+import org.sysCondo.components.Session;
 import org.sysCondo.controller.CommonAreaController;
 import org.sysCondo.controller.MaintenanceController;
 import org.sysCondo.controller.UserController;
@@ -86,14 +87,11 @@ public class CommonAreasMaintenence extends JPanel {
 
         MaintenanceController maintenanceController = new MaintenanceController();
 
-        // Cria um usuário para testar
-        // TODO: remover após implementar a autenticação, pois o usuário é definido a partir do login
-        UserController userController = new UserController();
-        User teste = userController.getUserByDocument("123456789");
-
         // onclick botão de enviar
         submitButton.addActionListener(e -> {
-            maintenanceController.createMaintenance(teste, commonAreas.get(area.getSelectedIndex()), "Em progresso", maintenence.getSelectedItem().toString());
+            User currentUser = Session.getCurrentUser();
+            maintenanceController.createMaintenance(currentUser, commonAreas.get(area.getSelectedIndex()), "Em progresso", maintenence.getSelectedItem().toString());
+            JOptionPane.showMessageDialog(this, "Solicitação de manutenção enviada com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         });
 
 

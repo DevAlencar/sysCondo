@@ -80,12 +80,19 @@ public class AccReceivableAdd extends JPanel {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
             String taxName = taxNameInput.getText();
-            float taxValue = Float.parseFloat(taxValueInput.getText());
-            LocalDate taxFinishDate = LocalDate.parse(taxFinishDateInput.getText(), formatter);
+            String taxValueText = taxValueInput.getText();
+            String taxFinishDateText = taxFinishDateInput.getText();
+
+            if (taxName.isEmpty() || taxValueText.isEmpty() || taxFinishDateText.isEmpty()){
+                JOptionPane.showMessageDialog(this, "Por favor preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            float taxValue = Float.parseFloat(taxValueText);
+            LocalDate taxFinishDate = LocalDate.parse(taxFinishDateText, formatter);
 
             TaxController taxController = new TaxController();
             taxController.createTax(taxName, taxValue, taxFinishDate);
-            JOptionPane.showMessageDialog(this, "Taxa " + taxName + " adicionada com sucesso.");
+            JOptionPane.showMessageDialog(this, "Taxa " + taxName + " adicionada com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             taxNameInput.setText("");
             taxValueInput.setText("");
             taxFinishDateInput.setText("");

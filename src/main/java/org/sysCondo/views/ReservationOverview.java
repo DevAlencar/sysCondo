@@ -7,10 +7,13 @@ import org.sysCondo.controller.UnitResidentialController;
 import org.sysCondo.model.booking.Booking;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.time.LocalDate;
@@ -27,6 +30,9 @@ public class ReservationOverview extends JPanel {
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
     private static List<Booking> allReservations = new ArrayList<>();
+    private static final String[] columnNames = new String[]{"Id", "Solicitante", "Endereço", "Contato", "Área", "Cód.", "Data da Reserva", "Status"};
+    private static final BookingController bookingController = new BookingController();
+    private Object[][] data;
 
     public ReservationOverview() {
         setLayout(new BorderLayout());
@@ -34,12 +40,14 @@ public class ReservationOverview extends JPanel {
         // Header panel
         JPanel headerPanel = new JPanel(new BorderLayout());
         JLabel titleLabel = new JLabel("Gerenciar Reservas", JLabel.CENTER);
-        titleLabel.setFont(new Font("Roboto Medium", Font.PLAIN, 30));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        titleLabel.setFont(new Font("Roboto", Font.BOLD, 28));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
         headerPanel.add(titleLabel, BorderLayout.NORTH);
+        headerPanel.setBackground(Color.WHITE);
 
         // Control panel with search field
         JPanel controlsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        controlsPanel.setBackground(new Color(202, 202, 202));
         searchField = new JTextField(20);
         searchField.setToolTipText("Buscar reserva...");
         searchField.addKeyListener(new KeyAdapter() {
@@ -65,18 +73,19 @@ public class ReservationOverview extends JPanel {
         add(headerPanel, BorderLayout.NORTH);
 
         // Table setup
-        tableModel = new DefaultTableModel(new String[]{"Id", "Solicitante", "Endereço", "Contato", "Área", "Cód.", "Data da Reserva", "Status"}, 0);
-        reservationsTable = new JTable(tableModel);
-        customizeTable();
-
-        sorter = new TableRowSorter<>(tableModel);
-        reservationsTable.setRowSorter(sorter);
+        reservationsTable = new JTable();
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                updateTable();
+            }
+        });
 
         JScrollPane scrollPane = new JScrollPane(reservationsTable);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
         add(scrollPane, BorderLayout.CENTER);
 
-        updateTable();
+        customizeTable();
     }
 
     private void customizeTable() {
@@ -94,12 +103,6 @@ public class ReservationOverview extends JPanel {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         reservationsTable.setDefaultRenderer(Object.class, centerRenderer);
-
-        // Adiciona editor para a coluna de Status
-        reservationsTable.getColumnModel().getColumn(6).setCellEditor(
-                new DefaultCellEditor(new JComboBox<>(new String[]{"Confirmada", "Cancelada"}))
-        );
-        setStatusColors();
     }
 
 
@@ -111,25 +114,39 @@ public class ReservationOverview extends JPanel {
 
     // Change access modifier to public
     public void updateTable() {
-        tableModel.setRowCount(0);
-        for (Booking booking : allReservations) {
-            tableModel.addRow(new Object[]{
-                    booking.getBookingId(),
-                    booking.getUserBookingFk().getUserName(),
-                    booking.getUserBookingFk().getUnitResidentialFk(),
-                    booking.getUserBookingFk().getUserContact(),
-                    booking.getCommonAreaBookingFk().getCommonAreaName(),
-                    booking.getCommonAreaBookingFk().getCommonAreaId(),
-                    booking.getBookingDateTime(),
-                    booking.getBookingStatus()
-            });
-        }
-        tableModel.fireTableDataChanged();
-
-        // Ordena a tabela pela coluna desejada
+        List<Booking> allBookings = bookingController.getAllBookings();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        data = allBookings.stream()
+                .map(booking -> new Object[]{
+                        booking.getBookingId(),
+                        booking.getUserBookingFk().getUserName(),
+                        booking.getUserBookingFk().getUnitResidentialFk(),
+                        booking.getUserBookingFk().getUserContact(),
+                        booking.getCommonAreaBookingFk().getCommonAreaName(),
+                        booking.getCommonAreaBookingFk().getCommonAreaId(),
+                        booking.getBookingDateTime().format(dtf),
+                        booking.getBookingStatus()
+                })
+                .toArray(Object[][]::new);
+        tableModel = new DefaultTableModel(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Desabilita a edição de qualquer célula
+            }
+        };
+        reservationsTable.setModel(tableModel);
+        sorter = new TableRowSorter<>(tableModel);
+        reservationsTable.setRowSorter(sorter);
+        sorter.toggleSortOrder(0);
+        sorter = new TableRowSorter<>(tableModel);
+        reservationsTable.setRowSorter(sorter);
         List<RowSorter.SortKey> sortKeys = new ArrayList<>();
         sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING)); // Coluna "Solicitante"
         sorter.setSortKeys(sortKeys);
+        // Adiciona editor para a coluna de Status
+        reservationsTable.getColumnModel().getColumn(7).setCellEditor(
+                new DefaultCellEditor(new JComboBox<>(new String[]{"Confirmada", "Cancelada"}))
+        );
         setStatusColors();
     }
 
@@ -137,28 +154,9 @@ public class ReservationOverview extends JPanel {
         allReservations.add(booking);
     }
 
-    public static List<Booking> getAllReservations() {
-        return allReservations;
-    }
-
-    public void updateTableByArea(String areaName) {
-        tableModel.setRowCount(0);
-        allReservations.stream()
-                .filter(booking -> booking.getCommonAreaBookingFk().getCommonAreaName().equalsIgnoreCase(areaName))
-                .forEach(booking -> tableModel.addRow(new Object[]{
-                        booking.getBookingId(),
-                        booking.getUserBookingFk().getUserName(),
-                        booking.getUserBookingFk().getUnitResidentialFk(),
-                        booking.getUserBookingFk().getUserContact(),
-                        booking.getCommonAreaBookingFk().getCommonAreaName(),
-                        booking.getCommonAreaBookingFk().getCommonAreaId(),
-                        booking.getBookingDateTime(),
-                        booking.getBookingStatus()
-                }));
-        tableModel.fireTableDataChanged();
-        setStatusColors();
-    }
-
+//    public static List<Booking> getAllReservations() {
+//        return allReservations;
+//    }
 
     public static List<String> getAvailableTimeSlots(String area, LocalDate date) {
         // Utilize Arrays.asList para garantir compatibilidade com versões anteriores
@@ -232,9 +230,6 @@ public class ReservationOverview extends JPanel {
         });
     }
 
-
-
-
     private void confirmSelectedAccount() {
         BookingController bookingController = new BookingController();
         int selectedRow = reservationsTable.getSelectedRow();
@@ -261,7 +256,7 @@ public class ReservationOverview extends JPanel {
         int selectedRow = reservationsTable.getSelectedRow();
         if (selectedRow != -1) {
             int modelRow = reservationsTable.convertRowIndexToModel(selectedRow);
-            String currentStatus = tableModel.getValueAt(modelRow, 0).toString(); // Índice da coluna de Status
+            String currentStatus = tableModel.getValueAt(modelRow, 7).toString(); // Índice da coluna de Status
 
             // Verifica se o status já está como "Cancelado"
             if (currentStatus.equals("Cancelado")) {
@@ -273,7 +268,7 @@ public class ReservationOverview extends JPanel {
             tableModel.setValueAt("Cancelado", modelRow, 7);
             setStatusColors();  // Atualiza as cores de status
             reservationsTable.repaint();  // Força o redesenho da tabela para aplicar as novas cores
-            bookingController.updateStatus(Long.parseLong(tableModel.getValueAt(modelRow,1).toString()), "Cancelado");
+            bookingController.updateStatus(Long.parseLong(tableModel.getValueAt(modelRow,0).toString()), "Cancelado");
             JOptionPane.showMessageDialog(this, "Conta cancelada com sucesso!");
         } else {
             JOptionPane.showMessageDialog(this, "Selecione uma conta para cancelar.");

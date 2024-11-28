@@ -7,6 +7,7 @@ import org.sysCondo.controller.UnitResidentialController;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.Objects;
 
 public class NewResidence extends JPanel {
     // Variáveis de instância para armazenar referências dos campos de entrada
@@ -75,9 +76,18 @@ public class NewResidence extends JPanel {
             String propertySize = propertySizeInput.getText();
             String ownerName = ownerNameInput.getText();
             String ownerPhone = ownerPhoneInput.getText();
-            
+
+            if (propertyNumber.isEmpty() || propertySize.isEmpty() || ownerName.isEmpty() || ownerPhone.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Por favor preencha todos os dados.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             UnitResidentialController unitResidentialController = new UnitResidentialController();
             unitResidentialController.createUnitResidential(propertyNumber, propertySize, ownerName, ownerPhone);
+            JOptionPane.showMessageDialog(null, "Propriedade de número " + propertyNumber + " cadastrada com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            propertyNumberInput.setText("");
+            propertySizeInput.setText("");
+            ownerNameInput.setText("");
+            ownerPhoneInput.setText("");
         });
 
         // Exibe a janela

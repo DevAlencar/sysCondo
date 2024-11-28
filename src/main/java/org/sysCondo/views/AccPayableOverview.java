@@ -97,7 +97,6 @@ public class AccPayableOverview extends JPanel {
         this.addComponentListener(new ComponentAdapter() { // função chamada cada vez que o painel aparece em tela
             @Override
             public void componentShown(ComponentEvent e) {
-                System.out.println("Contas a pagar");
                 updateTable();
             }
         });

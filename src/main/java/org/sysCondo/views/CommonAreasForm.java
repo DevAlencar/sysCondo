@@ -123,16 +123,4 @@ public class CommonAreasForm extends JPanel {
 
         return container;
     }
-
-    public static void main(String[] args) {
-        // Inicia a tela principal
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Reserva de Áreas Comuns");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.add(new CommonAreasForm());
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-        });
-    }
 }

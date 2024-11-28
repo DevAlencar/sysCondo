@@ -64,17 +64,21 @@ public class NewStatement extends JPanel {
             StatementController statementController = new StatementController();
             String title = titleField.getText();
             String message = messageField.getText();
+            if (title.isEmpty() || message.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             statementController.createStatement(title, message);
-            JOptionPane.showMessageDialog(this, "Comunicado criado com sucesso");
+            JOptionPane.showMessageDialog(this, "Comunicado criado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             titleField.setText("");
             messageField.setText("");
         });
 
         // onclick cancelBtn
-        cancelBtn.addActionListener(e -> {
-            // Implementar a lógica de cancelar a criação do comunicado
-            System.out.println("Criação de comunicado cancelada!");
-        });
+//        cancelBtn.addActionListener(e -> {
+//            // Implementar a lógica de cancelar a criação do comunicado
+//            System.out.println("Criação de comunicado cancelada!");
+//        });
 
         // Exibe a janela
         setVisible(true);
@@ -109,17 +113,5 @@ public class NewStatement extends JPanel {
         formContainer.add(container, gbc);
 
         return textArea;
-    }
-
-    public static void main(String[] args) {
-        //SwingUtilities.invokeLater(NewStatement::new);
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Novo Comunicado");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.add(new NewStatement());
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-        });
     }
 }

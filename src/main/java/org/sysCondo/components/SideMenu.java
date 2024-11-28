@@ -1,5 +1,7 @@
 package org.sysCondo.components;
 
+import org.sysCondo.model.user.User;
+import org.sysCondo.model.user.UserRole;
 import org.sysCondo.types.MenuItem;
 import org.sysCondo.views.*;
 
@@ -13,8 +15,6 @@ import java.awt.event.MouseEvent;
 public class SideMenu {
 
     private JPanel sideMenuPanel;
-    private AdditionalOptionsPanel accountsReceivableOptionsPanel; // Painel de opções para contas a receber
-    private AdditionalOptionsPanel accountsPayableOptionsPanel; // Painel de opções para contas a pagar
     private JPanel contentPanel;
     public JFrame parentFrame;
 
@@ -43,107 +43,132 @@ public class SideMenu {
         CommonAreasMaintenenceOverview commonAreasMaintenenceOverview = new CommonAreasMaintenenceOverview();
         CommonAreasFacilities commonAreasFacilities = new CommonAreasFacilities();
         ReservationOverview reservationOverview = new ReservationOverview();
-
-        AdditionalOptionsPanel residentsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
-        MenuItem[] residentsItems = {
-                new MenuItem("Cadastrar morador", newResident),
-        };
-        residentsOptionsPanel.createAdditionalOptionsPanel(residentsItems);
-
-        AdditionalOptionsPanel residenceOptionsPanel = new AdditionalOptionsPanel(contentPanel);
-        MenuItem[] residenceItems = {
-                new MenuItem("Cadastrar residência", newResidence)
-        };
-        residenceOptionsPanel.createAdditionalOptionsPanel(residenceItems);
-
-        AdditionalOptionsPanel accountsReceivableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
-        MenuItem[] receivableItems = {
-                new MenuItem("Adicionar taxa", accReceivableAdd),
-                new MenuItem("Visão geral", accRecievableOverview)
-        };
-        accountsReceivableOptionsPanel.createAdditionalOptionsPanel(receivableItems);
-
-        AdditionalOptionsPanel accountsPayableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
-        MenuItem[] payableItems = {
-                new MenuItem("Adicionar conta", accPayableAdd),
-                new MenuItem("Visão geral", accPayableOverview)
-        };
-        accountsPayableOptionsPanel.createAdditionalOptionsPanel(payableItems);
-
-        AdditionalOptionsPanel commsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
-        MenuItem[] commsItems = {
-                new MenuItem("Novo Comunicado", newStatement),
-                new MenuItem("Comunicados", statements),
-                new MenuItem("Mensagens", messages)
-        };
-        commsOptionsPanel.createAdditionalOptionsPanel(commsItems);
-
-        AdditionalOptionsPanel commonAreasOptionsPanel = new AdditionalOptionsPanel(contentPanel);
-        MenuItem[] commonAreasItems = {
-                new MenuItem("Solicitar manutenção", commonAreasMaintenence),
-                new MenuItem("Solicitações realizadas", commonAreasMaintenenceRequests),
-                new MenuItem("Gestão de manutenções", commonAreasMaintenenceOverview),
-                new MenuItem("Áreas comuns", commonAreasFacilities),
-                new MenuItem("Gerenciar reservas", reservationOverview) // Certifique-se de que essa classe existe
-        };
-        commonAreasOptionsPanel.createAdditionalOptionsPanel(commonAreasItems);
+        User currentUser = Session.getCurrentUser();
+        UserRole role = currentUser.getUserRole();
 
         JPanel sideMenu = new JPanel();
         sideMenu.setLayout(new BoxLayout(sideMenu, BoxLayout.Y_AXIS));
         sideMenu.setPreferredSize(new Dimension(250, contentPanel.getHeight()));
         sideMenu.setBackground(new Color(235, 235, 235));
 
-        JButton residents = createSideMenuButton("Gestão de moradores", "src/main/java/org/sysCondo/assets/people.png", residentsOptionsPanel);
-        sideMenu.add(residents);
-        sideMenu.add(residentsOptionsPanel.getPanel());
+        if (role.toString().equals("ADMIN")) {
+            AdditionalOptionsPanel residentsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+            MenuItem[] residentsItems = {
+                    new MenuItem("Cadastrar morador", newResident),
+            };
+            residentsOptionsPanel.createAdditionalOptionsPanel(residentsItems);
 
-        JButton residences = createSideMenuButton("Gestão de residências", "src/main/java/org/sysCondo/assets/house.png", residenceOptionsPanel);
-        sideMenu.add(residences);
-        sideMenu.add(residenceOptionsPanel.getPanel());
+            AdditionalOptionsPanel residenceOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+            MenuItem[] residenceItems = {
+                    new MenuItem("Cadastrar residência", newResidence)
+            };
+            residenceOptionsPanel.createAdditionalOptionsPanel(residenceItems);
 
-        JButton receivableButton = createSideMenuButton("Contas a receber", "src/main/java/org/sysCondo/assets/receive.png", accountsReceivableOptionsPanel);
-        sideMenu.add(receivableButton);
-        sideMenu.add(accountsReceivableOptionsPanel.getPanel());
+            AdditionalOptionsPanel accountsReceivableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+            MenuItem[] receivableItems = {
+                    new MenuItem("Adicionar taxa", accReceivableAdd),
+                    new MenuItem("Visão geral", accRecievableOverview)
+            };
+            accountsReceivableOptionsPanel.createAdditionalOptionsPanel(receivableItems);
 
-        JButton payableButton = createSideMenuButton("Contas a pagar", "src/main/java/org/sysCondo/assets/pay.png", accountsPayableOptionsPanel);
-        sideMenu.add(payableButton);
-        sideMenu.add(accountsPayableOptionsPanel.getPanel());
+            AdditionalOptionsPanel accountsPayableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+            MenuItem[] payableItems = {
+                    new MenuItem("Adicionar conta", accPayableAdd),
+                    new MenuItem("Visão geral", accPayableOverview)
+            };
+            accountsPayableOptionsPanel.createAdditionalOptionsPanel(payableItems);
 
-        JButton reservationButton = createSideMenuButton("Áreas comuns", "src/main/java/org/sysCondo/assets/commonArea.png", commonAreasOptionsPanel);
-        sideMenu.add(reservationButton);
-        sideMenu.add(commonAreasOptionsPanel.getPanel());
+            AdditionalOptionsPanel commsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+            MenuItem[] commsItems = {
+                    new MenuItem("Novo Comunicado", newStatement),
+                    new MenuItem("Comunicados", statements),
+                    new MenuItem("Mensagens", messages)
+            };
+            commsOptionsPanel.createAdditionalOptionsPanel(commsItems);
 
-        JButton commsButton = createSideMenuButton("Comunicação", "src/main/java/org/sysCondo/assets/chat.png", commsOptionsPanel);
-        sideMenu.add(commsButton);
-        sideMenu.add(commsOptionsPanel.getPanel());
+            AdditionalOptionsPanel commonAreasOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+            MenuItem[] commonAreasItems = {
+                    new MenuItem("Solicitar manutenção", commonAreasMaintenence),
+                    new MenuItem("Gestão de manutenções", commonAreasMaintenenceOverview),
+                    new MenuItem("Áreas comuns", commonAreasFacilities),
+                    new MenuItem("Gerenciar reservas", reservationOverview) // Certifique-se de que essa classe existe
+            };
+            commonAreasOptionsPanel.createAdditionalOptionsPanel(commonAreasItems);
 
-        JButton reportsButton = createSideMenuButton("Gerar relatórios", "src/main/java/org/sysCondo/assets/reports.png", null);
-        reportsButton.addActionListener(e -> {
-            // Criando o Reports como um JDialog
-            Reports reports = new Reports(parentFrame); // Certifique-se de que a classe Reports aceita um JFrame no construtor
+            JButton residents = createSideMenuButton("Gestão de moradores", "src/main/java/org/sysCondo/assets/people.png", residentsOptionsPanel);
+            sideMenu.add(residents);
+            sideMenu.add(residentsOptionsPanel.getPanel());
 
-            // Criando o JDialog para exibir os relatórios
-            JDialog reportsDialog = new JDialog(parentFrame, "Relatórios", true);
-            reportsDialog.setLayout(new BorderLayout());
-            reportsDialog.add(reports, BorderLayout.CENTER);
+            JButton residences = createSideMenuButton("Gestão de residências", "src/main/java/org/sysCondo/assets/house.png", residenceOptionsPanel);
+            sideMenu.add(residences);
+            sideMenu.add(residenceOptionsPanel.getPanel());
 
-            // Definindo o tamanho e outras propriedades do JDialog
-            reportsDialog.setSize(800, 600);  // Ajuste o tamanho conforme necessário
-            reportsDialog.setLocationRelativeTo(parentFrame); // Centraliza o pop-up
-            reportsDialog.setVisible(true); // Torna o JDialog visível
-        });
-        sideMenu.add(reportsButton);
+            JButton receivableButton = createSideMenuButton("Contas a receber", "src/main/java/org/sysCondo/assets/receive.png", accountsReceivableOptionsPanel);
+            sideMenu.add(receivableButton);
+            sideMenu.add(accountsReceivableOptionsPanel.getPanel());
 
+            JButton payableButton = createSideMenuButton("Contas a pagar", "src/main/java/org/sysCondo/assets/pay.png", accountsPayableOptionsPanel);
+            sideMenu.add(payableButton);
+            sideMenu.add(accountsPayableOptionsPanel.getPanel());
 
+            JButton reservationButton = createSideMenuButton("Áreas comuns", "src/main/java/org/sysCondo/assets/commonArea.png", commonAreasOptionsPanel);
+            sideMenu.add(reservationButton);
+            sideMenu.add(commonAreasOptionsPanel.getPanel());
 
-//        // Adicionando o JScrollPane
-//        JScrollPane scrollPane = new JScrollPane(sideMenu);
-//        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-//        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-//        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Suaviza o scrolling
-//
-//        JPanel container = new JPanel(new BorderLayout());
-//        container.add(scrollPane, BorderLayout.CENTER);
+            JButton commsButton = createSideMenuButton("Comunicação", "src/main/java/org/sysCondo/assets/chat.png", commsOptionsPanel);
+            sideMenu.add(commsButton);
+            sideMenu.add(commsOptionsPanel.getPanel());
+
+            JButton reportsButton = createSideMenuButton("Gerar relatórios", "src/main/java/org/sysCondo/assets/reports.png", null);
+            reportsButton.addActionListener(e -> {
+                // Criando o Reports como um JDialog
+                Reports reports = new Reports(parentFrame); // Certifique-se de que a classe Reports aceita um JFrame no construtor
+
+                // Criando o JDialog para exibir os relatórios
+                JDialog reportsDialog = new JDialog(parentFrame, "Relatórios", true);
+                reportsDialog.setLayout(new BorderLayout());
+                reportsDialog.add(reports, BorderLayout.CENTER);
+
+                // Definindo o tamanho e outras propriedades do JDialog
+                reportsDialog.setSize(800, 600);  // Ajuste o tamanho conforme necessário
+                reportsDialog.setLocationRelativeTo(parentFrame); // Centraliza o pop-up
+                reportsDialog.setVisible(true); // Torna o JDialog visível
+            });
+            sideMenu.add(reportsButton);
+        } else {
+            AdditionalOptionsPanel accountsReceivableOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+            MenuItem[] receivableItems = {
+                    new MenuItem("Visão geral", accRecievableOverview)
+            };
+            accountsReceivableOptionsPanel.createAdditionalOptionsPanel(receivableItems);
+
+            AdditionalOptionsPanel commsOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+            MenuItem[] commsItems = {
+                    new MenuItem("Comunicados", statements),
+                    new MenuItem("Mensagens", messages)
+            };
+            commsOptionsPanel.createAdditionalOptionsPanel(commsItems);
+
+            AdditionalOptionsPanel commonAreasOptionsPanel = new AdditionalOptionsPanel(contentPanel);
+            MenuItem[] commonAreasItems = {
+                    new MenuItem("Solicitar manutenção", commonAreasMaintenence),
+                    new MenuItem("Solicitações realizadas", commonAreasMaintenenceRequests),
+                    new MenuItem("Áreas comuns", commonAreasFacilities),
+            };
+            commonAreasOptionsPanel.createAdditionalOptionsPanel(commonAreasItems);
+
+            JButton receivableButton = createSideMenuButton("Contas a receber", "src/main/java/org/sysCondo/assets/receive.png", accountsReceivableOptionsPanel);
+            sideMenu.add(receivableButton);
+            sideMenu.add(accountsReceivableOptionsPanel.getPanel());
+
+            JButton reservationButton = createSideMenuButton("Áreas comuns", "src/main/java/org/sysCondo/assets/commonArea.png", commonAreasOptionsPanel);
+            sideMenu.add(reservationButton);
+            sideMenu.add(commonAreasOptionsPanel.getPanel());
+
+            JButton commsButton = createSideMenuButton("Comunicação", "src/main/java/org/sysCondo/assets/chat.png", commsOptionsPanel);
+            sideMenu.add(commsButton);
+            sideMenu.add(commsOptionsPanel.getPanel());
+        }
 
         return sideMenu;
     }

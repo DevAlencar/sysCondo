@@ -30,17 +30,16 @@ public class CommonAreasFacilities extends JPanel {
         setBackground(Color.WHITE);
 
         timeSlotComboBox = new JComboBox<>();
-
         initializeReservations();
 
         JPanel contentContainer = new JPanel(new BorderLayout());
         contentContainer.setBackground(Color.WHITE);
-        contentContainer.setBorder(new EmptyBorder(30, 30, 30, 30));
+        contentContainer.setBorder(new EmptyBorder(0, 30, 30, 30));
         add(contentContainer);
 
         JLabel titleLabel = new JLabel("Áreas Comuns Disponíveis", JLabel.CENTER);
-        titleLabel.setFont(new Font("Roboto Bold", Font.PLAIN, 28));
-        titleLabel.setBorder(new EmptyBorder(10, 0, 10, 0));
+        titleLabel.setFont(new Font("Roboto", Font.BOLD, 28));
+        titleLabel.setBorder(new EmptyBorder(30, 0, 20, 0));
         contentContainer.add(titleLabel, BorderLayout.NORTH);
 
         JPanel areasPanel = new JPanel(new GridLayout(2, 5, 10, 10));
@@ -247,16 +246,6 @@ public class CommonAreasFacilities extends JPanel {
 
         return card;
     }
-
-    private boolean checkAvailability(String areaName, LocalDate date) {
-        for (Booking booking : ReservationOverview.getAllReservations()) {
-            if (booking.getCommonAreaBookingFk().getCommonAreaName().equalsIgnoreCase(areaName) && booking.getBookingDateTime().toLocalDate().equals(date)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     private void initializeReservations() {
         BookingController bookingController = new BookingController();
         List<Booking> allBookings = bookingController.getAllBookings();
@@ -265,15 +254,13 @@ public class CommonAreasFacilities extends JPanel {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Áreas Comuns Disponíveis");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.add(new CommonAreasFacilities());
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-        });
-    }
+//    private boolean checkAvailability(String areaName, LocalDate date) {
+//        for (Booking booking : ReservationOverview.getAllReservations()) {
+//            if (booking.getCommonAreaBookingFk().getCommonAreaName().equalsIgnoreCase(areaName) && booking.getBookingDateTime().toLocalDate().equals(date)) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
 }

@@ -12,6 +12,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -22,12 +24,15 @@ public class CommonAreasMaintenenceOverview extends JPanel {
     private JTextField searchField;
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
-
+    MaintenanceController maintenanceController;
+    private Object[][] data;
+    private final String[] columnNames = new String[]{"ID","Área", "Tipo", "Solicitante", "Status"};
 
     public CommonAreasMaintenenceOverview() {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
         setBackground(Color.WHITE);
+        this.maintenanceController = new MaintenanceController();
 
         // Painel de Cabeçalho
         JPanel headerPanel = new JPanel(new BorderLayout());
@@ -75,18 +80,14 @@ public class CommonAreasMaintenenceOverview extends JPanel {
 
         searchField.setFont(labelFont); // Alterar a fonte do campo de texto
 
-        // Configuração da Tabela
-        // Configuração da Tabela
-        tableModel = new DefaultTableModel(new String[]{"ID","Área", "Tipo", "Solicitante", "Status"}, 0) {
+        this.addComponentListener(new ComponentAdapter() {
             @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Desabilita a edição de qualquer célula
+            public void componentShown(ComponentEvent e) {
+                updateTable();
             }
-        };
+        });
 
-        manutencoesTable = new JTable(tableModel);
-        sorter = new TableRowSorter<>(tableModel);
-        manutencoesTable.setRowSorter(sorter);
+        manutencoesTable = new JTable();
 
         manutencoesTable.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -141,19 +142,6 @@ public class CommonAreasMaintenenceOverview extends JPanel {
             }
         });
 
-        MaintenanceController maintenanceController = new MaintenanceController();
-        List<Maintenance> allMaintenances = maintenanceController.getAllMaintenances();
-
-        for (Maintenance maintenance : allMaintenances) {
-            tableModel.addRow(new Object[]{
-                    maintenance.getMaintenanceId(),
-                    maintenance.getCommonAreaMaintenanceFk().getCommonAreaName(),
-                    maintenance.getType(),
-                    maintenance.getUserMaintenanceFk().getUserName(),
-                    maintenance.getStatus()
-            });
-        }
-
         customizeTable();
 
         JScrollPane scrollPane = new JScrollPane(manutencoesTable);
@@ -194,6 +182,32 @@ public class CommonAreasMaintenenceOverview extends JPanel {
             }
         });
 
+    }
+
+    private void updateTable() {
+        List<Maintenance> allMaintenances = maintenanceController.getAllMaintenances();
+        data = allMaintenances.stream()
+                .map(maintenance -> new Object[]{
+                        maintenance.getMaintenanceId(),
+                        maintenance.getCommonAreaMaintenanceFk().getCommonAreaName(),
+                        maintenance.getType(),
+                        maintenance.getUserMaintenanceFk().getUserName(),
+                        maintenance.getStatus()
+                })
+                .toArray(Object[][]::new);
+        System.out.println(allMaintenances);
+        tableModel = new DefaultTableModel(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Desabilita a edição de qualquer célula
+            }
+        };
+        manutencoesTable.setModel(tableModel);
+        sorter = new TableRowSorter<>(tableModel);
+        manutencoesTable.setRowSorter(sorter);
+        sorter.toggleSortOrder(0);
+        sorter = new TableRowSorter<>(tableModel);
+        manutencoesTable.setRowSorter(sorter);
     }
 
     private void filterTable(String query) {

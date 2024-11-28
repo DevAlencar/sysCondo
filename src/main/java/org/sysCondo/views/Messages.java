@@ -250,7 +250,15 @@ public class Messages extends JPanel {
             UserMessageController userMessageController = new UserMessageController();
             User currentUser = Session.getCurrentUser();
 
+            String titleText = title.getText();
+            String messageText = message.getText();
+
+            if (titleText.isEmpty() || messageText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             userMessageController.createMessage(currentUser, title.getText(), message.getText());
+            JOptionPane.showMessageDialog(this, "Mensagem enviada com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             dialog.dispose();
             reloadMessages();
         });

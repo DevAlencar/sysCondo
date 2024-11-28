@@ -90,6 +90,7 @@ public class LoginScreen extends JPanel {
                 JOptionPane.showMessageDialog(null, "Login realizado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             } catch (RuntimeException ex) {
                 JOptionPane.showMessageDialog(null, "Credenciais incorretas, por favor tente novamente.", "Erro", JOptionPane.ERROR_MESSAGE);
+                System.out.print(ex);
             }
 
         });

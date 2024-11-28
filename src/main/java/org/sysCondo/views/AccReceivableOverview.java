@@ -117,7 +117,6 @@ public class AccReceivableOverview extends JPanel {
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) { // função chamada cada vez que o painel aparece em tela
-                System.out.println("Taxas");
                 updateTable(); // Chama para preencher a tabela inicialmente
             }
         });
@@ -285,10 +284,11 @@ public class AccReceivableOverview extends JPanel {
             int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja excluir esta taxa?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 taxController.deleteTax((Integer) table.getValueAt(selectedRow, 0));
+                JOptionPane.showMessageDialog(this, "Taxa" + table.getValueAt(selectedRow, 1) + " removida com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                 tableModel.removeRow(selectedRow); // Remove a conta da tabela
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecione uma taxa para excluir.");
+            JOptionPane.showMessageDialog(this, "Por favor, selecione uma taxa para excluir.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -303,10 +303,10 @@ public class AccReceivableOverview extends JPanel {
                 Tax selectTax = taxController.getTaxById((Integer) table.getValueAt(selectedRow, 0));
                 userTaxPayedController.createUserTaxPayed(currentUser, selectTax);
                 table.setValueAt("Pago", selectedRow, 4);
-                JOptionPane.showMessageDialog(this, "Taxa " + table.getValueAt(selectedRow, 1) + " paga com sucesso.");
+                JOptionPane.showMessageDialog(this, "Taxa " + table.getValueAt(selectedRow, 1) + " paga com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecione uma taxa para pagar.");
+            JOptionPane.showMessageDialog(this, "Por favor, selecione uma taxa para pagar.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

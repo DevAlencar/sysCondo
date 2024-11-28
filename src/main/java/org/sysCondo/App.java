@@ -18,9 +18,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 public class App {
     public static void main(String[] args) {
-        Session session = HibernateUtil.getSession();
-
-        UserController userController = new UserController();
+//        Session session = HibernateUtil.getSession();
+//
+//        UserController userController = new UserController();
 
         //DevUtil.clearAllData();
 
