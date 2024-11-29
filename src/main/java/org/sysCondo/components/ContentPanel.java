@@ -35,7 +35,7 @@ public class ContentPanel {
         subtitleLabel.setBorder(BorderFactory.createEmptyBorder(0, 30, 30, 30));
         welcomePanel.add(subtitleLabel);
 
-        JLabel logoLabel = new JLabel(new ImageIcon("src/main/java/org/sysCondo/assets/logo2.png"));
+        JLabel logoLabel = new JLabel(new ImageIcon("src/main/java/org/sysCondo/assets/width_800.png"));
         logoLabel.setHorizontalAlignment(JLabel.CENTER);
         logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         logoLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 30, 0));
