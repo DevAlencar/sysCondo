@@ -105,7 +105,9 @@ public class CommonAreasMaintenenceOverview extends JPanel {
                         String area = (String) manutencoesTable.getValueAt(selectedRow, 0);
                         MaintenanceController maintenanceController = new MaintenanceController();
 
-                        Maintenance manutencao = maintenanceController.getMaintenanceById(manutencoesTable.getValueAt(selectedRow, 0).toString());
+                        Object value = manutencoesTable.getValueAt(selectedRow, 0);
+                        Long id = (value instanceof Long) ? (Long) value : Long.valueOf(value.toString());
+                        Maintenance manutencao = maintenanceController.getMaintenanceById(id);
 
                         if (manutencao != null) {
                             // Cria a mensagem a ser exibida na caixa de diálogo
@@ -269,9 +271,13 @@ public class CommonAreasMaintenenceOverview extends JPanel {
     private void alterarStatus() {
         int selectedRow = manutencoesTable.getSelectedRow();
         if (selectedRow >= 0) {
-            String area = (String) manutencoesTable.getValueAt(selectedRow, 0);
+            Object value = manutencoesTable.getValueAt(selectedRow, 0);
+
+            // Verifica e converte o valor da célula para Long
+            Long id = (value instanceof Long) ? (Long) value : Long.valueOf(value.toString());
+
             MaintenanceController maintenanceController = new MaintenanceController();
-            Maintenance manutencao = maintenanceController.getMaintenanceById(manutencoesTable.getValueAt(selectedRow, 0).toString());
+            Maintenance manutencao = maintenanceController.getMaintenanceById(id);
 
             if (manutencao != null) {
                 String novoStatus = JOptionPane.showInputDialog(this, "Digite o novo status:");
@@ -280,21 +286,8 @@ public class CommonAreasMaintenenceOverview extends JPanel {
                     manutencao.setStatus(novoStatus);
                     maintenanceController.updateMaintenance(manutencao.getMaintenanceId(), manutencao.getUserMaintenanceFk(), manutencao.getCommonAreaMaintenanceFk(), novoStatus);
 
-                    // limpa a tabela
-                    tableModel.setRowCount(0);
-
-                    List<Maintenance> allMaintenances = maintenanceController.getAllMaintenances();
-
-                    for (Maintenance maintenance : allMaintenances) {
-                        tableModel.addRow(new Object[]{
-                                maintenance.getMaintenanceId(),
-                                maintenance.getCommonAreaMaintenanceFk().getCommonAreaName(),
-                                maintenance.getType(),
-                                maintenance.getUserMaintenanceFk().getUserName(),
-                                maintenance.getStatus()
-                        });
-                    }
-
+                    // Atualiza a tabela
+                    updateTable();
                     JOptionPane.showMessageDialog(this, "Status atualizado com sucesso!");
                 } else {
                     JOptionPane.showMessageDialog(this, "Status inválido!");
@@ -303,6 +296,7 @@ public class CommonAreasMaintenenceOverview extends JPanel {
         } else {
             JOptionPane.showMessageDialog(this, "Selecione uma manutenção!");
         }
+
     }
 
 
@@ -311,7 +305,9 @@ public class CommonAreasMaintenenceOverview extends JPanel {
         if (selectedRow >= 0) {
             MaintenanceController maintenanceController = new MaintenanceController();
             String area = (String) manutencoesTable.getValueAt(selectedRow, 0);
-            Maintenance manutencao = maintenanceController.getMaintenanceById(manutencoesTable.getValueAt(selectedRow, 0).toString());
+            Object value = manutencoesTable.getValueAt(selectedRow, 0);
+            Long id = (value instanceof Long) ? (Long) value : Long.valueOf(value.toString());
+            Maintenance manutencao = maintenanceController.getMaintenanceById(id);
 
             if (manutencao != null) {
                 String motivo = JOptionPane.showInputDialog(this, "Digite o motivo da recusa:");

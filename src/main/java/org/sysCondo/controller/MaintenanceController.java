@@ -13,8 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MaintenanceController {
+    Long maintenanceId;
 
-    public String createMaintenance(User userMaintenance, CommonArea commonAreaMaintenance, String status, String type) {
+    public Long getMaintenanceId() {
+        return maintenanceId;
+    }
+
+    public void setMaintenanceId(Long maintenanceId) {
+        this.maintenanceId = maintenanceId;
+    }
+
+    public Long createMaintenance(User userMaintenance, CommonArea commonAreaMaintenance, String status, String type) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
@@ -42,7 +51,7 @@ public class MaintenanceController {
         return null;
     }
 
-    public Maintenance getMaintenanceById(String maintenanceId) {
+    public Maintenance getMaintenanceById(Long maintenanceId) {
         Session session = HibernateUtil.getSession();
         Maintenance maintenance = null;
         try {
@@ -69,7 +78,7 @@ public class MaintenanceController {
         return maintenances;
     }
 
-    public void updateMaintenance(String maintenanceId, User newUserMaintenance, CommonArea newCommonAreaMaintenance, String newStatus) {
+    public void updateMaintenance(Long maintenanceId, User newUserMaintenance, CommonArea newCommonAreaMaintenance, String newStatus) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
@@ -140,7 +149,7 @@ public class MaintenanceController {
         return maintenances;
     }
 
-    public void refuseMaintenance(String maintenanceId, String refuseReason) {
+    public void refuseMaintenance(Long maintenanceId, String refuseReason) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 

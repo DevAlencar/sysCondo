@@ -19,7 +19,7 @@ public class Maintenance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String maintenanceId;
+    private Long maintenanceId;
 
     @ManyToOne
     @JoinColumn(name = "userId")
