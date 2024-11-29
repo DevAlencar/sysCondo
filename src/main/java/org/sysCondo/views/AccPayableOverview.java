@@ -29,7 +29,7 @@ public class AccPayableOverview extends JPanel {
     private TableRowSorter<DefaultTableModel> sorter;
     private final AccountController accountController;
     private Object[][] data;
-    private final String[] columnNames = {"Id", "Nome do Fornecedor", "Data de Vencimento", "Tipo de Despesa", "Valor da Conta", "Status"};
+    private final String[] columnNames = {"Id", "Nome do Fornecedor", "Data de Vencimento", "Valor da Conta", "Status"};
 
     public AccPayableOverview() {
         this.accountController = new AccountController();
@@ -151,7 +151,6 @@ public class AccPayableOverview extends JPanel {
                         account.getAccountId(),
                         account.getSupplier(),
                         account.getFinishDate(),
-                        account.getType(),
                         account.getValue(),
                         account.getStatus()
                 })
@@ -160,7 +159,7 @@ public class AccPayableOverview extends JPanel {
         tableModel = new DefaultTableModel(data, columnNames) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 5) { // Se for a coluna de status
+                if (columnIndex == 4) { // Se for a coluna de status
                     return String.class; // Retorna como String para cores
                 }
                 return super.getColumnClass(columnIndex);
@@ -175,7 +174,6 @@ public class AccPayableOverview extends JPanel {
         table.getColumnModel().getColumn(0).setPreferredWidth(30); // Coluna ID com largura menor
         table.getColumnModel().getColumn(1).setPreferredWidth(200); // Nome da Fornecedor
         table.getColumnModel().getColumn(2).setPreferredWidth(150); // Data de Vencimento
-        table.getColumnModel().getColumn(2).setPreferredWidth(150); // Tipo de despesa
         table.getColumnModel().getColumn(3).setPreferredWidth(150); // Valor da Conta
         table.getColumnModel().getColumn(4).setPreferredWidth(100); // Status
         setStatusColors();
@@ -237,14 +235,14 @@ public class AccPayableOverview extends JPanel {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
             int modelRow = table.convertRowIndexToModel(selectedRow);
-            String currentStatus = tableModel.getValueAt(modelRow, 5).toString();
+            String currentStatus = tableModel.getValueAt(modelRow, 4).toString();
             if (currentStatus.equals("Pago")) {
                 JOptionPane.showMessageDialog(this, "Esta conta já está paga.");
                 return;
             }
             Account selectedAccount = accountController.getAccountById((Integer) table.getValueAt(selectedRow, 0));
             accountController.updateAccountStatus(selectedAccount.getAccountId(), "Pago");
-            table.setValueAt("Pago", selectedRow, 5);
+            table.setValueAt("Pago", selectedRow, 4);
             setStatusColors();
             JOptionPane.showMessageDialog(this, "Conta marcada como paga com sucesso!");
         } else {

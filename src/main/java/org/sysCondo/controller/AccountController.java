@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AccountController {
 
-    public void createAccount(String supplier, float value, String type, String status, LocalDate finishDate) {
+    public void createAccount(String supplier, float value, String status, LocalDate finishDate) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
@@ -19,7 +19,6 @@ public class AccountController {
             account.setValue(value);
             account.setStatus(status);
             account.setFinishDate(finishDate);
-            account.setType(type);
             account.setSupplier(supplier);
 
             session.save(account);
@@ -58,7 +57,7 @@ public class AccountController {
         return accounts;
     }
 
-    public void updateAccount(int accountId, String supplier, float value, String type, String status, LocalDate finishDate) {
+    public void updateAccount(int accountId, String supplier, float value, String status, LocalDate finishDate) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
@@ -68,7 +67,6 @@ public class AccountController {
                 account.setValue(value);
                 account.setStatus(status);
                 account.setFinishDate(finishDate);
-                account.setType(type);
                 account.setSupplier(supplier);
                 session.update(account);
                 transaction.commit();

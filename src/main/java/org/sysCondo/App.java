@@ -20,12 +20,13 @@ public class App {
     public static void main(String[] args) {
 //        Session session = HibernateUtil.getSession();
 //
-//        UserController userController = new UserController();
+        //UserController userController = new UserController();
 
         //DevUtil.clearAllData();
 
         // cria um usuário
         //User user = userController.createUser("João", "11999999999", "123456789", UserRole.USER, "101", null);
+        //User user = userController.createUser("Andressa", "11999999999", "123", UserRole.ADMIN, "101", null);
 
         // cria a aplicação, iniciando com a tela de login
         JFrame app = new JFrame();

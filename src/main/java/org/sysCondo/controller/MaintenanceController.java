@@ -9,6 +9,7 @@ import org.sysCondo.model.maintenance.Maintenance;
 import org.sysCondo.model.user.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MaintenanceController {
@@ -126,7 +127,7 @@ public class MaintenanceController {
     // retorna as manutencoes feitas por um usuario pelo documento
     public List<Maintenance> getMaintenancesByUserDocument(String userDocument) {
         Session session = HibernateUtil.getSession();
-        List<Maintenance> maintenances = null;
+        List<Maintenance> maintenances = new ArrayList<>();
         try {
             maintenances = session.createQuery("from Maintenance where userMaintenanceFk.userDocument = :userDocument", Maintenance.class)
                     .setParameter("userDocument", userDocument)

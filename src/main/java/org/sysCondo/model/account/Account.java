@@ -22,9 +22,6 @@ public class Account {
     @Column(name = "value")
     private float value;
 
-    @Column(name = "type")
-    private String type;
-
     @Column(name = "status")
     private String status;
 

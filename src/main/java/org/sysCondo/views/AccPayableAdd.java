@@ -53,12 +53,8 @@ public class AccPayableAdd extends JPanel {
         gbc.gridy = 1;
         accountFinishDateInput = createAndAddInputField(formContainer, gbc, "Data de Vencimento (dd/mm/aaaa)");
         gbc.gridy = 2;
-        accountTypeInput = getComboBoxContainer("Tipo de Despesa", new String[]{"Aluguel", "Serviços", "Outros"});
-        formContainer.add(accountTypeInput, gbc);
+        formContainer.add(getComboBoxContainer("Status", new String[]{"Pago", "A pagar", "Atrasado"}), gbc);
         gbc.gridy = 3;
-        accountStatusInput = getComboBoxContainer("Status", new String[]{"Pago", "A pagar", "Atrasado"});
-        formContainer.add(accountStatusInput, gbc);
-        gbc.gridy = 4;
         accountValueInput = createAndAddInputField(formContainer, gbc, "Valor da Conta");
 
         // Centralizar o formulário
@@ -88,12 +84,11 @@ public class AccPayableAdd extends JPanel {
 
             String accountSupplier = accountSupplierInput.getText();
             LocalDate accountFinishDate = LocalDate.parse(accountFinishDateInput.getText(), formatter);
-            String accountType = Objects.requireNonNull(accountTypeInput.getSelectedItem()).toString();
             String accountStatus = Objects.requireNonNull(accountStatusInput.getSelectedItem()).toString();
             float accountValue = Float.parseFloat(accountValueInput.getText());
 
             AccountController accountController = new AccountController();
-            accountController.createAccount(accountSupplier, accountValue, accountType, accountStatus, accountFinishDate);
+            accountController.createAccount(accountSupplier, accountValue, accountStatus, accountFinishDate);
             // Limpa os campos após adicionar
         });
 
@@ -130,15 +125,17 @@ public class AccPayableAdd extends JPanel {
     }
 
     // Método para criar um combobox com bordas arredondadas
-    private JComboBox<String> getComboBoxContainer(String label, String[] options) {
+    private JPanel getComboBoxContainer(String label, String[] options) {
         JPanel container = new JPanel(new BorderLayout());
+
+        // Criar o rótulo
         JLabel comboBoxLabel = new JLabel(label);
-
         comboBoxLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
-
         container.setBackground(Color.WHITE);
-        JComboBox<String> comboBox = new JComboBox<>(options);
-        comboBox.setUI(new BasicComboBoxUI() {
+
+        // Criar o JComboBox e armazenar referência
+        accountStatusInput = new JComboBox<>(options);
+        accountStatusInput.setUI(new BasicComboBoxUI() {
             @Override
             protected JButton createArrowButton() {
                 JButton button = super.createArrowButton();
@@ -147,15 +144,17 @@ public class AccPayableAdd extends JPanel {
                 return button;
             }
         });
-        comboBox.setBackground(Color.WHITE);
-        comboBox.setBorder(BorderFactory.createCompoundBorder(
+        accountStatusInput.setBackground(Color.WHITE);
+        accountStatusInput.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(Color.BLACK, 1, true),
                 BorderFactory.createEmptyBorder(3, 3, 3, 3)
         ));
-        comboBox.setFont(new Font("Roboto", Font.PLAIN, 14));
-        container.add(comboBoxLabel, BorderLayout.NORTH);
-        container.add(comboBox, BorderLayout.CENTER);
+        accountStatusInput.setFont(new Font("Roboto", Font.PLAIN, 14));
 
-        return comboBox;
+        // Adicionar rótulo e combo box ao painel
+        container.add(comboBoxLabel, BorderLayout.NORTH);
+        container.add(accountStatusInput, BorderLayout.CENTER);
+
+        return container; // Retorna o painel com rótulo e combo box
     }
 }

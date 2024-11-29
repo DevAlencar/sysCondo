@@ -21,6 +21,8 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -173,15 +175,33 @@ public class AccReceivableOverview extends JPanel {
     private void updateTable() {
         List<Tax> taxes = taxController.getAllTaxes();
         Object[][] data = taxes.stream()
-                .map(tax -> new Object[]{
-                        tax.getTaxId(),
-                        tax.getName(),
-                        tax.getFinishDate(),
-                        tax.getValue(),
-                        currentUser == null ? "SEM USUARIO" : userTaxPayedController.obterStatusTaxa(currentUser.getUserId(), tax.getTaxId())
+                .map(tax -> {
+                    // Lógica para determinar o status baseado na data de vencimento
+                    LocalDate finishDate = tax.getFinishDate(); // Obter a data de vencimento
+                    LocalDate currentDate = LocalDate.now();
+                    String status;
+
+                    // Se a data de vencimento for no passado, o status é "Atrasado"
+                    if (finishDate.isBefore(currentDate)) {
+                        status = "Atrasado";
+                    } else if (finishDate.isEqual(currentDate)) {
+                        status = "A pagar"; // Se for a data atual, ainda está "A pagar"
+                    } else {
+                        status = "A pagar"; // Para data futura, também está "A pagar"
+                    }
+
+                    // Retorna os dados para a linha da tabela
+                    return new Object[]{
+                            tax.getTaxId(),
+                            tax.getName(),
+                            tax.getFinishDate(),
+                            tax.getValue(),
+                            status
+                    };
                 })
                 .toArray(Object[][]::new);
 
+        // Atualizando o modelo da tabela com os dados atualizados
         tableModel = new DefaultTableModel(data, columnNames) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
@@ -191,13 +211,14 @@ public class AccReceivableOverview extends JPanel {
                 return super.getColumnClass(columnIndex);
             }
         };
+
         table.setModel(tableModel);
         sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
 
         sorter.toggleSortOrder(0);
 
-        setStatusColors(); // Chama método para definir cores de status
+        setStatusColors(); // Chama o método para definir cores de status
 
         table.getColumnModel().getColumn(0).setPreferredWidth(30); // Coluna ID com largura menor
         table.getColumnModel().getColumn(1).setPreferredWidth(200); // Nome da Taxa
@@ -205,6 +226,7 @@ public class AccReceivableOverview extends JPanel {
         table.getColumnModel().getColumn(3).setPreferredWidth(150); // Valor da Taxa
         table.getColumnModel().getColumn(4).setPreferredWidth(100); // Status
     }
+
 
     // Método para definir cores de status
     private void setStatusColors() {
@@ -257,21 +279,35 @@ public class AccReceivableOverview extends JPanel {
     private void openEditAccountScreen() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow >= 0) {
-            // Pegar os dados da conta selecionada
-            int accountId = (Integer) table.getValueAt(selectedRow, 0);
-            String accountName = (String) table.getValueAt(selectedRow, 1);
-            String dueDate = (String) table.getValueAt(selectedRow, 2);
-            String amount = (String) table.getValueAt(selectedRow, 3);
-            String status = (String) table.getValueAt(selectedRow, 4);
+            try {
+                int taxId = (int) table.getValueAt(selectedRow, 0);
+                String accountName = (String) table.getValueAt(selectedRow, 1);
 
-            // Criar a tela de edição e passá-la para a janela
-            AccReceivableEdit editScreen = new AccReceivableEdit(accountName, dueDate, amount, status);
-            JFrame frame = new JFrame("Editar Taxa");
-            frame.setContentPane(editScreen);
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
+                // Tratar o dueDate
+                String dueDate;
+                if (table.getValueAt(selectedRow, 2) instanceof LocalDate) {
+                    LocalDate dueDateLocal = (LocalDate) table.getValueAt(selectedRow, 2);
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    dueDate = dueDateLocal.format(formatter);
+                } else {
+                    dueDate = (String) table.getValueAt(selectedRow, 2);
+                }
+
+                String amount = table.getValueAt(selectedRow, 3).toString();
+                String status = (String) table.getValueAt(selectedRow, 4);
+
+                AccReceivableEdit editScreen = new AccReceivableEdit(taxId, accountName, dueDate, amount, status);
+
+                JFrame frame = new JFrame("Editar Taxa");
+                frame.setContentPane(editScreen);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace(); // Para debugar o erro
+                JOptionPane.showMessageDialog(this, "Erro ao carregar tela de edição: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, selecione uma taxa para editar.");
         }

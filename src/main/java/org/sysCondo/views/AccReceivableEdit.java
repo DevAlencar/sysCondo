@@ -6,6 +6,7 @@ import org.jdatepicker.impl.UtilDateModel;
 import org.sysCondo.components.DateLabelFormatter;
 import org.sysCondo.components.RoundJButton;
 import org.sysCondo.components.RoundJTextField;
+import org.sysCondo.controller.TaxController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Properties;
 
@@ -21,54 +23,69 @@ public class AccReceivableEdit extends JPanel {
     private JDatePickerImpl dueDateField;
     private RoundJTextField amountField;
     //private JComboBox<String> statusComboBox;
+    private int taxId;
+    private String status;
 
-    public AccReceivableEdit(String accountName, String dueDate, String amount, String status) {
-        // Layout com espaços mais definidos
-        setLayout(new GridLayout(6, 2, 10, 10));
+    public AccReceivableEdit(int taxId, String accountName, String dueDate, String amount, String status) {
+        this.taxId = taxId;
+        this.status=status;
+        // Use um layout mais flexível
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Margens
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.CENTER;
 
-        // Definir rótulos e campos para edição
+        // Rótulo e campo de texto para o nome da taxa
         JLabel accountNameLabel = new JLabel("Nome da taxa:");
         accountNameField = new RoundJTextField(20, 10);
         accountNameField.setText(accountName);
 
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        add(accountNameLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        add(accountNameField, gbc);
+
+        // Rótulo e campo de texto para valor
         JLabel amountLabel = new JLabel("Valor da taxa:");
         amountField = new RoundJTextField(20, 10);
         amountField.setText(amount);
 
-        //JLabel statusLabel = new JLabel("Status:");
-        //String[] statuses = {"Pago", "A receber", "Atrasado"};
-        //statusComboBox = new JComboBox<>(statuses);
-        //statusComboBox.setSelectedItem(status);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        add(amountLabel, gbc);
 
-        // Personalizando o estilo
-        setBackground(new Color(242, 242, 242)); // Fundo cinza claro
-        accountNameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        amountLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        //statusLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        add(amountField, gbc);
 
-        // Adicionar componentes ao painel
-        add(accountNameLabel);
-        add(accountNameField);
-        add(amountLabel);
-        add(amountField);
-        //add(statusLabel);
-        //add(statusComboBox);
-        dueDateField = getDatePicker(dueDate);
+        // Rótulo e campo para a data
+        JLabel dueDateLabel = new JLabel("Data de vencimento:");
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        add(dueDateLabel, gbc);
 
-        // Botão para salvar as alterações
-        RoundJButton addButton = new RoundJButton("Adicionar taxa");
-        addButton.setBackground(new Color(28, 170, 164));  // Cor de fundo do botão
-        addButton.setForeground(Color.WHITE);  // Cor do texto
+        dueDateField = getDatePicker(dueDate); // Obtenha o componente de data
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        add(dueDateField, gbc);
+
+        // Botões
+        RoundJButton addButton = new RoundJButton("Atualizar taxa");
+        addButton.setBackground(new Color(28, 170, 164)); // Cor de fundo
+        addButton.setForeground(Color.WHITE); // Cor do texto
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addAccount();
+                attAccount();
             }
         });
 
-        // Botão para cancelar a edição
         RoundJButton cancelButton = new RoundJButton("Cancelar");
-        cancelButton.setBackground(new Color(255, 80, 80));  // Cor de fundo do botão
+        cancelButton.setBackground(new Color(255, 80, 80)); // Cor de fundo
         cancelButton.setForeground(Color.WHITE);
         cancelButton.addActionListener(new ActionListener() {
             @Override
@@ -77,30 +94,59 @@ public class AccReceivableEdit extends JPanel {
             }
         });
 
-        // Painel de botões
+        // Painel para os botões
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setBackground(new Color(242, 242, 242)); // Cor de fundo do painel
+        buttonPanel.setBackground(new Color(242, 242, 242)); // Fundo do painel
         buttonPanel.add(cancelButton);
         buttonPanel.add(addButton);
 
-        // Adicionar painel de botões ao layout principal
-        add(new JLabel());
-        add(buttonPanel);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2; // Ocupa duas colunas
+        add(buttonPanel, gbc);
     }
 
-    // Método para adicionar a conta
-    private void addAccount() {
-        // Aqui você pode implementar a lógica para adicionar a conta
-        String accountName = accountNameField.getText();
-        String dueDate = ((UtilDateModel) dueDateField.getModel()).getValue().toString(); //! change this to return the date correctly formatted
-        String amount = amountField.getText();
-        //String status = (String) statusComboBox.getSelectedItem();
+    // Método para atualizar a conta
+    private void attAccount() {
+        try {
+            // Captura os dados dos campos
+            String accountName = accountNameField.getText();
 
-        System.out.println(dueDate);
-        // Lógica para salvar a conta
+            // Obtém a data selecionada no JDatePicker
+            Date selectedDate = ((UtilDateModel) dueDateField.getModel()).getValue();
 
-        JOptionPane.showMessageDialog(this, "Taxa adicionada com sucesso!");
+            // Formatar a data para "yyyy-MM-dd"
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String dueDate = formatter.format(selectedDate);
+
+            // Converte a data para LocalDate
+            LocalDate finishDate = LocalDate.parse(dueDate);
+            float amount = Float.parseFloat(amountField.getText());
+
+            // Verifica a data de vencimento em relação à data atual
+            //String status = "A pagar"; // Valor padrão de status
+            LocalDate currentDate = LocalDate.now();  // Obtém a data atual
+
+            // Se a data de vencimento for no passado, o status muda para 'Atrasado'
+            if (finishDate.isBefore(currentDate)) {
+                status = "Atrasado";
+            }else{
+                status = "A pagar";
+            }
+
+            // Instancia o controlador (TaxController) para atualizar a taxa
+            TaxController taxController = new TaxController();
+            taxController.updateTax(taxId, accountName, amount, status, finishDate); // Chama o método de atualização
+
+            // Exibe mensagem de sucesso
+            JOptionPane.showMessageDialog(this, "Taxa atualizada com sucesso!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar a taxa: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
+
+
 
     // Método para cancelar a edição
     private void cancelEdit() {
@@ -112,26 +158,22 @@ public class AccReceivableEdit extends JPanel {
     private JDatePickerImpl getDatePicker(String date) {
         UtilDateModel model = new UtilDateModel();
         Properties properties = new Properties();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); // creates a date formatter using the dd/MM/yyyy pattern
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); // Formato esperado
 
-        try{ // trys to parse the string passed as a parameter to a Date object
-            Date parsedDate = formatter.parse(date);
-            model.setValue(parsedDate); // with success, we can set the model value to the parsed date
-            model.setSelected(true); // shows the date in the date picker
+        try {
+            Date parsedDate = formatter.parse(date); // Converte String para Date
+            model.setValue(parsedDate);
+            model.setSelected(true);
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            System.err.println("Erro ao converter data: " + date);
+            e.printStackTrace();
         }
+
         properties.put("text.today", "Hoje");
         properties.put("text.month", "Mês");
         properties.put("text.year", "Ano");
 
-        JLabel dateLabel = new JLabel("Data: ");
-        dateLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
-        // Configuração do JDatePickerImpl
         JDatePanelImpl datePanel = new JDatePanelImpl(model, properties);
-        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel,  new DateLabelFormatter());
-        add(dateLabel);
-        add(datePicker);
-        return datePicker;
+        return new JDatePickerImpl(datePanel, new DateLabelFormatter());
     }
 }
